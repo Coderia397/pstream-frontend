@@ -16,6 +16,7 @@ import { useSkipTimestamps, SkipSegment } from '../hooks/useSkipTimestamps';
 import { useHls } from '../hooks/useHls';
 import { useFullscreen } from '../hooks/useFullscreen';
 import { useSubtitleCues } from '../hooks/useSubtitleCues';
+import { useVideoKeyboardShortcuts } from '../hooks/useVideoKeyboardShortcuts';
 import VideoPlayerControls from './VideoPlayerControls';
 import VideoPlayerSettings from './VideoPlayerSettings';
 import VideoPlayerSettingsTouch from './VideoPlayerSettingsTouch';
@@ -1268,172 +1269,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         console.log(`[VideoPlayer] Switched internal subtitle to track ${id}`);
     };
 
-    useEffect(() => {
-        const handleKey = (e: KeyboardEvent) => {
-            if (activePanel !== 'none') return;
-
-            const key = e.key.toLowerCase();
-
-            if (e.repeat && !['arrowright', 'arrowleft', 'arrowup', 'arrowdown', 'l', 'j', '[', ']', '{', '}'].includes(key)) {
-                return;
-            }
-
-            const target = e.target as HTMLElement;
-            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
-                return;
-            }
-
-            const registeredKeys = [' ', 'k', 'l', 'j', 'arrowright', 'arrowleft', 'arrowup', 'arrowdown', 'f', 'm', 'n', 'p', 's', 'escape', '[', ']', '{', '}', '\\'];
-
-            if (!registeredKeys.includes(key)) {
-                showControls();
-                return;
-            }
-
-            showControls();
-            e.preventDefault();
-
-            switch (e.key) { 
-                case 'Escape':
-                    if (isFullscreen || isPseudoFullscreen) {
-                        toggleFullscreen();
-                    } else if (onClose) {
-                        onClose();
-                    }
-                    break;
-                case ' ':
-                    if (videoRef.current) {
-                        videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
-                        setPpRippleTrigger(t => t + 1);
-                    }
-                    break;
-                case 'ArrowRight':
-                    if (videoRef.current) {
-                        videoRef.current.currentTime += 10;
-                    }
-                    setSeekFlash({ side: 'right', ts: Date.now() });
-                    setTimeout(() => setSeekFlash(null), 450);
-                    break;
-                case 'ArrowLeft':
-                    if (videoRef.current) {
-                        videoRef.current.currentTime -= 10;
-                    }
-                    setSeekFlash({ side: 'left', ts: Date.now() });
-                    setTimeout(() => setSeekFlash(null), 450);
-                    break;
-                case 'ArrowUp': {
-                    const currentVol = videoRef.current?.volume ?? 1;
-                    const v = Math.min(1, currentVol + 0.1);
-                    setVolume(v);
-                    if (videoRef.current) {
-                        videoRef.current.volume = v;
-                        videoRef.current.muted = false;
-                    }
-                    if (isMuted) setIsMuted(false);
-                    showHud('🔊', `Volume: ${Math.round(v * 100)}%`);
-                    break;
-                }
-                case 'ArrowDown': {
-                    const currentVol = videoRef.current?.volume ?? 1;
-                    const v = Math.max(0, currentVol - 0.1);
-                    setVolume(v);
-                    if (videoRef.current) {
-                        videoRef.current.volume = v;
-                        if (v === 0) {
-                            videoRef.current.muted = true;
-                            setIsMuted(true);
-                        } else {
-                            videoRef.current.muted = false;
-                            if (isMuted) setIsMuted(false);
-                        }
-                    }
-                    showHud(v === 0 ? '🔇' : '🔉', `Volume: ${Math.round(v * 100)}%`);
-                    break;
-                }
-                default:
-                    switch (key) {
-                        case 'k':
-                            if (videoRef.current) {
-                                videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
-                                setPpRippleTrigger(t => t + 1);
-                            }
-                            break;
-                        case 'l':
-                            if (videoRef.current) {
-                                videoRef.current.currentTime += 10;
-                            }
-                            setSeekFlash({ side: 'right', ts: Date.now() });
-                            setTimeout(() => setSeekFlash(null), 450);
-                            break;
-                        case 'j':
-                            if (videoRef.current) {
-                                videoRef.current.currentTime -= 10;
-                            }
-                            setSeekFlash({ side: 'left', ts: Date.now() });
-                            setTimeout(() => setSeekFlash(null), 450);
-                            break;
-                        case 'f':
-                            toggleFullscreen();
-                            break;
-                        case 'm': {
-                            const next = !isMuted;
-                            setIsMuted(next);
-                            userMutedRef.current = next;
-                            if (videoRef.current) {
-                                videoRef.current.muted = next;
-                            }
-                            showHud(next ? '🔇' : '🔊', next ? 'Muted' : 'Unmuted');
-                            break;
-                        }
-                        case 'n':
-                            if (nextEpisodeInfo) handleNextEpisode();
-                            break;
-                        case 'p':
-                            if (previousEpisodeInfo) handlePreviousEpisode();
-                            break;
-                        case 's':
-                            if (currentCaption) {
-                                setCurrentCaption(null);
-                            } else if (captions.length > 0) {
-                                const preferred = captions.find(c => c.lang === 'en' || c.label.toLowerCase().includes('english')) || captions[0];
-                                setCurrentCaption(preferred.url);
-                            }
-                            break;
-                        case '[': {
-                            const next = parseFloat((subtitleOffset - 0.1).toFixed(1));
-                            setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
-                            break;
-                        }
-                        case ']': {
-                            const next = parseFloat((subtitleOffset + 0.1).toFixed(1));
-                            setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
-                            break;
-                        }
-                        case '{': {
-                            const next = parseFloat((subtitleOffset - 1.0).toFixed(1));
-                            setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
-                            break;
-                        }
-                        case '}': {
-                            const next = parseFloat((subtitleOffset + 1.0).toFixed(1));
-                            setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
-                            break;
-                        }
-                        case '\\':
-                            setSubtitleOffset(0);
-                            showHud('💬', 'Subtitle Sync: Reset');
-                            break;
-                    }
-                    break;
-            }
-        };
-        window.addEventListener('keydown', handleKey);
-        return () => window.removeEventListener('keydown', handleKey);
-    }, [onClose, activePanel, nextEpisodeInfo, handleNextEpisode, previousEpisodeInfo, handlePreviousEpisode, isFullscreen, isPseudoFullscreen, toggleFullscreen, captions, currentCaption, showControls, duration, isMuted, setSubtitleOffset]);
+    useVideoKeyboardShortcuts({
+        videoRef, activePanel, isFullscreen, isPseudoFullscreen, isMuted, captions,
+        currentCaption, subtitleOffset,
+        hasNextEpisode: !!nextEpisodeInfo, hasPreviousEpisode: !!previousEpisodeInfo,
+        userMutedRef, onClose, toggleFullscreen, handleNextEpisode, handlePreviousEpisode,
+        setCurrentCaption, setSubtitleOffset, setVolume, setIsMuted,
+        setPpRippleTrigger, setSeekFlash, showHud, showControls,
+    });
 
     return (
         <div
