@@ -17,6 +17,7 @@ import { useHls } from '../hooks/useHls';
 import { useFullscreen } from '../hooks/useFullscreen';
 import { useSubtitleCues } from '../hooks/useSubtitleCues';
 import { useVideoKeyboardShortcuts } from '../hooks/useVideoKeyboardShortcuts';
+import { useVideoElementEvents } from '../hooks/useVideoElementEvents';
 import VideoPlayerControls from './VideoPlayerControls';
 import VideoPlayerSettings from './VideoPlayerSettings';
 import VideoPlayerSettingsTouch from './VideoPlayerSettingsTouch';
@@ -998,72 +999,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         return () => video.removeEventListener('seeked', onSeeked);
     }, [saveProgressImmediately]);
 
-    // ─── Native <video> events → player state ───────────────────────────────
-    // The embed used to push time/duration/play-state to the UI via callbacks.
-    // With direct playback we read them straight off the <video> element. This
-    // is what drives the progress bar, the time labels, AND subtitle cue
-    // matching (cues are matched against currentTime) — without it, currentTime
-    // stays 0, the bar is frozen, and no subtitle ever shows.
-    useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
-
-        let lastSave = 0;
-        const onTime = () => {
-            const t = video.currentTime;
-            if (isNaN(t)) return;
-            currentTimeRef.current = t;
-            setCurrentTime(t);
-            const d = video.duration;
-            if (d && !isNaN(d) && isFinite(d)) {
-                setDuration(d);
-                setProgress((t / d) * 100);
-            }
-            setIsVideoReady(true);
-            const now = Date.now();
-            if (now - lastSave > 5000) { lastSave = now; saveProgressImmediately(false); }
-        };
-        const onDurationChange = () => {
-            const d = video.duration;
-            if (d && !isNaN(d) && isFinite(d)) setDuration(d);
-        };
-        const onPlay = () => { setIsPlaying(true); hasPlayedOnceRef.current = true; };
-        const onPauseEvt = () => { setIsPlaying(false); saveProgressImmediately(true); };
-        const onWaiting = () => setIsBuffering(true);
-        const onPlaying = () => { setIsBuffering(false); setIsVideoReady(true); };
-        const onProgressEvt = () => {
-            try {
-                const b = video.buffered;
-                if (b.length) setBufferedAmount(b.end(b.length - 1));
-            } catch { /* buffered can throw if not ready */ }
-        };
-        const onEndedEvt = () => {
-            saveProgressImmediately(true);
-            if (settings.autoplayNextEpisode && !countdownCancelledRef.current && nextEpisodeInfo) {
-                setShowAutoplayCountdown(false);
-                handleNextEpisode();
-            }
-        };
-
-        video.addEventListener('timeupdate', onTime);
-        video.addEventListener('durationchange', onDurationChange);
-        video.addEventListener('play', onPlay);
-        video.addEventListener('pause', onPauseEvt);
-        video.addEventListener('waiting', onWaiting);
-        video.addEventListener('playing', onPlaying);
-        video.addEventListener('progress', onProgressEvt);
-        video.addEventListener('ended', onEndedEvt);
-        return () => {
-            video.removeEventListener('timeupdate', onTime);
-            video.removeEventListener('durationchange', onDurationChange);
-            video.removeEventListener('play', onPlay);
-            video.removeEventListener('pause', onPauseEvt);
-            video.removeEventListener('waiting', onWaiting);
-            video.removeEventListener('playing', onPlaying);
-            video.removeEventListener('progress', onProgressEvt);
-            video.removeEventListener('ended', onEndedEvt);
-        };
-    }, [streamUrl, saveProgressImmediately, handleNextEpisode, settings.autoplayNextEpisode, nextEpisodeInfo]);
+    // Bridge native <video> events → player state (time, duration, buffering,
+    // play state, periodic progress-save, autoplay-next). This is what drives
+    // the progress bar and subtitle cue matching.
+    useVideoElementEvents(videoRef, streamUrl, {
+        currentTimeRef, hasPlayedOnceRef, countdownCancelledRef,
+        autoplayNextEpisode: settings.autoplayNextEpisode,
+        hasNextEpisode: !!nextEpisodeInfo,
+        setCurrentTime, setDuration, setProgress, setIsVideoReady, setIsPlaying,
+        setIsBuffering, setBufferedAmount, setShowAutoplayCountdown,
+        saveProgress: saveProgressImmediately, handleNextEpisode,
+    });
 
     // Save progress on component unmount
     useEffect(() => {
