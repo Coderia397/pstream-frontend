@@ -27,6 +27,9 @@ const GIGA_BACKEND_URL = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://ibrah
 const FORCE_PROXY_HOST_PATTERNS: RegExp[] = [];
 const RETRY_BASE_DELAY_MS = 1200;
 const RETRY_MAX_DELAY_MS = 5000;
+// Hard cap on automatic re-resolves when a stream won't start, so a genuinely
+// unplayable title can't hammer the resolver (and the phone hosting it).
+const MAX_RESOLVE_RETRIES = 3;
 const SOURCE_FAILURE_COOLDOWN_MS = 20 * 1000;
 
 function shouldForceProxy(source: any): boolean {
@@ -734,36 +737,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         setStreamReferer(activeReferer || null);
         setLoadingMessage('Initializing...');
 
-        if (subtitles && subtitles.length > 0) {
-            const mappedCaptions = subtitles.map((sub: any, index: number) => ({
-                id: `sub-${index}`,
-                label: ISO6391.getName((sub.lang || 'en').toLowerCase().split('-')[0]) || sub.label || sub.lang || `Subtitle ${index + 1}`,
-                url: sub.url,
-                lang: (sub.lang || 'en').toLowerCase().split('-')[0]
-            }));
-            setCaptions(mappedCaptions);
-
-            const preferredLang = settings.subtitleLanguage?.toLowerCase() || 'en';
-            const isEnglishTarget = (!user && preferredLang === 'en') || preferredLang === 'en' || !user;
-
-            let finalSub = null;
-            if (isEnglishTarget) {
-                const enSubs = mappedCaptions.filter((s: any) => s.lang === 'en' || s.label.toLowerCase().includes('english'));
-                finalSub = enSubs.length >= 3 ? enSubs[2] : (enSubs[0] || mappedCaptions[0]);
-            } else {
-                finalSub = mappedCaptions.find((s: any) => s.lang.includes(preferredLang) || s.label.toLowerCase().includes(preferredLang));
-                if (!finalSub) {
-                    const enSubs = mappedCaptions.filter((s: any) => s.lang === 'en' || s.label.toLowerCase().includes('english'));
-                    finalSub = enSubs.length >= 3 ? enSubs[2] : (enSubs[0] || mappedCaptions[0]);
-                }
-            }
-
-            if (finalSub && settings.showSubtitles) {
-                setCurrentCaption(finalSub.url);
-            }
-        }
-
-        // Keep buffering active until EmbedPlayer communicates playback start
+        // Subtitles are sourced solely from SubtitleService (OpenSubtitles /
+        // SubDL) in the effect below — those are CORS-open and fetchable by the
+        // browser. The resolver's own `subtitles` (e.g. LookMovie on
+        // lmscript.xyz) send no CORS header, so a <track>/fetch of them fails in
+        // the browser; we intentionally ignore them here to avoid dead tracks.
+        void subtitles;
     }, [settings.subtitleLanguage, settings.showSubtitles]);
 
     const handleSourceChange = useCallback((index: number) => {
@@ -1119,6 +1098,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         },
         // Dead or expired URL — put this source on cooldown and move to the next
         // one; if none are left, ask the backend for a freshly resolved set.
+        // Capped so a stream that simply won't play (e.g. codec) can't storm the
+        // resolver — after MAX_RESOLVE_RETRIES we surface a clean error instead.
         onTokenExpired: () => {
             const dead = allSources[currentSourceIndex];
             if (dead) {
@@ -1128,10 +1109,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             const nextIndex = currentSourceIndex + 1;
             if (allSources[nextIndex]) {
                 handleSourceChange(nextIndex);
-            } else {
-                forceResolveRef.current = true;
-                setResolveNonce(n => n + 1);
+                return;
             }
+            // No more sources — re-resolve, but only up to a cap.
+            if (retryCountRef.current >= MAX_RESOLVE_RETRIES) {
+                console.warn('[VideoPlayer] Resolve retry cap reached — giving up.');
+                setIsBuffering(false);
+                setError('This title could not be played right now. Please try again in a moment.');
+                return;
+            }
+            retryCountRef.current += 1;
+            forceResolveRef.current = true;
+            setResolveNonce(n => n + 1);
         },
         onError: (msg) => setError(msg),
     });

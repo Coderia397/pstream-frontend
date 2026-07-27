@@ -84,9 +84,10 @@ export const TIER_1_PROVIDERS: EmbedProvider[] = [
 // continents, while a residential IP gets 200. Until the backend scrapes via
 // residential egress, embeds are the only thing that plays.
 //
-// Set to false once direct resolution is reliable; the player already prefers
-// direct sources whenever they resolve, so this only controls the safety net.
-export const EMBEDS_ENABLED = true;
+// Direct streaming (via the self-hosted resolver) is now the only playback
+// path. Embeds are fully retired: the player shows a clean "unavailable"
+// message if resolution fails rather than falling back to an iframe.
+export const EMBEDS_ENABLED = false;
 
 // Flat list for easy iteration.
 export const ALL_EMBED_PROVIDERS = EMBEDS_ENABLED
