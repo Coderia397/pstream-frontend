@@ -164,25 +164,22 @@ interface VideoPlayerProps {
     onEpisodeChange?: (season: number, episode: number) => void;
 }
 
-function requestMobileLandscapeFullscreen(el: HTMLElement) {
-    const doc = document as any;
-    const elem = el as any;
-    try {
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen().then(() => {
-                if ((screen.orientation as any)?.lock) {
-                    (screen.orientation as any).lock('landscape').catch(() => { });
-                }
-            }).catch(() => { });
-        } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
-        } else if (elem.webkitEnterFullscreen) {
-            elem.webkitEnterFullscreen();
-        }
-    } catch (e) { }
+// ─── Fullscreen + orientation helpers ───────────────────────────────────────
+// iOS Safari cannot fullscreen an arbitrary element, and the only "fullscreen"
+// it offers for a <video> is the NATIVE player (webkitEnterFullscreen), which
+// throws away our custom controls and subtitle overlay. So on iOS we use
+// PSEUDO-fullscreen (a fixed-inset container) to keep our own UI. Android and
+// desktop use the real Fullscreen API on the container plus a landscape lock.
+function lockLandscape() {
+    try { (screen.orientation as any)?.lock?.('landscape').catch(() => {}); } catch { /* iOS: unsupported */ }
 }
-// we need to do webkit-requestfullscreen as well and it should go fullscreen
-// and when we exit fullscreen we need to do webkit-exit-fullscreen as well
+function unlockOrientation() {
+    try { (screen.orientation as any)?.unlock?.(); } catch { /* unsupported */ }
+}
+// True only when the CONTAINER can go real-fullscreen (Android/desktop).
+function containerSupportsFullscreen(el: any): boolean {
+    return !!(el && (el.requestFullscreen || el.webkitRequestFullscreen));
+}
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 1, resumeTime = 0, onClose, onEpisodeChange }) => {
     const HIDE_CUSTOM_UI = false; 
     const { t } = useTranslation();
@@ -354,28 +351,51 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         console.info(`[VideoPlayer] Progress saved immediately: ${time}s / ${dur}s (forceCloud: ${!!forceCloudSync})`);
     }, [addToHistory, updateEpisodeProgress, updateVideoState]);
 
+    // ─── Unified fullscreen ─────────────────────────────────────────────────
+    // One entry point. Real fullscreen where the container supports it (with a
+    // landscape lock on mobile); pseudo-fullscreen everywhere else (iOS) so the
+    // custom controls + subtitle overlay survive. isFullscreen for real FS is
+    // driven by the fullscreenchange handler below — we don't set it by hand,
+    // which is what caused the old iPhone double-state bug.
+    const enterFullscreen = useCallback(() => {
+        const el = containerRef.current as any;
+        if (!el) return;
+        if (el.requestFullscreen) {
+            el.requestFullscreen()
+                .then(() => { if (isMobile) lockLandscape(); })
+                .catch(() => setIsPseudoFullscreen(true)); // denied → fall back to pseudo
+        } else if (el.webkitRequestFullscreen) {
+            el.webkitRequestFullscreen();
+            if (isMobile) lockLandscape();
+        } else {
+            // iOS / no element fullscreen → pseudo-fullscreen keeps our UI.
+            // (Never videoRef.webkitEnterFullscreen — that hands off to the
+            // native player and drops our controls + subtitles.)
+            setIsPseudoFullscreen(true);
+        }
+    }, [isMobile]);
+
+    const exitFullscreen = useCallback(() => {
+        const doc = document as any;
+        if (doc.fullscreenElement || doc.webkitFullscreenElement) {
+            try {
+                const r = doc.exitFullscreen ? doc.exitFullscreen() : doc.webkitExitFullscreen?.();
+                r?.catch?.(() => {});
+            } catch { /* ignore */ }
+        }
+        setIsFullscreen(false);
+        setIsPseudoFullscreen(false);
+        unlockOrientation();
+    }, []);
+
     const triggerAutoFullscreen = useCallback(() => {
         if (!isMobile || hasAutoFullscreenedRef.current) return;
         hasAutoFullscreenedRef.current = true;
-        
-        const el = containerRef.current;
-        if (!el) return;
-
-        const isIPhone = /iPhone|iPod/i.test(navigator.userAgent);
-        
-        console.log('[VideoPlayer] Triggering automatic mobile fullscreen');
-        if (isIPhone) {
-            setIsPseudoFullscreen(true);
-            setIsFullscreen(true);
-            try {
-                if ((screen.orientation as any)?.lock) {
-                    (screen.orientation as any).lock('landscape').catch(() => {});
-                }
-            } catch (e) {}
-        } else {
-            requestMobileLandscapeFullscreen(el);
-            setIsFullscreen(true);
-        }
+        // No user gesture here (fires shortly after mount), so real fullscreen
+        // would be rejected. Only the gesture-free pseudo path is valid — i.e.
+        // iOS. On Android the fullscreen button (a real tap) handles it.
+        const el = containerRef.current as any;
+        if (el && !containerSupportsFullscreen(el)) setIsPseudoFullscreen(true);
     }, [isMobile]);
 
     useEffect(() => {
@@ -399,42 +419,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     }, [movie.id, mediaType, playingSeasonNumber, currentEpisode]);
 
     const toggleFullscreen = useCallback(() => {
-        const el = containerRef.current as any;
-        const doc = document as any;
-        const isIPhone = /iPhone/i.test(navigator.userAgent);
-
-        if (isFullscreen || isPseudoFullscreen) {
-            const hasFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement);
-
-            if (hasFs) {
-                if (doc.exitFullscreen) doc.exitFullscreen().catch(() => { });
-                else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
-                else if (doc.msExitFullscreen) doc.msExitFullscreen();
-            }
-
-            setIsFullscreen(false);
-            setIsPseudoFullscreen(false);
-            try { (screen.orientation as any)?.unlock?.(); } catch (e) { }
-        } else {
-            if (el?.requestFullscreen) {
-                el.requestFullscreen().then(() => {
-                    if ((screen.orientation as any)?.lock) (screen.orientation as any).lock('landscape').catch(() => { });
-                }).catch(() => { });
-            } else if (el?.webkitRequestFullscreen) {
-                el.webkitRequestFullscreen();
-            } else if (isIPhone) {
-                setIsPseudoFullscreen(true);
-            } else if ((videoRef.current as any)?.webkitEnterFullscreen) {
-                (videoRef.current as any).webkitEnterFullscreen();
-            }
-            setIsFullscreen(true);
-        }
-    }, [isFullscreen, isPseudoFullscreen]);
+        if (isFullscreen || isPseudoFullscreen) exitFullscreen();
+        else enterFullscreen();
+    }, [isFullscreen, isPseudoFullscreen, enterFullscreen, exitFullscreen]);
 
     useEffect(() => {
         const handleFsChange = () => {
             const doc = document as any;
-            setIsFullscreen(!!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement));
+            const fs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+            setIsFullscreen(fs);
+            // When the OS drops us out of real fullscreen (back gesture, swipe),
+            // release the landscape lock so the phone returns to portrait.
+            if (!fs) unlockOrientation();
         };
         document.addEventListener('fullscreenchange', handleFsChange);
         document.addEventListener('webkitfullscreenchange', handleFsChange);
