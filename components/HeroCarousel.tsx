@@ -276,14 +276,33 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelect, onPlay, fetchUrl,
       const wasJustActiveElsewhere = prevActiveIdRef.current &&
         prevActiveIdRef.current !== myVideoId &&
         !prevActiveIdRef.current.startsWith('hero-');
-      const delay = wasJustActiveElsewhere ? 0 : 80;
+      prevActiveIdRef.current = activeVideoId;
 
-      const timer = setTimeout(() => {
+      const startTrailer = () => {
         setShowVideo(true);
         setActiveVideoId(myVideoId);
-      }, delay);
-      prevActiveIdRef.current = activeVideoId;
-      return () => clearTimeout(timer);
+      };
+
+      // Returning from a modal / another player — the user expects the trailer
+      // back immediately, so don't defer.
+      if (wasJustActiveElsewhere) {
+        startTrailer();
+        return;
+      }
+
+      // Initial home load: the hero trailer is a full YouTube iframe scaled to
+      // ~575% — mounting it 80ms in used to compete with first paint and row/
+      // image loading and jank the intro. Defer it until the main thread is idle
+      // so the page settles first; the timeout keeps it prompt on a busy page.
+      const ric: any = (window as any).requestIdleCallback;
+      if (typeof ric === 'function') {
+        const id = ric(startTrailer, { timeout: 1200 });
+        return () => (window as any).cancelIdleCallback?.(id);
+      }
+      // Safari/iOS have no requestIdleCallback — a heavier fixed delay than the
+      // old 80ms still gives the intro room to render first.
+      const t = setTimeout(startTrailer, 500);
+      return () => clearTimeout(t);
     }
 
     prevActiveIdRef.current = activeVideoId;
