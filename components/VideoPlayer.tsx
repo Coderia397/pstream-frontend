@@ -17,8 +17,6 @@ import { useHls } from '../hooks/useHls';
 import VideoPlayerControls from './VideoPlayerControls';
 import VideoPlayerSettings from './VideoPlayerSettings';
 import VideoPlayerSettingsTouch from './VideoPlayerSettingsTouch';
-import { EmbedPlayer, EmbedController } from './EmbedPlayer';
-import { ALL_EMBED_PROVIDERS, EMBEDS_ENABLED } from '../services/EmbedProviders';
 import { ArrowLeftIcon } from '@phosphor-icons/react';
 import { parseSubtitles, CaptionCueType } from '../utils/captions';
 
@@ -190,7 +188,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     const { overlayStyle, enabled: subsEnabled } = useSubtitleStyle();
     const mediaType = movie.media_type || (movie.first_air_date ? 'tv' : 'movie');
     const videoRef = useRef<HTMLVideoElement>(null);
-    const embedControllerRef = useRef<EmbedController | null>(null);
     const estimatedDurationRef = useRef(mediaType === 'tv' ? 2700 : 7200);
     const containerRef = useRef<HTMLDivElement>(null);
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -263,7 +260,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     const [allSources, setAllSources] = useState<any[]>([]);
     const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
     const [isStreamM3U8, setIsStreamM3U8] = useState<boolean>(true);
-    const [isEmbed, setIsEmbed] = useState<boolean>(false);
     
     const MAX_STREAM_RETRIES = 3;
     const retryCountRef = useRef(0);
@@ -283,21 +279,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     const [internalTracks, setInternalTracks] = useState<InternalTrack[]>([]);
     const [selectedAudioTrackId, setSelectedAudioTrackId] = useState<number | null>(null);
     const [selectedSubtitleTrackId, setSelectedSubtitleTrackId] = useState<number | null>(null);
-
-    // Always start on the direct path. This only flips to true if backend
-    // resolution yields no playable source and embeds are enabled as a net.
-    const [useEmbedFallback, setUseEmbedFallback] = useState(false);
-    const [embedProviderIndex, setEmbedProviderIndex] = useState(0);
-
-    const embedSourcesMapped = useMemo(() => {
-        return ALL_EMBED_PROVIDERS.map((p) => ({
-            id: p.id,
-            name: p.name,
-            provider: 'Premium Embed',
-            quality: p.supportsPostMessage ? 'Tier-1 (Seamless)' : 'Tier-2 (Reload)',
-            isM3U8: false,
-        }));
-    }, []);
 
     const activeStreamUrl = useMemo(() => streamUrl, [streamUrl]);
 
@@ -414,8 +395,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         sourceFailureCooldownRef.current.clear();
         hasPlayedOnceRef.current = false; 
         reportedSuccessRef.current = null;
-        setUseEmbedFallback(false); // new title/episode → try the direct path again
-        setEmbedProviderIndex(0);
     }, [movie.id, mediaType, playingSeasonNumber, currentEpisode]);
 
     const toggleFullscreen = useCallback(() => {
@@ -560,7 +539,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             const offset = details.seekOffset || 10;
             const target = Math.max(0, currentTimeRef.current - offset);
             currentTimeRef.current = target;
-            embedControllerRef.current?.seek(target);
+            if (videoRef.current) videoRef.current.currentTime = target;
             setCurrentTime(target);
             pendingSeekSaveRef.current = true;
         });
@@ -568,7 +547,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             const offset = details.seekOffset || 10;
             const target = Math.min(duration || estimatedDurationRef.current, currentTimeRef.current + offset);
             currentTimeRef.current = target;
-            embedControllerRef.current?.seek(target);
+            if (videoRef.current) videoRef.current.currentTime = target;
             setCurrentTime(target);
             pendingSeekSaveRef.current = true;
         });
@@ -576,7 +555,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             if (details.seekTime != null) {
                 const target = details.seekTime;
                 currentTimeRef.current = target;
-                embedControllerRef.current?.seek(target);
+                if (videoRef.current) videoRef.current.currentTime = target;
                 setCurrentTime(target);
                 pendingSeekSaveRef.current = true;
             }
@@ -657,14 +636,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     const { segments: skipSegments } = useSkipTimestamps(movie.imdb_id, mediaType as 'movie' | 'tv', playingSeasonNumber, currentEpisode);
 
     const handleSkipSegment = useCallback((segment: SkipSegment) => {
-        if (useEmbedFallback) {
-            embedControllerRef.current?.seek(segment.end);
-            currentTimeRef.current = segment.end;
-            pendingSeekSaveRef.current = true;
-        } else if (videoRef.current) {
+        if (videoRef.current) {
             videoRef.current.currentTime = segment.end;
         }
-    }, [useEmbedFallback]);
+    }, []);
 
     const title = movie.title || movie.name || '';
     const formattedDate = movie.release_date || movie.first_air_date || '';
@@ -703,29 +678,25 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         }
         setCurrentSourceIndex(startIndex);
         const hlsSource = sources[startIndex];
-        const isEmbedFallback = !!hlsSource.isEmbed;
-        setIsEmbed(isEmbedFallback);
 
         const activeReferer = hlsSource.referer || globalReferer || '';
         let finalUrl = hlsSource.url;
         const forceProxy = shouldForceProxy(hlsSource);
 
-        if (!isEmbedFallback) {
-            if (hlsSource.directManifest) {
-                const blob = new Blob([hlsSource.directManifest], { type: 'application/vnd.apple.mpegurl' });
-                finalUrl = URL.createObjectURL(blob);
-            } else if (hlsSource.noProxy && !forceProxy) {
-                finalUrl = hlsSource.url;
-                console.log(`[VideoPlayer] ⚡ Direct (no-proxy) stream: ${finalUrl.substring(0, 60)}...`);
-            } else {
-                let origin = '';
-                try {
-                    const refUrl = activeReferer.startsWith('//') ? `https:${activeReferer}` : activeReferer;
-                    origin = refUrl ? new URL(refUrl).origin : '';
-                } catch (e) { }
-                const headersObj = { referer: activeReferer, origin };
-                finalUrl = `${GIGA_BACKEND_URL}/proxy/stream?url=${encodeURIComponent(hlsSource.url)}&headers=${encodeURIComponent(JSON.stringify(headersObj))}`;
-            }
+        if (hlsSource.directManifest) {
+            const blob = new Blob([hlsSource.directManifest], { type: 'application/vnd.apple.mpegurl' });
+            finalUrl = URL.createObjectURL(blob);
+        } else if (hlsSource.noProxy && !forceProxy) {
+            finalUrl = hlsSource.url;
+            console.log(`[VideoPlayer] ⚡ Direct (no-proxy) stream: ${finalUrl.substring(0, 60)}...`);
+        } else {
+            let origin = '';
+            try {
+                const refUrl = activeReferer.startsWith('//') ? `https:${activeReferer}` : activeReferer;
+                origin = refUrl ? new URL(refUrl).origin : '';
+            } catch (e) { }
+            const headersObj = { referer: activeReferer, origin };
+            finalUrl = `${GIGA_BACKEND_URL}/proxy/stream?url=${encodeURIComponent(hlsSource.url)}&headers=${encodeURIComponent(JSON.stringify(headersObj))}`;
         }
 
         setStreamUrl(finalUrl);
@@ -761,24 +732,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         setLoadingMessage('Switching source...');
         reportedSuccessRef.current = null;
 
-        const isEmbedFallback = !!candidate.isEmbed;
-        setIsEmbed(isEmbedFallback);
         const activeReferer = candidate.referer || '';
         const forceProxy = shouldForceProxy(candidate);
         let finalUrl = candidate.url;
-        if (!isEmbedFallback) {
-            if (candidate.noProxy && !forceProxy) {
-                finalUrl = candidate.url;
-                console.log(`[VideoPlayer] ⚡ Direct (no-proxy) stream: ${finalUrl.substring(0, 60)}...`);
-            } else {
-                let origin = '';
-                try {
-                    const refUrl = activeReferer.startsWith('//') ? `https:${activeReferer}` : activeReferer;
-                    origin = refUrl ? new URL(refUrl).origin : '';
-                } catch (e) { }
-                const headersObj = { referer: activeReferer, origin };
-                finalUrl = `${GIGA_BACKEND_URL}/proxy/stream?url=${encodeURIComponent(candidate.url)}&headers=${encodeURIComponent(JSON.stringify(headersObj))}`;
-            }
+        if (candidate.noProxy && !forceProxy) {
+            finalUrl = candidate.url;
+            console.log(`[VideoPlayer] ⚡ Direct (no-proxy) stream: ${finalUrl.substring(0, 60)}...`);
+        } else {
+            let origin = '';
+            try {
+                const refUrl = activeReferer.startsWith('//') ? `https:${activeReferer}` : activeReferer;
+                origin = refUrl ? new URL(refUrl).origin : '';
+            } catch (e) { }
+            const headersObj = { referer: activeReferer, origin };
+            finalUrl = `${GIGA_BACKEND_URL}/proxy/stream?url=${encodeURIComponent(candidate.url)}&headers=${encodeURIComponent(JSON.stringify(headersObj))}`;
         }
         setStreamUrl(finalUrl);
         setIsStreamM3U8(!!candidate.isM3U8);
@@ -915,13 +882,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
 
                 if (!data?.success || sources.length === 0) {
                     console.warn('[VideoPlayer] No playable source:', data?.error);
-                    if (EMBEDS_ENABLED) {
-                        // Backend resolution failed — fall back to the embed so
-                        // the user still gets playback rather than an error.
-                        console.info('[VideoPlayer] ↩︎ Falling back to embed player');
-                        setUseEmbedFallback(true);
-                        return;
-                    }
                     setIsBuffering(false);
                     setError(data?.error || 'No stream found. All providers are currently unavailable.');
                     return;
@@ -932,11 +892,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             } catch (e: any) {
                 if (cancelled || e?.name === 'AbortError') return;
                 console.error('[VideoPlayer] Stream resolve failed:', e);
-                if (EMBEDS_ENABLED) {
-                    console.info('[VideoPlayer] ↩︎ Backend unreachable — falling back to embed player');
-                    setUseEmbedFallback(true);
-                    return;
-                }
                 setIsBuffering(false);
                 setError('Could not reach the stream service. Please try again.');
             }
@@ -1518,49 +1473,30 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                     }
                     break;
                 case ' ':
-                    if (useEmbedFallback) {
-                        setIsPlaying(prev => !prev);
-                        setPpRippleTrigger(t => t + 1);
-                    } else if (videoRef.current) {
+                    if (videoRef.current) {
                         videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
                         setPpRippleTrigger(t => t + 1);
                     }
                     break;
                 case 'ArrowRight':
-                    if (useEmbedFallback) {
-                        const t = currentTimeRef.current + 10;
-                        currentTimeRef.current = t;
-                        embedControllerRef.current?.seek(t);
-                        setCurrentTime(t);
-                        setProgress(duration > 0 ? (t / duration) * 100 : 0);
-                        pendingSeekSaveRef.current = true;
-                    } else if (videoRef.current) {
+                    if (videoRef.current) {
                         videoRef.current.currentTime += 10;
                     }
                     setSeekFlash({ side: 'right', ts: Date.now() });
                     setTimeout(() => setSeekFlash(null), 450);
                     break;
                 case 'ArrowLeft':
-                    if (useEmbedFallback) {
-                        const t = Math.max(0, currentTimeRef.current - 10);
-                        currentTimeRef.current = t;
-                        embedControllerRef.current?.seek(t);
-                        setCurrentTime(t);
-                        setProgress(duration > 0 ? (t / duration) * 100 : 0);
-                        pendingSeekSaveRef.current = true;
-                    } else if (videoRef.current) {
+                    if (videoRef.current) {
                         videoRef.current.currentTime -= 10;
                     }
                     setSeekFlash({ side: 'left', ts: Date.now() });
                     setTimeout(() => setSeekFlash(null), 450);
                     break;
                 case 'ArrowUp': {
-                    const currentVol = useEmbedFallback ? volumeRef.current : (videoRef.current?.volume ?? 1);
+                    const currentVol = videoRef.current?.volume ?? 1;
                     const v = Math.min(1, currentVol + 0.1);
                     setVolume(v);
-                    if (useEmbedFallback) {
-                        embedControllerRef.current?.setMuted(false, v);
-                    } else if (videoRef.current) {
+                    if (videoRef.current) {
                         videoRef.current.volume = v;
                         videoRef.current.muted = false;
                     }
@@ -1569,18 +1505,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                     break;
                 }
                 case 'ArrowDown': {
-                    const currentVol = useEmbedFallback ? volumeRef.current : (videoRef.current?.volume ?? 1);
+                    const currentVol = videoRef.current?.volume ?? 1;
                     const v = Math.max(0, currentVol - 0.1);
                     setVolume(v);
-                    if (useEmbedFallback) {
-                        if (v === 0) {
-                            setIsMuted(true);
-                            embedControllerRef.current?.setMuted(true);
-                        } else {
-                            embedControllerRef.current?.setMuted(false, v);
-                            if (isMuted) setIsMuted(false);
-                        }
-                    } else if (videoRef.current) {
+                    if (videoRef.current) {
                         videoRef.current.volume = v;
                         if (v === 0) {
                             videoRef.current.muted = true;
@@ -1596,37 +1524,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                 default:
                     switch (key) {
                         case 'k':
-                            if (useEmbedFallback) {
-                                setIsPlaying(prev => !prev);
-                                setPpRippleTrigger(t => t + 1);
-                            } else if (videoRef.current) {
+                            if (videoRef.current) {
                                 videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
                                 setPpRippleTrigger(t => t + 1);
                             }
                             break;
                         case 'l':
-                            if (useEmbedFallback) {
-                                const t = currentTimeRef.current + 10;
-                                currentTimeRef.current = t;
-                                embedControllerRef.current?.seek(t);
-                                setCurrentTime(t);
-                                setProgress(duration > 0 ? (t / duration) * 100 : 0);
-                                pendingSeekSaveRef.current = true;
-                            } else if (videoRef.current) {
+                            if (videoRef.current) {
                                 videoRef.current.currentTime += 10;
                             }
                             setSeekFlash({ side: 'right', ts: Date.now() });
                             setTimeout(() => setSeekFlash(null), 450);
                             break;
                         case 'j':
-                            if (useEmbedFallback) {
-                                const t = Math.max(0, currentTimeRef.current - 10);
-                                currentTimeRef.current = t;
-                                embedControllerRef.current?.seek(t);
-                                setCurrentTime(t);
-                                setProgress(duration > 0 ? (t / duration) * 100 : 0);
-                                pendingSeekSaveRef.current = true;
-                            } else if (videoRef.current) {
+                            if (videoRef.current) {
                                 videoRef.current.currentTime -= 10;
                             }
                             setSeekFlash({ side: 'left', ts: Date.now() });
@@ -1639,9 +1550,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                             const next = !isMuted;
                             setIsMuted(next);
                             userMutedRef.current = next;
-                            if (useEmbedFallback) {
-                                embedControllerRef.current?.setMuted(next);
-                            } else if (videoRef.current) {
+                            if (videoRef.current) {
                                 videoRef.current.muted = next;
                             }
                             showHud(next ? '🔇' : '🔊', next ? 'Muted' : 'Unmuted');
@@ -1695,7 +1604,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         };
         window.addEventListener('keydown', handleKey);
         return () => window.removeEventListener('keydown', handleKey);
-    }, [onClose, activePanel, nextEpisodeInfo, handleNextEpisode, previousEpisodeInfo, handlePreviousEpisode, isFullscreen, isPseudoFullscreen, toggleFullscreen, captions, currentCaption, showControls, useEmbedFallback, duration, isMuted, setSubtitleOffset]);
+    }, [onClose, activePanel, nextEpisodeInfo, handleNextEpisode, previousEpisodeInfo, handlePreviousEpisode, isFullscreen, isPseudoFullscreen, toggleFullscreen, captions, currentCaption, showControls, duration, isMuted, setSubtitleOffset]);
 
     return (
         <div
@@ -1724,9 +1633,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                     if (Date.now() - lastTouchTimeRef.current < 900) return;
 
                     if (showUIRef.current) {
-                        if (useEmbedFallback) {
-                            setIsPlaying(prev => !prev);
-                        } else if (videoRef.current) {
+                        if (videoRef.current) {
                             if (videoRef.current.paused) {
                                 videoRef.current.muted = false;
                                 videoRef.current.play();
@@ -1744,105 +1651,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             }}
             onTouchStart={() => { lastTouchTimeRef.current = Date.now(); }}
             onDoubleClick={(e) => {
-                if (useEmbedFallback) return; 
                 const target = e.target as HTMLElement;
                 if (target.tagName === 'BUTTON' || target.closest('button')) return;
                 toggleFullscreen();
             }}
         >
-            {/* Primary player: direct stream resolved from the backend, driven by useHls.
-                Hidden (not unmounted) in embed mode so playback state survives a fallback. */}
+            {/* The player: direct stream resolved from the backend, driven by useHls. */}
             <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full bg-black"
-                style={{ objectFit: videoFit, display: useEmbedFallback ? 'none' : 'block' }}
+                style={{ objectFit: videoFit }}
                 playsInline
                 autoPlay
                 preload="auto"
                 onClick={(e) => e.stopPropagation()}
             />
 
-            {/* Fallback player: mounts only when direct resolution produced nothing,
-                so the two never play at once. */}
-            {EMBEDS_ENABLED && useEmbedFallback && (
-            <EmbedPlayer
-                tmdbId={String(movie.id)}
-                imdbId={movie.imdb_id}
-                mediaType={mediaType as 'movie' | 'tv'}
-                season={playingSeasonNumber}
-                episode={currentEpisode}
-                isPlaying={isPlaying}
-                controllerRef={embedControllerRef}
-                subtitleLang={settings.subtitleLanguage || 'en'}
-                activePanel={activePanel}
-                providerIndex={embedProviderIndex}
-                onProviderIndexChange={setEmbedProviderIndex}
-                startTime={(() => {
-                    if (mediaType === 'tv') {
-                        const prog = getEpisodeProgress(movie.id, playingSeasonNumber, currentEpisode);
-                        if (prog && prog.time > 5 && (prog.duration === 0 || (prog.time / prog.duration) < 0.95)) return prog.time;
-                    } else {
-                        const state = getVideoState(movie.id);
-                        if (state && state.time > 5 && (state.duration === 0 || (state.time / state.duration) < 0.95)) return state.time;
-                    }
-                    return resumeTime > 5 ? resumeTime : 0;
-                })()}
-                onPlay={() => {
-                    setIsPlaying(true);
-                    setIsVideoReady(true);
-                    setIsBuffering(false);
-                    hasPlayedOnceRef.current = true;
-                    showControls();
-                    if (isMobile) {
-                        triggerAutoFullscreen();
-                    }
-                }}
-                onPause={() => {
-                    setIsPlaying(false);
-                    saveProgressImmediately(true);
-                    showControls();
-                }}
-                onEnded={() => {
-                    // SAFETY LOCK 3: Double-fire and Provider Failure Cascade guards
-                    if (isTransitioningRef.current) return;
-                    
-                    const currentProgressPct = duration > 0 ? (currentTime / duration) * 100 : 0;
-                    if (currentProgressPct < 80) return; // Ignore instant crashes
-
-                    // Use countdownCancelledRef (not showAutoplayCountdown) so that
-                    // when the popup is visible and the video ends naturally, we still
-                    // advance — instead of freezing forever with the popup showing.
-                    if (settings.autoplayNextEpisode && !countdownCancelledRef.current) {
-                        setShowAutoplayCountdown(false);
-                        handleNextEpisode();
-                    }
-                }}
-                onTimeUpdate={(t, d) => {
-                    setIsVideoReady(true);
-                    setIsBuffering(false);
-                    setCurrentTime(t);
-                    if (d > 0) {
-                        setDuration(d);
-                        setProgress((t / d) * 100);
-                    }
-                    if (pendingSeekSaveRef.current) {
-                        saveProgressImmediately(true);
-                        pendingSeekSaveRef.current = false;
-                    } else if (t > 0 && Math.abs(t - lastSavedTimeRef.current) > 5) {
-                        lastSavedTimeRef.current = t;
-                        addToHistory(movie);
-                        if (mediaType === 'tv') {
-                            updateEpisodeProgress(movie, playingSeasonNumber, currentEpisode, t, d);
-                        } else {
-                            updateVideoState(movie, t, undefined, d);
-                        }
-                    }
-                }}
-                onAllFailed={() => {
-                    setError('All streaming providers have failed. Please try again later.');
-                }}
-            />
-            )}
 
             {/* ── Center HUD Feedback Indicator Overlay ── */}
             {hudMessage && (
@@ -1875,9 +1699,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                     className="subtitle-overlay"
                     style={{
                         ...overlayStyle,
-                        bottom: isMobile 
-                            ? (useEmbedFallback ? '5.6rem' : '2.6rem') 
-                            : (useEmbedFallback ? '9rem' : '5.5rem'),
+                        bottom: isMobile ? '2.6rem' : '5.5rem',
                         left: currentCueSettings?.position ? currentCueSettings.position : '50%',
                         transform: currentCueSettings?.position 
                             ? (currentCueSettings.align === 'right' || currentCueSettings.align === 'end' 
@@ -1925,7 +1747,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             )}
 
             {isBuffering && (
-                (hasPlayedOnceRef.current || useEmbedFallback) ? (
+                hasPlayedOnceRef.current ? (
                     <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                         <div className="relative w-12 h-12">
                             <div className="absolute inset-0 rounded-full border-[3px] border-white/10" />
@@ -2025,7 +1847,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             {!HIDE_CUSTOM_UI && (
                 <>
                     <VideoPlayerControls
-                        isEmbedFallback={useEmbedFallback}
                         showUI={showUI}
                         isPlaying={isPlaying}
                         isMuted={isMuted}
@@ -2041,9 +1862,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                         onCancelAutoplay={handleCancelAutoplay}
                         onPlayNextNow={handlePlayNextNow}
                         onPlayPause={() => {
-                            if (useEmbedFallback) {
-                                setIsPlaying(prev => !prev);
-                            } else if (videoRef.current?.paused) {
+                            if (videoRef.current?.paused) {
                                 videoRef.current.muted = false;
                                 videoRef.current.play();
                             } else {
@@ -2051,30 +1870,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                             }
                         }}
                         onSeek={(amt) => {
-                            if (useEmbedFallback) {
-                                const target = Math.max(0, currentTime + amt);
-                                embedControllerRef.current?.seek(target);
-                                setCurrentTime(target);
-                                currentTimeRef.current = target;
-                                setProgress(duration > 0 ? (target / duration) * 100 : 0);
-                                pendingSeekSaveRef.current = true;
-                            } else {
-                                videoRef.current && (videoRef.current.currentTime += amt);
-                            }
+                            videoRef.current && (videoRef.current.currentTime += amt);
                         }}
                         volume={volume}
                         onVolumeChange={(v) => {
                             setVolume(v);
-                            if (useEmbedFallback) {
-                                // Sync mute state with slider (drag to 0 = mute, drag up = unmute)
-                                const shouldMute = v === 0;
-                                if (shouldMute !== isMuted) {
-                                    setIsMuted(shouldMute);
-                                    userMutedRef.current = shouldMute;
-                                }
-                                // ✅ Send volume + mute state to VidFast iframe
-                                embedControllerRef.current?.setMuted(shouldMute, v);
-                            } else if (videoRef.current) {
+                            if (videoRef.current) {
                                 videoRef.current.volume = v;
                                 if (v > 0) videoRef.current.muted = false;
                             }
@@ -2083,23 +1884,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                             const nextMuted = !isMuted;
                             userMutedRef.current = nextMuted;
                             setIsMuted(nextMuted);
-                            if (useEmbedFallback) {
-                                embedControllerRef.current?.setMuted(nextMuted);
-                            } else if (videoRef.current) {
+                            if (videoRef.current) {
                                 videoRef.current.muted = nextMuted;
                             }
                         }}
                         onTimelineSeek={(p) => {
-                            if (useEmbedFallback) {
-                                const target = (p / 100) * (duration || estimatedDurationRef.current);
-                                embedControllerRef.current?.seek(target);
-                                setCurrentTime(target);
-                                currentTimeRef.current = target;
-                                setProgress(p);
-                                pendingSeekSaveRef.current = true;
-                            } else {
-                                videoRef.current && (videoRef.current.currentTime = (p / 100) * videoRef.current.duration);
-                            }
+                            videoRef.current && (videoRef.current.currentTime = (p / 100) * videoRef.current.duration);
                         }}
                         onToggleFullscreen={toggleFullscreen}
                         onClose={onClose || (() => window.history.back())}
@@ -2175,9 +1965,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                             selectedSubtitleTrackId={selectedSubtitleTrackId}
                             onInternalAudioChange={handleInternalAudioChange}
                             onInternalSubtitleChange={handleInternalSubtitleChange}
-                            allSources={useEmbedFallback ? embedSourcesMapped : allSources}
-                            currentSourceIndex={useEmbedFallback ? embedProviderIndex : currentSourceIndex}
-                            onSourceChange={useEmbedFallback ? setEmbedProviderIndex : handleSourceChange}
+                            allSources={allSources}
+                            currentSourceIndex={currentSourceIndex}
+                            onSourceChange={handleSourceChange}
                             showTitle={title || movie.title || movie.name}
                             videoDuration={duration}
                         />
@@ -2215,9 +2005,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                             selectedSubtitleTrackId={selectedSubtitleTrackId}
                             onInternalAudioChange={handleInternalAudioChange}
                             onInternalSubtitleChange={handleInternalSubtitleChange}
-                            allSources={useEmbedFallback ? embedSourcesMapped : allSources}
-                            currentSourceIndex={useEmbedFallback ? embedProviderIndex : currentSourceIndex}
-                            onSourceChange={useEmbedFallback ? setEmbedProviderIndex : handleSourceChange}
+                            allSources={allSources}
+                            currentSourceIndex={currentSourceIndex}
+                            onSourceChange={handleSourceChange}
                             showTitle={title || movie.title || movie.name}
                             videoDuration={duration}
                         />

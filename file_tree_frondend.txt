@@ -1,5 +1,5 @@
 # P-Stream Frontend — File Tree
-# Generated: 2026-07-27 15:10:49
+# Generated: 2026-07-27 21:48:50
 # Root: /home/ibrahim/code/pstream/pstream-frontend
 
 pstream-frontend/
@@ -74,11 +74,10 @@ pstream-frontend/
 │   ├── CinemaPlayButton.tsx  (302 lines)
 │   ├── ClipCard.tsx  (280 lines)
 │   ├── ContinueWatchingOptionsSheet.tsx  (75 lines)
-│   ├── EmbedPlayer.tsx  (455 lines)
 │   ├── ErrorBoundary.tsx  (81 lines)
 │   ├── ExploreSuggestions.tsx  (55 lines)
 │   ├── Footer.tsx  (98 lines)
-│   ├── HeroCarousel.tsx  (407 lines)
+│   ├── HeroCarousel.tsx  (426 lines)
 │   ├── HeroCarouselBackground.tsx  (101 lines)
 │   ├── HeroCarouselContent.tsx  (127 lines)
 │   ├── HeroMoreInfoButton.tsx  (36 lines)
@@ -113,7 +112,7 @@ pstream-frontend/
 │   ├── TopTenRow.tsx  (1,172 lines)
 │   ├── TopTenRowMobile.tsx  (298 lines)
 │   ├── TrailerPlayer.tsx  (312 lines)
-│   ├── VideoPlayer.tsx  (2,186 lines)
+│   ├── VideoPlayer.tsx  (2,039 lines)
 │   ├── VideoPlayerControls.tsx  (1,152 lines)
 │   ├── VideoPlayerSettings.tsx  (785 lines)
 │   └── VideoPlayerSettingsTouch.tsx  (638 lines)
@@ -151,7 +150,6 @@ pstream-frontend/
 │   ├── useAvatarReady.ts  (30 lines)
 │   ├── useCategoryLogo.ts  (49 lines)
 │   ├── useDynamicManifest.ts  (451 lines)
-│   ├── useEmbedLayout.ts  (81 lines)
 │   ├── useHls.ts  (420 lines)
 │   ├── useIsInTheaters.ts  (80 lines)
 │   ├── useIsMobile.ts  (41 lines)
@@ -246,9 +244,7 @@ pstream-frontend/
 ├── services/
 │   ├── api.ts  (40 lines)
 │   ├── ClipsService.ts  (179 lines)
-│   ├── EmbedProviders.ts  (95 lines)
 │   ├── ghostAuth.ts  (68 lines)
-│   ├── GoatAPIService.ts  (89 lines)
 │   ├── HeroEngine.ts  (661 lines)
 │   ├── NetworkPriority.ts  (49 lines)
 │   ├── ProviderHealthService.ts  (89 lines)
@@ -331,11 +327,11 @@ pstream-frontend/
 ├── vite-env.d.ts  (10 lines)
 └── vite.config.ts  (52 lines)
 
-# 32 directories, 295 files, 53,024 total lines of code
+# 32 directories, 291 files, 52,176 total lines of code
 
 # Breakdown by extension (files, lines of code):
-#   .tsx          108 files    27,817 lines
-#   .ts            73 files    15,213 lines
+#   .tsx          107 files    27,234 lines
+#   .ts            70 files    14,948 lines
 #   .json          20 files     7,583 lines
 #   .css            1 files       519 lines
 #   .md             2 files       455 lines
