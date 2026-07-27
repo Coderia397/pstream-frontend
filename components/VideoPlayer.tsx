@@ -15,11 +15,11 @@ import { reportStreamError, reportStreamSuccess } from '../services/ProviderHeal
 import { useSkipTimestamps, SkipSegment } from '../hooks/useSkipTimestamps';
 import { useHls } from '../hooks/useHls';
 import { useFullscreen } from '../hooks/useFullscreen';
+import { useSubtitleCues } from '../hooks/useSubtitleCues';
 import VideoPlayerControls from './VideoPlayerControls';
 import VideoPlayerSettings from './VideoPlayerSettings';
 import VideoPlayerSettingsTouch from './VideoPlayerSettingsTouch';
 import { ArrowLeftIcon } from '@phosphor-icons/react';
-import { parseSubtitles, CaptionCueType } from '../utils/captions';
 
 
 const GIGA_BACKEND_URL = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://ibrahimar397-pstream-giga.hf.space';
@@ -111,7 +111,6 @@ function stripLeadingDash(line: string): string {
 }
 
 const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur', 'yi', 'ps', 'ku']);
-const WATERMARK_RE = /\b(fixed|synced|encoded|subscene|opensubtitles|uploaded by|ripped by|corrected by)\b/i;
 
 // Top-level cue renderer: splits into lines, strips dashes, handles ♪/NAME:/HI, applies layout.
 function renderCue(text: string, isDialogue: boolean): React.ReactNode {
@@ -345,8 +344,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
 
     const [captions, setCaptions] = useState<{ id: string; label: string; url: string; lang: string; duration?: number }[]>([]);
     const [currentCaption, setCurrentCaption] = useState<string | null>(null);
-    const [subtitleObjectUrl, setSubtitleObjectUrl] = useState<string | null>(null);
     const [subtitleOffset, setSubtitleOffset] = useState(0);
+    const { currentCueText, currentCueSettings, subtitleObjectUrl } =
+        useSubtitleCues(videoRef, currentCaption, currentTime, subtitleOffset, streamUrl);
 
     const [hudMessage, setHudMessage] = useState<{ icon: string; text: string; ts: number } | null>(null);
     const showHud = useCallback((icon: string, text: string) => {
@@ -506,8 +506,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         } catch (_) { }
     }, [currentTime, duration, isPlaying]);
 
-    const [currentCueText, setCurrentCueText] = useState<string>('');
-    const [currentCueSettings, setCurrentCueSettings] = useState<CaptionCueType['settings'] | undefined>(undefined);
 
     // Dialogue = 2+ lines where at least one starts with a dash (multi-speaker layout)
     const isDialogue = useMemo(() => {
@@ -1100,77 +1098,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         };
     }, [saveProgressImmediately]);
 
-    const parsedCuesRef = useRef<CaptionCueType[]>([]);
-
-    useEffect(() => {
-        if (!currentCaption) {
-            setSubtitleObjectUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null; });
-            setCurrentCueText('');
-            setCurrentCueSettings(undefined);
-            parsedCuesRef.current = [];
-            return;
-        }
-        let isMounted = true;
-        const loadSubtitles = async () => {
-            try {
-                const text = await SubtitleService.resolveSubtitleText(currentCaption);
-                if (!text || !isMounted) return;
-
-                const cues = parseSubtitles(text).filter(cue => {
-                    const raw = (cue.content || cue.text || '').replace(/<[^>]+>/g, '');
-                    return !WATERMARK_RE.test(raw);
-                });
-                parsedCuesRef.current = cues;
-
-                if (isMounted) {
-                    const nowMs = (currentTime - subtitleOffset) * 1000;
-                    const immediateCue = cues.find(c => nowMs >= c.start && nowMs <= c.end);
-                    setCurrentCueText(immediateCue?.content || '');
-                    setCurrentCueSettings(immediateCue?.settings);
-                }
-
-                const { convertSubtitlesToObjectUrl } = await import('../utils/captions');
-                const newUrl = convertSubtitlesToObjectUrl(text);
-                if (newUrl && isMounted) {
-                    setSubtitleObjectUrl(prev => {
-                        if (prev) URL.revokeObjectURL(prev);
-                        return newUrl;
-                    });
-                }
-            } catch (e) {
-                console.error('[VideoPlayer] Subtitle load failed', e);
-            }
-        };
-        loadSubtitles();
-        return () => {
-            isMounted = false;
-            setSubtitleObjectUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null; });
-        };
-    }, [currentCaption]);
-
-    useEffect(() => {
-        const nowMs = (currentTime - subtitleOffset) * 1000;
-        const cue = parsedCuesRef.current.find(c => nowMs >= c.start && nowMs <= c.end);
-        setCurrentCueText(cue ? (cue.content || cue.text || '') : '');
-        setCurrentCueSettings(cue ? cue.settings : undefined);
-    }, [currentTime, subtitleOffset, subtitleObjectUrl]);
-
-    useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
-        const hideNative = () => {
-            Array.from(video.textTracks).forEach(track => {
-                track.mode = 'hidden';
-            });
-        };
-        video.addEventListener('loadedmetadata', hideNative);
-        const interval = setInterval(hideNative, 1000);
-        hideNative();
-        return () => {
-            video.removeEventListener('loadedmetadata', hideNative);
-            clearInterval(interval);
-        };
-    }, [streamUrl]);
 
     useEffect(() => {
         const handleEmbedMessage = (e: MessageEvent) => {
