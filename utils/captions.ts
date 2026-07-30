@@ -31,7 +31,16 @@ export function convertSubtitlesToObjectUrl(text: string): string {
     }
 }
 
-// Safe sanitize for both browser and potential ESM misconfigurations
+/**
+ * Sanitises subtitle markup. Subtitles are third-party, user-uploaded content
+ * (OpenSubtitles/SubDL), so this is untrusted input.
+ *
+ * Handles DOMPurify being exposed as either a namespace or an ESM default.
+ * If it is unavailable for any reason we FAIL CLOSED — stripping tags rather
+ * than returning the original markup, which is what the old fallback did.
+ */
+const stripTags = (html: string) => html.replace(/<[^>]*>/g, '');
+
 export const sanitize = (html: string, config?: any) => {
     try {
         const purifier = DOMPurify.sanitize || (DOMPurify as any).default?.sanitize || DOMPurify;
@@ -39,9 +48,9 @@ export const sanitize = (html: string, config?: any) => {
             return purifier(html, config);
         }
     } catch (e) {
-        console.warn('DOMPurify failed, falling back to basic string', e);
+        console.warn('[captions] DOMPurify unavailable — stripping tags instead', e);
     }
-    return html;
+    return stripTags(html);
 };
 
 export function captionIsVisible(
