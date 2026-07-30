@@ -170,7 +170,15 @@ function makeLabel(lang: string): string {
     return LANG_LABELS[lang] || lang.toUpperCase();
 }
 
-const SUBDL_KEY = import.meta.env.VITE_SUBDL_API_KEY || '';
+// SubDL search runs on our resolver, not in the browser.
+//
+// It used to call api.subdl.com directly with VITE_SUBDL_API_KEY — but Vite
+// inlines VITE_* values into the shipped bundle, so that key was readable by
+// anyone who opened the site's JS. Only the SEARCH needs the key; the subtitle
+// files it returns are plain public URLs the browser still fetches itself, so
+// just this one call moved server-side and the key never reaches a visitor.
+const RESOLVER_URL: string =
+    (import.meta as any).env?.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
 
 // ── Provider 1: Stremio / OpenSubtitles-v3 ───────────────────────────────────
 // CORS *, no key required, direct UTF-8 SRT via subs5.strem.io
@@ -292,7 +300,8 @@ async function fetchStremioTracks(
 
 // ── Provider 2: SubDL ─────────────────────────────────────────────────────────
 // CORS-enabled developer API, TMDB-native, returns zip files (extracted via JSZip)
-// Requires VITE_SUBDL_API_KEY — free at https://subdl.com/register
+// The search runs on our resolver (see RESOLVER_URL above); the key lives
+// there as SUBDL_API_KEY, never in the browser.
 
 const MAX_PER_LANG_SUBDL = 1;
 
@@ -303,13 +312,16 @@ async function fetchSubDLTracks(
     episode?: number,
     langCodes: string[] = ['en']
 ): Promise<SubtitleTrack[]> {
-    if (!SUBDL_KEY) return [];
-
     const langs = langCodes.slice(0, 10).join(',');
-    let url = `https://api.subdl.com/api/v1/subtitles?api_key=${SUBDL_KEY}&tmdb_id=${tmdbId}&type=${type === 'movie' ? 'movie' : 'tv'}&subs_per_page=30&language=${langs}`;
-    if (type === 'tv' && season != null) url += `&season_number=${season}&episode_number=${episode ?? 1}`;
+    const params = new URLSearchParams({ tmdbId, type, langs });
+    if (type === 'tv' && season != null) {
+        params.set('season', String(season));
+        params.set('episode', String(episode ?? 1));
+    }
 
-    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+    const res = await fetch(`${RESOLVER_URL}/api/subtitles/subdl?${params.toString()}`, {
+        signal: AbortSignal.timeout(12000),
+    });
     if (!res.ok) throw new Error(`SubDL HTTP ${res.status}`);
 
     const data = await res.json();
