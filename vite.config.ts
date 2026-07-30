@@ -47,6 +47,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // Source maps embed `sourcesContent` — the full original TypeScript, with
+    // comments — and Vite appends a //# sourceMappingURL comment so anyone can
+    // fetch it. With this on, /assets/*.js.map served 102 of our own source
+    // files publicly. Keep production builds map-free.
+    sourcemap: false,
   },
 });

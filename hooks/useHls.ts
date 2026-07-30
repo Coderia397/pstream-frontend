@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
+import ISO6391 from 'iso-639-1';
 
 
 interface UseHlsOptions {
@@ -40,22 +41,46 @@ export interface HlsSubtitleTrack {
 }
 
 /**
+ * Does this track represent `code` (an ISO 639-1 two-letter language)?
+ *
+ * Manifests label audio with ISO 639-2 three-letter codes (`spa`, `fra`, `ita`)
+ * while our settings use ISO 639-1 (`es`, `fr`, `it`), so a plain prefix compare
+ * only ever matched English — by the coincidence that "eng" starts with "en".
+ * We therefore also compare against the language's English NAME, which is what
+ * the manifest's NAME attribute carries ("Spanish", "French", …).
+ */
+function trackMatchesLanguage(track: HlsAudioTrack, code: string): boolean {
+    const tLang = (track.lang || '').toLowerCase();
+    const tName = (track.name || '').toLowerCase();
+    if (tLang && tLang.startsWith(code)) return true;          // en→eng, it→ita
+    let wantedName = '';
+    try { wantedName = (ISO6391.getName(code) || '').toLowerCase(); } catch { /* unknown code */ }
+    if (wantedName && tName.includes(wantedName)) return true; // es→"Spanish"
+    return false;
+}
+
+/**
  * Picks the best audio track index from a list based on user preference.
- * Priority: explicit lang match > name contains preferredLang > default track > track 0.
+ * Priority: preferred language > English > stream default > first track.
+ *
+ * English is tried BEFORE the stream's own DEFAULT flag on purpose: providers
+ * mark the default by their own locale, not the viewer's. VixSrc masters ship
+ * `Italian DEFAULT=YES, English DEFAULT=NO`, so trusting DEFAULT handed Italian
+ * audio to anyone whose preferred language wasn't in the stream.
  */
 function pickPreferredAudioTrack(tracks: HlsAudioTrack[], preferredLang: string = 'en'): number {
     if (tracks.length === 0) return -1;
-    const lang = (preferredLang || 'en').toLowerCase();
+    const lang = (preferredLang || 'en').toLowerCase().split('-')[0];
 
-    // 1. Try explicit language code match (e.g. "en")
-    const byLang = tracks.find(t => t.lang?.toLowerCase().startsWith(lang));
-    if (byLang) return byLang.id;
+    // 1. The viewer's preferred language.
+    const preferred = tracks.find(t => trackMatchesLanguage(t, lang));
+    if (preferred) return preferred.id;
 
-    // 2. Try name match (e.g. "English")
-    const byName = tracks.find(t => t.name?.toLowerCase().includes(lang === 'en' ? 'english' : lang));
-    if (byName) return byName.id;
+    // 2. English, before trusting the provider's DEFAULT flag.
+    const english = tracks.find(t => trackMatchesLanguage(t, 'en'));
+    if (english) return english.id;
 
-    // 3. Fallback to default track
+    // 3. Then the stream's own default, then whatever is first.
     const byDefault = tracks.find(t => t.isDefault);
     if (byDefault) return byDefault.id;
 
