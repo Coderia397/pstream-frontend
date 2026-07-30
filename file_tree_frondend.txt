@@ -1,10 +1,8 @@
 # P-Stream Frontend — File Tree
-# Generated: 2026-07-27 21:48:50
+# Generated: 2026-07-30 11:13:53
 # Root: /home/ibrahim/code/pstream/pstream-frontend
 
 pstream-frontend/
-├── .claude/
-│   └── settings.local.json  (7 lines)
 ├── assets/
 │   ├── 404_assets/
 │   │   ├── dim1-backdrop.jpeg  (578.8KB)
@@ -112,7 +110,7 @@ pstream-frontend/
 │   ├── TopTenRow.tsx  (1,172 lines)
 │   ├── TopTenRowMobile.tsx  (298 lines)
 │   ├── TrailerPlayer.tsx  (312 lines)
-│   ├── VideoPlayer.tsx  (2,039 lines)
+│   ├── VideoPlayer.tsx  (1,657 lines)
 │   ├── VideoPlayerControls.tsx  (1,152 lines)
 │   ├── VideoPlayerSettings.tsx  (785 lines)
 │   └── VideoPlayerSettingsTouch.tsx  (638 lines)
@@ -150,7 +148,8 @@ pstream-frontend/
 │   ├── useAvatarReady.ts  (30 lines)
 │   ├── useCategoryLogo.ts  (49 lines)
 │   ├── useDynamicManifest.ts  (451 lines)
-│   ├── useHls.ts  (420 lines)
+│   ├── useFullscreen.ts  (116 lines)
+│   ├── useHls.ts  (445 lines)
 │   ├── useIsInTheaters.ts  (80 lines)
 │   ├── useIsMobile.ts  (41 lines)
 │   ├── useKeepAlive.ts  (56 lines)
@@ -162,11 +161,14 @@ pstream-frontend/
 │   ├── useScroll.ts  (18 lines)
 │   ├── useSearch.ts  (120 lines)
 │   ├── useSkipTimestamps.ts  (96 lines)
+│   ├── useSubtitleCues.ts  (104 lines)
 │   ├── useSubtitleStyle.ts  (97 lines)
 │   ├── useTasteEngine.ts  (69 lines)
 │   ├── useTitleLogo.ts  (35 lines)
 │   ├── useTouchGestures.ts  (84 lines)
 │   ├── useTrailer.ts  (143 lines)
+│   ├── useVideoElementEvents.ts  (95 lines)
+│   ├── useVideoKeyboardShortcuts.ts  (217 lines)
 │   └── useYouTubeCaptions.ts  (106 lines)
 ├── icons/
 │   └── index.tsx  (299 lines)
@@ -232,6 +234,7 @@ pstream-frontend/
 │   │   ├── icon-192.png  (3.1KB)
 │   │   ├── icon-512-maskable.png  (3.1KB)
 │   │   └── icon-512.png  (3.1KB)
+│   ├── _headers  (14 lines)
 │   ├── _redirects  (2 lines)
 │   ├── apple-touch-icon.png  (3.1KB)
 │   ├── favicon.svg  (7 lines)
@@ -307,11 +310,12 @@ pstream-frontend/
 │   └── streamCache.ts  (130 lines)
 ├── .antigravityignore  (29 lines)
 ├── .cursorignore  (25 lines)
-├── .env  (23 lines)
+├── .env  (16 lines)
+├── .env.example  (33 lines)
 ├── .gitignore  (67 lines)
 ├── App.tsx  (596 lines)
 ├── constants.ts  (305 lines)
-├── file_tree_frondend.txt  (353 lines)
+├── file_tree_frondend.txt  (349 lines)
 ├── i18n.ts  (74 lines)
 ├── index.css  (519 lines)
 ├── index.html  (48 lines)
@@ -325,23 +329,24 @@ pstream-frontend/
 ├── types.ts  (157 lines)
 ├── update_file_tree.py  (207 lines)
 ├── vite-env.d.ts  (10 lines)
-└── vite.config.ts  (52 lines)
+└── vite.config.ts  (63 lines)
 
-# 32 directories, 291 files, 52,176 total lines of code
+# 31 directories, 296 files, 52,391 total lines of code
 
 # Breakdown by extension (files, lines of code):
-#   .tsx          107 files    27,234 lines
-#   .ts            70 files    14,948 lines
-#   .json          20 files     7,583 lines
+#   .tsx          107 files    26,852 lines
+#   .ts            74 files    15,516 lines
+#   .json          19 files     7,576 lines
 #   .css            1 files       519 lines
 #   .md             2 files       455 lines
-#   .txt            1 files       353 lines
 #   .sql            3 files       352 lines
+#   .txt            1 files       349 lines
 #   .js             3 files       271 lines
 #   .py             1 files       207 lines
-#   (no ext)        5 files       146 lines
+#   (no ext)        6 files       153 lines
 #   .svg            8 files        60 lines
 #   .html           1 files        48 lines
+#   .example        1 files        33 lines
 #   .jpeg          12 files
 #   .png           22 files
 #   .otf           14 files
