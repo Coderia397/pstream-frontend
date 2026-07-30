@@ -10,6 +10,7 @@ import { supabase } from '../services/supabaseClient';
 import { validateSignupEmail } from '../utils/emailValidation';
 import { useAuthStore } from '../store/useAuthStore';
 import Footer from '../components/Footer';
+import Turnstile, { turnstileEnabled } from '../components/Turnstile';
 import { fetchData } from '../services/api';
 import { REQUESTS } from '../constants';
 import { Movie } from '../types';
@@ -74,6 +75,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ initialView, initialEmail, onClos
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  // Turnstile proves a human is signing up. Verified by Supabase, not here.
+  const [captchaToken, setCaptchaToken] = useState('');
+  const captchaResetRef = useRef<(() => void) | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState(SIGNUP_AVATARS[0]);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -107,6 +111,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ initialView, initialEmail, onClos
           return;
         }
 
+        // Only enforced once a sitekey is configured, so this stays inert until
+        // Turnstile is switched on in Supabase.
+        if (turnstileEnabled() && !captchaToken) {
+          setError(t('auth.captchaRequired', { defaultValue: 'Please complete the verification.' }));
+          setLoading(false);
+          return;
+        }
+
         const { error: err } = await supabase.auth.signUp({
           email: email.trim().toLowerCase(),
           password,
@@ -115,9 +127,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ initialView, initialEmail, onClos
               display_name: displayName.trim(),
               avatar_url: selectedAvatar
             },
-            emailRedirectTo: window.location.origin + '/'
+            emailRedirectTo: window.location.origin + '/',
+            // Supabase calls Cloudflare's siteverify with this, server-side.
+            ...(captchaToken ? { captchaToken } : {})
           }
         });
+        // The token is spent either way, so re-arm the widget before any retry.
+        captchaResetRef.current?.();
+        setCaptchaToken('');
         if (err) throw err;
         setSuccessMsg(t('auth.accountCreated'));
         setView('signin');
@@ -237,6 +254,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ initialView, initialEmail, onClos
                 })}
               </div>
             </div>
+          )}
+
+          {/* Signup only — signing in sends no email, so it isn't what harms
+              sending reputation. Renders nothing until a sitekey is configured. */}
+          {view === 'signup' && (
+            <Turnstile
+              action="signup"
+              onToken={setCaptchaToken}
+              resetRef={captchaResetRef}
+            />
           )}
 
           {error && <p className="text-red-400 text-xs">{error}</p>}

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../services/supabaseClient';
 import { validateSignupEmail } from '../utils/emailValidation';
+import Turnstile, { turnstileEnabled } from './Turnstile';
 
 export const LoginWall: React.FC = () => {
   const { t } = useTranslation();
@@ -9,6 +10,9 @@ export const LoginWall: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  // Turnstile proves a human is signing up; Supabase verifies the token.
+  const [captchaToken, setCaptchaToken] = useState('');
+  const captchaResetRef = useRef<(() => void) | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,13 +34,25 @@ export const LoginWall: React.FC = () => {
           return;
         }
 
+        // Inert until a sitekey is configured.
+        if (turnstileEnabled() && !captchaToken) {
+          setError(t('auth.captchaRequired', { defaultValue: 'Please complete the verification.' }));
+          setLoading(false);
+          return;
+        }
+
         const { error } = await supabase.auth.signUp({
           email: email.trim().toLowerCase(),
           password,
           options: {
-            emailRedirectTo: window.location.origin + '/'
+            emailRedirectTo: window.location.origin + '/',
+            // Supabase calls Cloudflare's siteverify with this, server-side.
+            ...(captchaToken ? { captchaToken } : {})
           }
         });
+        // Token is single-use and now spent — re-arm before any retry.
+        captchaResetRef.current?.();
+        setCaptchaToken('');
         if (error) throw error;
         // Auto-login or show success message for email verification if required
       }
@@ -83,6 +99,16 @@ export const LoginWall: React.FC = () => {
               placeholder={t('auth.passwordPlaceholder')}
             />
           </div>
+
+          {/* Signup only — signing in sends no email. Renders nothing until a
+              sitekey is configured. */}
+          {!isLogin && (
+            <Turnstile
+              action="signup"
+              onToken={setCaptchaToken}
+              resetRef={captchaResetRef}
+            />
+          )}
 
           {error && (
             <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-3 rounded-lg text-sm">
