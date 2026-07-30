@@ -1,8 +1,16 @@
 import axios from 'axios';
 
 
-// Parse YouTube API keys from environment variables to avoid hardcoding
-const YOUTUBE_API_KEYS: string[] = (import.meta.env.VITE_YOUTUBE_API_KEYS || '').split(',').filter(Boolean);
+// Trailer search runs on our own resolver, NOT in the browser.
+//
+// This used to call the YouTube Data API directly with VITE_YOUTUBE_API_KEYS.
+// Vite inlines any VITE_* value into the shipped bundle, so those keys were
+// readable by anyone who opened the JS — and no amount of client-side code can
+// hide a key the browser has to use. Searching server-side means no key ever
+// reaches a visitor. The resolver scrapes YouTube's own search page, so there
+// is no key involved at all and no quota to exhaust.
+const RESOLVER_URL: string =
+    (import.meta as any).env?.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
 
 // Global throttle to prevent spamming Google APIs too hard
 let lastSearchTime = 0;
@@ -12,10 +20,9 @@ function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-let currentKeyIndex = 0;
-let failedKeys = new Set<number>();
-let allKeysExhaustedUntil = 0;
-const ALL_KEYS_COOLDOWN_MS = 1000 * 60 * 60; // 1 hour
+// Back-off after the resolver fails (it's a phone — it can be offline).
+let searchUnavailableUntil = 0;
+const SEARCH_COOLDOWN_MS = 1000 * 60 * 5; // 5 min
 
 // v3 = new scoring-based selection (invalidates old position-based cache entries)
 const CACHE_KEY = 'Pstream-youtube-cache-v3';
@@ -45,7 +52,6 @@ function saveCache() {
 // In-flight dedup: if two hovers for the same title fire at once, only one API call is made.
 const inFlight = new Map<string, Promise<string[]>>();
 
-const YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,27 +72,9 @@ interface YTCandidate {
     duration?: number;
 }
 
-// ─── Key Rotation ─────────────────────────────────────────────────────────────
-
-function rotateKey(): boolean {
-    failedKeys.add(currentKeyIndex);
-    for (let i = 0; i < YOUTUBE_API_KEYS.length; i++) {
-        const nextIndex = (currentKeyIndex + 1 + i) % YOUTUBE_API_KEYS.length;
-        if (!failedKeys.has(nextIndex)) {
-            currentKeyIndex = nextIndex;
-            console.log('[YouTubeService] Rotated to key index:', currentKeyIndex);
-            return true;
-        }
-    }
-    console.warn('[YouTubeService] All keys exhausted!');
-    allKeysExhaustedUntil = Date.now() + ALL_KEYS_COOLDOWN_MS;
-    return false;
-}
-
+/** Clears the search back-off (kept for API compatibility with callers). */
 export function resetKeys() {
-    failedKeys.clear();
-    currentKeyIndex = 0;
-    allKeysExhaustedUntil = 0;
+    searchUnavailableUntil = 0;
 }
 
 // ─── Query Building ───────────────────────────────────────────────────────────
@@ -316,48 +304,32 @@ function scoreCandidate(options: SearchOptions, candidate: YTCandidate): number 
  */
 async function executeSearch(query: string, maxResults: number): Promise<YTCandidate[]> {
 
-    if (allKeysExhaustedUntil > 0 && Date.now() >= allKeysExhaustedUntil) {
-        // Cooldown window elapsed, allow keys to be retried (daily quotas may have reset).
+    if (searchUnavailableUntil > 0 && Date.now() >= searchUnavailableUntil) {
         resetKeys();
     }
+    // Resolver recently unreachable — skip the request until the cooldown ends
+    // so browsing doesn't stall on a dead endpoint for every card.
+    if (Date.now() < searchUnavailableUntil) return [];
 
-    const key = YOUTUBE_API_KEYS[currentKeyIndex];
+    try {
+        const response = await axios.get(`${RESOLVER_URL}/api/youtube/search`, {
+            params: { q: query, maxResults },
+            timeout: 12000,
+        });
 
-    if (key && Date.now() >= allKeysExhaustedUntil) {
-        try {
-            const response = await axios.get(YOUTUBE_SEARCH_URL, {
-                params: {
-                    part: 'snippet',
-                    q: query,
-                    key,
-                    type: 'video',
-                    maxResults,
-                    relevanceLanguage: 'en',
-                    videoEmbeddable: 'true',
-                    videoDefinition: 'high',
-                }
-            });
-
-            if (response.data.items?.length > 0) {
-                return response.data.items.map((item: any): YTCandidate => ({
-                    videoId: item.id.videoId,
-                    title: item.snippet?.title || '',
-                    channelTitle: item.snippet?.channelTitle || '',
-                }));
-            }
-        } catch (error: any) {
-            const status = error.response?.status;
-            const reason = error.response?.data?.error?.message || error.message;
-
-            if (status === 403 || status === 429) {
-                console.warn(`[YouTubeService] Key ${currentKeyIndex} failed (${status}): ${reason}. Rotating...`);
-                if (rotateKey()) {
-                    return executeSearch(query, maxResults);
-                }
-            } else {
-                console.error(`[YouTubeService] API Error: ${reason}`);
-            }
+        const results = response.data?.results;
+        if (Array.isArray(results) && results.length > 0) {
+            return results.map((item: any): YTCandidate => ({
+                videoId: item.videoId,
+                title: item.title || '',
+                channelTitle: item.channelTitle || '',
+            }));
         }
+    } catch (error: any) {
+        // The resolver runs on a phone, so being offline is a normal state, not
+        // an exceptional one. Back off quietly; trailers are non-essential.
+        console.warn(`[YouTubeService] Trailer search unavailable: ${error?.message || error}`);
+        searchUnavailableUntil = Date.now() + SEARCH_COOLDOWN_MS;
     }
 
     return [];
