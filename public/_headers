@@ -1,0 +1,14 @@
+/*
+  # Clickjacking: stop the site being framed by anyone else.
+  X-Frame-Options: SAMEORIGIN
+  # Force HTTPS for 2 years (site is already HTTPS-only via Cloudflare).
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # Drop access to hardware APIs the app never uses.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), usb=(), payment=()
+
+# Never let source maps be served, even if one is ever emitted by mistake.
+/*.map
+  X-Robots-Tag: noindex
+  Cache-Control: no-store

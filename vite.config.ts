@@ -45,6 +45,13 @@ export default defineConfig({
   preview: {
     headers: coopCoepHeaders,
   },
+  // Strip chatty logs from production. They were shipping to every visitor's
+  // console — including resolved stream URLs (which carry provider tokens) and
+  // internal provider/rotation details. console.warn and console.error are kept
+  // so genuine failures are still reportable.
+  esbuild: {
+    pure: ['console.log', 'console.info', 'console.debug'],
+  },
   build: {
     outDir: 'dist',
     // Source maps embed `sourcesContent` — the full original TypeScript, with
