@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import App from './App';
 import BootIntro from './components/intro/BootIntro';
 import { GlobalProvider } from './context/GlobalContext';
@@ -24,19 +25,25 @@ if (!rootElement) {
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
-  <TitleProvider>
-    <HeroColorProvider>
-    <GlobalProvider>
-      <ErrorBoundary>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <App />
-          {/* App-open ident (mobile only) — covers cold-boot loading, then fades */}
-          <BootIntro />
-        </BrowserRouter>
-      </ErrorBoundary>
-    </GlobalProvider>
-    </HeroColorProvider>
-  </TitleProvider>
+  // reducedMotion="user" makes every framer-motion animation follow the OS
+  // "reduce motion" setting: transform/layout movement is dropped while opacity
+  // fades are kept, so the UI still reads as responsive without the motion that
+  // triggers vestibular discomfort. CSS animations are handled in index.css.
+  <MotionConfig reducedMotion="user">
+    <TitleProvider>
+      <HeroColorProvider>
+      <GlobalProvider>
+        <ErrorBoundary>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <App />
+            {/* App-open ident (mobile only) — covers cold-boot loading, then fades */}
+            <BootIntro />
+          </BrowserRouter>
+        </ErrorBoundary>
+      </GlobalProvider>
+      </HeroColorProvider>
+    </TitleProvider>
+  </MotionConfig>
 );
 
 // Register Service Worker for Media Background Interceptor

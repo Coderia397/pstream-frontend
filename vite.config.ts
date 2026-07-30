@@ -54,6 +54,22 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    // Split the big, rarely-changing vendors out of the app bundle. Same total
+    // bytes, but they download in parallel and — because their hash only
+    // changes when the dependency itself changes — stay cached across app
+    // deploys instead of being re-fetched every release. Player-only libs
+    // (hls.js) already live in the lazy CinemaPage chunk.
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-i18n': ['i18next', 'react-i18next', 'iso-639-1'],
+          'vendor-icons': ['@phosphor-icons/react'],
+        },
+      },
+    },
     // Source maps embed `sourcesContent` — the full original TypeScript, with
     // comments — and Vite appends a //# sourceMappingURL comment so anyone can
     // fetch it. With this on, /assets/*.js.map served 102 of our own source

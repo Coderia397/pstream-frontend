@@ -736,6 +736,9 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
                             onClick={(e) => { e.stopPropagation(); onToggleFit(); }}
                             className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95"
                             style={{ minHeight: 36 }}
+                            // The visible text is just "FIT"/"FILL", which reads as an
+                            // unexplained state rather than an action to a screen reader.
+                            aria-label={videoFit === 'cover' ? t('player.fit') : t('player.fill')}
                         >
                             <CropIcon size={18} weight="bold" />
                             <span className="text-[11px] font-bold tracking-widest uppercase">{videoFit === 'cover' ? t('player.fill') : t('player.fit')}</span>

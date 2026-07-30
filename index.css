@@ -517,3 +517,20 @@ button,
 .animate-seek-rotate-right {
   animation: seek-rotate-right 0.45s ease-in-out;
 }
+/* ── Reduced motion ───────────────────────────────────────────────────────────
+   Honour the OS "reduce motion" setting for CSS animations and transitions.
+   Durations are collapsed to ~0 rather than set to `none` on purpose: any code
+   waiting on transitionend/animationend still fires, so nothing hangs — the
+   motion just becomes instant. framer-motion is handled separately via
+   <MotionConfig reducedMotion="user"> in index.tsx, since its animations are
+   JS-driven and unaffected by CSS. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

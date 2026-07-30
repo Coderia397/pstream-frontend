@@ -171,10 +171,15 @@ const CategorySubNav: React.FC<CategorySubNavProps> = ({
             {/* View Mode Toggle */}
             {onViewModeChange && (
                 <div className="flex items-center bg-[#1a1a1a] rounded-full border border-white/10 p-0.5">
+                    {/* Icon-only toggles: `title` alone is an unreliable accessible
+                        name, and without aria-pressed a screen reader can't tell
+                        which view is currently active. */}
                     <button
                         onClick={() => onViewModeChange('row')}
                         className={`p-1.5 rounded-full transition-all duration-200 ${viewMode === 'row' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'}`}
                         title={t('common.rowView', { defaultValue: 'Row view' })}
+                        aria-label={t('common.rowView', { defaultValue: 'Row view' })}
+                        aria-pressed={viewMode === 'row'}
                     >
                         <RowsIcon size={16} weight="bold" />
                     </button>
@@ -182,6 +187,8 @@ const CategorySubNav: React.FC<CategorySubNavProps> = ({
                         onClick={() => onViewModeChange('grid')}
                         className={`p-1.5 rounded-full transition-all duration-200 ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'}`}
                         title={t('common.gridView', { defaultValue: 'Grid view' })}
+                        aria-label={t('common.gridView', { defaultValue: 'Grid view' })}
+                        aria-pressed={viewMode === 'grid'}
                     >
                         <SquaresFourIcon size={16} weight="bold" />
                     </button>
