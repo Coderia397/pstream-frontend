@@ -80,7 +80,6 @@ interface VideoPlayerControlsProps {
     setSeekFlash?: React.Dispatch<React.SetStateAction<{ side: 'left' | 'right'; ts: number } | null>>;
     skipSegments?: SkipSegment[];
     onSkipSegment?: (segment: SkipSegment) => void;
-    isEmbedFallback?: boolean;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -498,7 +497,6 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
     ppRippleTrigger = 0, setPpRippleTrigger,
     seekFlash = null, setSeekFlash,
     skipSegments = [], onSkipSegment,
-    isEmbedFallback = false,
 }) => {
     const { t } = useTranslation();
     const isMobile = useIsMobile();
@@ -677,7 +675,7 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
 
             {seekFlash && <SeekFlash side={seekFlash.side} seconds={10} ts={seekFlash.ts} />}
 
-            {isPanelOpen && !isEmbedFallback && (
+            {isPanelOpen && (
                 <div
                     className="absolute inset-0 z-10 cursor-default"
                     onClick={(e) => {
@@ -731,7 +729,7 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
                     </div>
 
                     <div className="flex-1" />
-                    {onToggleFit && !isEmbedFallback && (
+                    {onToggleFit && (
                         <button
                             onClick={(e) => { e.stopPropagation(); onToggleFit(); }}
                             className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all active:scale-95"
@@ -824,7 +822,7 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
                     </div>
 
                     {/* Fit toggle — only when UI is visible */}
-                    {onToggleFit && !isEmbedFallback && (
+                    {onToggleFit && (
                         <div className={`absolute top-0 right-0 z-40 px-8 pt-8 transition-opacity duration-300 ${showUI ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
                             <button
                                 onClick={(e) => { e.stopPropagation(); onToggleFit(); }}
