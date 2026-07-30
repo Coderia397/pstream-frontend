@@ -9,7 +9,7 @@
  * - Successes: reported after 10s of uninterrupted playback
  */
 
-const BACKEND = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://ibrahimar397-pstream-giga.hf.space';
+const BACKEND = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
 
 // ─── Local client-side health store ──────────────────────────────────────────
 interface ProviderRecord {

@@ -24,7 +24,7 @@ import VideoPlayerSettingsTouch from './VideoPlayerSettingsTouch';
 import { ArrowLeftIcon } from '@phosphor-icons/react';
 
 
-const GIGA_BACKEND_URL = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://ibrahimar397-pstream-giga.hf.space';
+const GIGA_BACKEND_URL = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
 const FORCE_PROXY_HOST_PATTERNS: RegExp[] = [];
 const RETRY_BASE_DELAY_MS = 1200;
 const RETRY_MAX_DELAY_MS = 5000;

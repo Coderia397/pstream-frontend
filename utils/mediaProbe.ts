@@ -6,7 +6,7 @@
  */
 
 const GIGA_BACKEND_URL = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GIGA_BACKEND_URL)
-    || 'https://ibrahimar397-pstream-giga.hf.space';
+    || 'https://resolver.pstream.watch';
 
 export interface InternalTrack {
     id: number;

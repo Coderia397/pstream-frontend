@@ -27,7 +27,7 @@ const LINKS = {
   tmdbDashboard: 'https://www.themoviedb.org/settings/api',
 };
 
-const GIGA_URL    = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://ibrahimar397-pstream-giga.hf.space';
+const GIGA_URL    = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
 const NEWPIPE_URL = import.meta.env.VITE_NEWPIPE_URL      || '';
 
 // ─── PIN Gate ─────────────────────────────────────────────────────────────────

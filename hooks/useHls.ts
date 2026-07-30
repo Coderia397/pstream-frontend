@@ -197,7 +197,7 @@ export const useHls = (videoRef: React.RefObject<HTMLVideoElement>, options: Use
             // noProxy for the manifest (browser fetches directly) but proxy each segment
             // to get CORS headers added server-side.
             const referer = streamReferer;
-            const gigaBase = (import.meta as any).env?.VITE_GIGA_BACKEND_URL || 'https://ibrahimar397-pstream-giga.hf.space';
+            const gigaBase = (import.meta as any).env?.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
             const isBackendProxyStream = !!streamUrl && streamUrl.includes('/proxy/stream?url=');
 
             // VaPlayer CDN patterns that need proxy-based CORS injection for segments
