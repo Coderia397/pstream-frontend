@@ -550,7 +550,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     useTouchGestures(containerRef, {
         onSingleTap: () => {
             lastTouchTimeRef.current = Date.now();
-            toggleUI(activePanel !== 'none');
+
+            if (activePanel !== 'none') {
+                setActivePanel('none');
+                return;
+            }
+
+            if (!showUIRef.current) {
+                showControls();
+            } else {
+                if (videoRef.current) {
+                    if (videoRef.current.paused) {
+                        videoRef.current.muted = false;
+                        videoRef.current.play().catch(() => {});
+                    } else {
+                        videoRef.current.pause();
+                    }
+                }
+                setPpRippleTrigger(t => t + 1);
+                showControls();
+            }
         },
     });
 
@@ -1243,27 +1262,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                     }
                 }
 
-                const isBackgroundClick = target === containerRef.current ||
-                    target === videoRef.current ||
-                    target.classList.contains('embed-shield');
+                const isInteractive = target.closest('button, input, select, textarea, .settings-panel, .settings-panel-touch, #video-controls-container, .no-gesture');
+                if (isInteractive) {
+                    showControls();
+                    return;
+                }
 
-                if (isBackgroundClick) {
-                    if (Date.now() - lastTouchTimeRef.current < 900) return;
+                if (Date.now() - lastTouchTimeRef.current < 900) return;
 
-                    if (showUIRef.current) {
-                        if (videoRef.current) {
-                            if (videoRef.current.paused) {
-                                videoRef.current.muted = false;
-                                videoRef.current.play();
-                            } else {
-                                videoRef.current.pause();
-                            }
-                        }
-                        setPpRippleTrigger(t => t + 1);
-                    }
-
+                if (!showUIRef.current) {
                     showControls();
                 } else {
+                    if (videoRef.current) {
+                        if (videoRef.current.paused) {
+                            videoRef.current.muted = false;
+                            videoRef.current.play().catch(() => {});
+                        } else {
+                            videoRef.current.pause();
+                        }
+                    }
+                    setPpRippleTrigger(t => t + 1);
                     showControls();
                 }
             }}
@@ -1282,7 +1300,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                 playsInline
                 autoPlay
                 preload="auto"
-                onClick={(e) => e.stopPropagation()}
             />
 
 
