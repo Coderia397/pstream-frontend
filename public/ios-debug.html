@@ -1,0 +1,116 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pstream iOS diagnostics</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; padding:14px; background:#0b0b0b; color:#eee;
+         font:15px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  h1 { font-size:17px; margin:0 0 4px; }
+  .sub { color:#888; font-size:12px; margin-bottom:14px; }
+  section { border:1px solid #262626; border-radius:8px; margin-bottom:12px; overflow:hidden; }
+  h2 { font-size:13px; margin:0; padding:8px 10px; background:#161616; color:#9ad; letter-spacing:.04em; }
+  .row { display:flex; justify-content:space-between; gap:10px;
+         padding:6px 10px; border-top:1px solid #1c1c1c; }
+  .k { color:#aaa; }
+  .v { font-weight:700; text-align:right; word-break:break-all; }
+  .yes { color:#4ade80; } .no { color:#f87171; } .warn { color:#fbbf24; }
+  .verdict { padding:12px; border-radius:8px; margin-bottom:14px; font-weight:700; }
+  .verdict.hls  { background:#3b1d1d; border:1px solid #7f1d1d; color:#fca5a5; }
+  .verdict.nat  { background:#14301c; border:1px solid #166534; color:#86efac; }
+  #live { color:#fbbf24; }
+</style>
+
+<h1>pstream — iOS diagnostics</h1>
+<div class="sub">Screenshot this whole page and send it back. Rotate to landscape and screenshot again.</div>
+
+<div id="verdict" class="verdict">running…</div>
+
+<section><h2>WHICH PLAYBACK PATH RUNS</h2><div id="media"></div></section>
+<section><h2>FULLSCREEN CAPABILITY</h2><div id="fs"></div></section>
+<section><h2>VIEWPORT (watch this while scrolling)</h2><div id="vp"></div></section>
+<section><h2>DEVICE</h2><div id="dev"></div></section>
+
+<script>
+const put = (host, k, v, cls) => {
+  const d = document.createElement('div'); d.className = 'row';
+  d.innerHTML = '<span class="k"></span><span class="v"></span>';
+  d.children[0].textContent = k;
+  d.children[1].textContent = String(v);
+  if (cls) d.children[1].classList.add(cls);
+  document.getElementById(host).appendChild(d);
+};
+const yn = b => b ? 'yes' : 'no';
+
+// ── Media stack ─────────────────────────────────────────────────────────────
+// Replicates hls.js's isSupported() so we learn which branch the player takes
+// WITHOUT needing to load hls.js itself.
+const hasMMS  = typeof self.ManagedMediaSource !== 'undefined';
+const hasMSE  = typeof self.MediaSource !== 'undefined';
+const hasSB   = typeof self.SourceBuffer !== 'undefined';
+const chosen  = hasMMS ? 'ManagedMediaSource' : (hasMSE ? 'MediaSource' : 'none');
+const hlsWould = (hasMMS || hasMSE) && hasSB;
+
+const v = document.createElement('video');
+const nativeHls = v.canPlayType('application/vnd.apple.mpegurl');
+
+put('media', 'ManagedMediaSource', yn(hasMMS), hasMMS ? 'warn' : 'no');
+put('media', 'MediaSource',        yn(hasMSE));
+put('media', 'SourceBuffer',       yn(hasSB));
+put('media', 'MSE hls.js picks',   chosen);
+put('media', 'canPlayType(m3u8)',  nativeHls || '(empty)', nativeHls ? 'yes' : 'no');
+put('media', 'Hls.isSupported()',  yn(hlsWould), hlsWould ? 'warn' : 'yes');
+put('media', '→ BRANCH TAKEN',     hlsWould ? 'hls.js  (MSE/MMS)' : 'native HLS', hlsWould ? 'warn' : 'yes');
+
+// ── Fullscreen ──────────────────────────────────────────────────────────────
+const div = document.createElement('div');
+const divFs  = !!(div.requestFullscreen || div.webkitRequestFullscreen);
+const vidFs  = !!(v.webkitEnterFullscreen);
+put('fs', 'div.requestFullscreen',       yn(!!div.requestFullscreen), div.requestFullscreen ? 'yes' : 'no');
+put('fs', 'div.webkitRequestFullscreen', yn(!!div.webkitRequestFullscreen));
+put('fs', 'document.fullscreenEnabled',  yn(!!document.fullscreenEnabled));
+put('fs', 'video.webkitEnterFullscreen', yn(vidFs), vidFs ? 'yes' : 'no');
+put('fs', '→ CONTAINER FULLSCREEN',      divFs ? 'REAL' : 'pseudo only', divFs ? 'yes' : 'no');
+
+// ── Viewport — the iOS URL-bar resize problem ───────────────────────────────
+function paintViewport() {
+  const host = document.getElementById('vp');
+  host.innerHTML = '';
+  const vv = window.visualViewport;
+  put('vp', 'window.inner (WxH)',  window.innerWidth + ' x ' + window.innerHeight);
+  put('vp', 'screen (WxH)',        screen.width + ' x ' + screen.height);
+  put('vp', 'visualViewport H',    vv ? Math.round(vv.height) : 'n/a');
+  put('vp', 'devicePixelRatio',    window.devicePixelRatio);
+  put('vp', 'orientation',         (screen.orientation && screen.orientation.type) || 'n/a');
+  const gap = vv ? Math.round(Math.abs(vv.height - window.innerHeight)) : 0;
+  put('vp', 'inner vs visual gap', gap + 'px', gap > 4 ? 'warn' : 'yes');
+  const cs = getComputedStyle(document.documentElement);
+  put('vp', 'safe-area top/bottom',
+      (cs.getPropertyValue('--sat') || 'env n/a') + ' / ' + (cs.getPropertyValue('--sab') || ''));
+  put('vp', 'updated', new Date().toLocaleTimeString());
+}
+paintViewport();
+window.visualViewport && window.visualViewport.addEventListener('resize', paintViewport);
+window.addEventListener('resize', paintViewport);
+window.addEventListener('orientationchange', () => setTimeout(paintViewport, 300));
+
+// ── Device ──────────────────────────────────────────────────────────────────
+put('dev', 'userAgent', navigator.userAgent);
+put('dev', 'platform', navigator.platform || 'n/a');
+put('dev', 'maxTouchPoints', navigator.maxTouchPoints);
+put('dev', 'screen.orientation.lock', typeof (screen.orientation||{}).lock === 'function' ? 'available' : 'MISSING');
+
+// ── Verdict ─────────────────────────────────────────────────────────────────
+const vd = document.getElementById('verdict');
+if (hlsWould && nativeHls) {
+  vd.className = 'verdict hls';
+  vd.textContent = '⚠ hls.js is taking over even though this device supports NATIVE HLS. '
+                 + 'This is the suspected cause of poor playback.';
+} else if (!hlsWould && nativeHls) {
+  vd.className = 'verdict nat';
+  vd.textContent = '✔ Using native HLS — the good path.';
+} else {
+  vd.className = 'verdict nat';
+  vd.textContent = 'Using hls.js; no native HLS on this device (expected on Android/desktop).';
+}
+</script>
