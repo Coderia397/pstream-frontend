@@ -219,7 +219,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         return () => clearTimeout(timer);
     }, [isPlaying, showUI]);
 
-    const { isFullscreen, isPseudoFullscreen, toggleFullscreen } = useFullscreen(containerRef, isMobile);
+    const { isFullscreen, isPseudoFullscreen, toggleFullscreen, upgradeNativeFullscreen } = useFullscreen(containerRef, isMobile);
     const [isVideoReady, setIsVideoReady] = useState(false); 
     const [videoFit, setVideoFit] = useState<'contain' | 'cover'>('contain');
     const hasPlayedOnceRef = useRef(false); 
@@ -564,6 +564,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     useTouchGestures(containerRef, {
         onSingleTap: () => {
             lastTouchTimeRef.current = Date.now();
+            upgradeNativeFullscreen();
 
             if (activePanel !== 'none') {
                 setActivePanel('none');

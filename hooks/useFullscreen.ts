@@ -25,6 +25,7 @@ export interface FullscreenControls {
     isFullscreen: boolean;
     isPseudoFullscreen: boolean;
     toggleFullscreen: () => void;
+    upgradeNativeFullscreen: () => void;
 }
 
 export function useFullscreen(
@@ -37,26 +38,34 @@ export function useFullscreen(
 
     // One entry point. Real fullscreen where the container supports it (with a
     // landscape lock on mobile); pseudo-fullscreen everywhere else (iOS) so the
-    // custom controls + subtitle overlay survive. isFullscreen for real FS is
-    // driven by the fullscreenchange handler below — we don't set it by hand,
-    // which is what caused the old iPhone double-state bug.
+    // custom controls + subtitle overlay survive.
     const enterFullscreen = useCallback(() => {
         const el = containerRef.current as any;
         if (!el) return;
         if (el.requestFullscreen) {
             el.requestFullscreen()
-                .then(() => { if (isMobile) lockLandscape(); })
+                .then(() => {
+                    setIsPseudoFullscreen(false);
+                    if (isMobile) lockLandscape();
+                })
                 .catch(() => setIsPseudoFullscreen(true)); // denied → fall back to pseudo
         } else if (el.webkitRequestFullscreen) {
             el.webkitRequestFullscreen();
+            setIsPseudoFullscreen(false);
             if (isMobile) lockLandscape();
         } else {
-            // iOS / no element fullscreen → pseudo-fullscreen keeps our UI.
-            // (Never videoRef.webkitEnterFullscreen — that hands off to the
-            // native player and drops our controls + subtitles.)
             setIsPseudoFullscreen(true);
         }
     }, [containerRef, isMobile]);
+
+    // Allows upgrading from pseudo-fullscreen to native container fullscreen on the user's next tap
+    const upgradeNativeFullscreen = useCallback(() => {
+        const el = containerRef.current as any;
+        if (!el || isFullscreen) return;
+        if (containerSupportsFullscreen(el)) {
+            enterFullscreen();
+        }
+    }, [containerRef, isFullscreen, enterFullscreen]);
 
     const exitFullscreen = useCallback(() => {
         const doc = document as any;
@@ -119,5 +128,5 @@ export function useFullscreen(
         };
     }, []);
 
-    return { isFullscreen, isPseudoFullscreen, toggleFullscreen };
+    return { isFullscreen, isPseudoFullscreen, toggleFullscreen, upgradeNativeFullscreen };
 }
