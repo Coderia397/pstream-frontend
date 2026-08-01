@@ -76,19 +76,26 @@ export function useFullscreen(
         else enterFullscreen();
     }, [isFullscreen, isPseudoFullscreen, enterFullscreen, exitFullscreen]);
 
-    // Auto-fullscreen shortly after mount on mobile. No user gesture here, so
-    // real fullscreen would be rejected — only the gesture-free pseudo path
-    // (iOS) is valid. On Android the fullscreen button (a real tap) handles it.
+    // Auto-fullscreen immediately on mount on mobile (iOS & Android).
     useEffect(() => {
         if (!isMobile) return;
         const timer = setTimeout(() => {
             if (hasAutoFullscreenedRef.current) return;
             hasAutoFullscreenedRef.current = true;
             const el = containerRef.current as any;
-            if (el && !containerSupportsFullscreen(el)) setIsPseudoFullscreen(true);
-        }, 150);
-        return () => clearTimeout(timer);
-    }, [isMobile, containerRef]);
+            if (el) {
+                if (!containerSupportsFullscreen(el)) {
+                    setIsPseudoFullscreen(true);
+                } else {
+                    enterFullscreen();
+                }
+            }
+        }, 50);
+        return () => {
+            clearTimeout(timer);
+            unlockOrientation();
+        };
+    }, [isMobile, containerRef, enterFullscreen]);
 
     // Keep isFullscreen in sync with real fullscreen changes (incl. the OS
     // dropping us out via a back/swipe gesture), and release the landscape lock

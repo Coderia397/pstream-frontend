@@ -317,6 +317,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         console.info(`[VideoPlayer] Progress saved immediately: ${time}s / ${dur}s (forceCloud: ${!!forceCloudSync})`);
     }, [addToHistory, updateEpisodeProgress, updateVideoState]);
 
+    // App Switching / Tab Inactive: Auto-pause and save current timestamp to watch history
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                if (videoRef.current && !videoRef.current.paused) {
+                    videoRef.current.pause();
+                    saveProgressImmediately(true);
+                }
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, [saveProgressImmediately]);
+
     useEffect(() => {
         retryCountRef.current = 0;
         setRetryCount(0);
@@ -1239,7 +1253,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         <div
             ref={containerRef}
             className={`fixed z-[20000] flex flex-col font-sans select-none overflow-hidden bg-black ${isPseudoFullscreen ? 'inset-0' : (isFullscreen ? '' : 'inset-0')}`}
-            style={isPseudoFullscreen ? { position: 'fixed', zIndex: 20001 } : {}}
+            style={{
+                ...(isPseudoFullscreen ? { position: 'fixed', zIndex: 20001 } : {}),
+                paddingTop: 'env(safe-area-inset-top, 0px)',
+                paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+                paddingLeft: 'env(safe-area-inset-left, 0px)',
+                paddingRight: 'env(safe-area-inset-right, 0px)',
+            }}
             onMouseMove={showControls}
             onClick={(e) => {
                 const target = e.target as HTMLElement;
@@ -1297,8 +1317,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full bg-black"
-                style={{ objectFit: videoFit }}
+                style={{ objectFit: 'contain' }}
                 playsInline
+                {...{ 'webkit-playsinline': 'true' } as any}
                 autoPlay
                 preload="auto"
             />
