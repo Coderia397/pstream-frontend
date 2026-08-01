@@ -559,16 +559,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             if (!showUIRef.current) {
                 showControls();
             } else {
-                if (videoRef.current) {
-                    if (videoRef.current.paused) {
-                        videoRef.current.muted = false;
-                        videoRef.current.play().catch(() => {});
-                    } else {
-                        videoRef.current.pause();
-                    }
-                }
-                setPpRippleTrigger(t => t + 1);
-                showControls();
+                setShowUI(false);
+                if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
             }
         },
     });
@@ -1270,19 +1262,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
 
                 if (Date.now() - lastTouchTimeRef.current < 900) return;
 
-                if (!showUIRef.current) {
-                    showControls();
-                } else {
-                    if (videoRef.current) {
-                        if (videoRef.current.paused) {
-                            videoRef.current.muted = false;
-                            videoRef.current.play().catch(() => {});
-                        } else {
-                            videoRef.current.pause();
-                        }
+                if (isMobile) {
+                    if (!showUIRef.current) {
+                        showControls();
+                    } else {
+                        setShowUI(false);
+                        if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
                     }
-                    setPpRippleTrigger(t => t + 1);
-                    showControls();
+                } else {
+                    if (!showUIRef.current) {
+                        showControls();
+                    } else {
+                        if (videoRef.current) {
+                            if (videoRef.current.paused) {
+                                videoRef.current.muted = false;
+                                videoRef.current.play().catch(() => {});
+                            } else {
+                                videoRef.current.pause();
+                            }
+                        }
+                        setPpRippleTrigger(t => t + 1);
+                        showControls();
+                    }
                 }
             }}
             onTouchStart={() => { lastTouchTimeRef.current = Date.now(); }}
