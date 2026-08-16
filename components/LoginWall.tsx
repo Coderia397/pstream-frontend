@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../services/supabaseClient';
 import { validateSignupEmail } from '../utils/emailValidation';
 import Turnstile, { turnstileEnabled } from './Turnstile';
+import pstreamLogo from '../assets/logos/pstream-logo.svg';
 
 export const LoginWall: React.FC = () => {
   const { t } = useTranslation();
@@ -70,7 +71,7 @@ export const LoginWall: React.FC = () => {
       
       <div className="relative z-10 bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-2xl w-full max-w-md shadow-2xl">
         <div className="text-center mb-8">
-          <img src="/assets/logos/pstream-logo.svg" alt="P-Stream" className="h-8 mx-auto mb-6" />
+          <img src={pstreamLogo} alt="pstream" className="h-8 mx-auto mb-6" />
           <h2 className="text-3xl font-black tracking-tight">{isLogin ? t('auth.welcome') : t('auth.createAccount')}</h2>
           <p className="text-white/50 mt-2 text-sm">{t('auth.loginRequired', { defaultValue: 'You must be logged in to access the library.' })}</p>
         </div>
