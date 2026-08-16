@@ -40,7 +40,7 @@ const extractAccent = (src: string): Promise<string> =>
             try {
                 const canvas = document.createElement('canvas');
                 canvas.width = 10; canvas.height = 10;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 if (!ctx) return resolve('rgba(20,20,20,0)');
                 ctx.drawImage(img, 0, 0, 10, 10);
                 const d = ctx.getImageData(0, 0, 10, 10).data;

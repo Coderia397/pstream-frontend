@@ -23,7 +23,7 @@ export function extractAmbientColor(imageUrl: string): Promise<AmbientRGB | null
     img.onload = () => {
       try {
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (!ctx) return resolve(null);
 
         canvas.width = 16;

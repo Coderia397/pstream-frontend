@@ -291,7 +291,7 @@ const MobileHero: React.FC<MobileHeroProps> = ({ movie, logoUrl, onSelect, onPla
       if (!isMounted) return;
       try {
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (!ctx) return;
 
         // Sample at 16x16 for richer color data

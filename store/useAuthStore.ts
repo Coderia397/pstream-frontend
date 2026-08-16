@@ -275,23 +275,9 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       const profiles = await profileStore.loadProfiles();
       const activeProfileId = useProfileStore.getState().activeProfileId;
 
-      // Claim legacy rows (written before the profiles migration, or by an old
-      // client build) for the account's first profile so no data is stranded.
-      // Fire-and-forget; harmless if the migration isn't applied yet.
-      if (profiles.length > 0) {
-        const defaultId = profiles[0].id;
-        for (const tbl of ['watch_history', 'user_ratings', 'user_list']) {
-          supabase.from(tbl)
-            .update({ profile_id: defaultId })
-            .eq('user_id', user.id)
-            .is('profile_id', null)
-            .then(({ error }) => {
-              if (error && error.code !== '42703') {
-                console.warn(`[Sync] Legacy ${tbl} adoption skipped:`, error.message);
-              }
-            });
-        }
-      }
+      // Legacy rows (profile_id is null) are still queried natively by the active profile,
+      // so no data is stranded. We skip background adoption to prevent 409 Conflict errors
+      // that occur when a user already has an active watch history for that same title.
 
       // Helper: profile-scoped select with graceful fallback for databases
       // where the migration hasn't been applied yet (no profile_id column).
