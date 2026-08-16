@@ -480,41 +480,58 @@ class HeroEngineService {
           allowPopular = item.allowPopular ?? false;
         }
 
-        // Append page to URL (pages 2–5 skip the most-popular top-20)
-        const pagedUrl = url.includes('?')
-          ? `${url}&page=${tmdbPage}`
-          : `${url}?page=${tmdbPage}`;
+        const fetchPoolForPage = async (pageToFetch: number) => {
+          const pagedUrl = url.includes('?')
+            ? `${url}&page=${pageToFetch}`
+            : `${url}?page=${pageToFetch}`;
 
-        console.log(`[HeroEngine v4] Curating "${slotLabel}" (${slot}, page ${tmdbPage}) for ${cacheKey}…`);
+          console.log(`[HeroEngine v4] Curating "${slotLabel}" (${slot}, page ${pageToFetch}) for ${cacheKey}…`);
+          const response = await tmdb.get<TMDBResponse>(pagedUrl);
 
-        const response = await tmdb.get<TMDBResponse>(pagedUrl);
+          // v4 quality + popularity filter
+          const VOTE_FLOOR   = 80;
+          const VOTE_CEILING = allowPopular ? Infinity : 8000;
+          const AVG_FLOOR    = allowPopular ? 0         : 6.8;
 
-        // v4 quality + popularity filter
-        const VOTE_FLOOR   = 80;
-        const VOTE_CEILING = allowPopular ? Infinity : 8000;
-        const AVG_FLOOR    = allowPopular ? 0         : 6.8;
+          const kidsGate = (m: any) => !isGlobalKidsModeActive() || isKidsSafe(m);
 
-        const kidsGate = (m: any) => !isGlobalKidsModeActive() || isKidsSafe(m);
+          const results = (response.data.results || []).filter(
+            (m: any) =>
+              m.backdrop_path &&
+              m.vote_count  >= VOTE_FLOOR   &&
+              m.vote_count  <= VOTE_CEILING  &&
+              m.vote_average >= AVG_FLOOR    &&
+              !isBlacklisted(m, 'any') &&
+              kidsGate(m)
+          );
 
-        const results = (response.data.results || []).filter(
-          (m: any) =>
-            m.backdrop_path &&
-            m.vote_count  >= VOTE_FLOOR   &&
-            m.vote_count  <= VOTE_CEILING  &&
-            m.vote_average >= AVG_FLOOR    &&
-            !isBlacklisted(m, 'any') &&
-            kidsGate(m)
-        );
+          // Fallback: relax ceiling if niche filter was too tight
+          const fallbackResults = results.length < 3
+            ? (response.data.results || []).filter(
+                (m: any) => m.backdrop_path && m.vote_count >= VOTE_FLOOR && !isBlacklisted(m, 'any') && kidsGate(m)
+              )
+            : results;
 
-        // Fallback: relax ceiling if niche filter was too tight
-        const fallbackResults = results.length < 3
-          ? (response.data.results || []).filter(
-              (m: any) => m.backdrop_path && m.vote_count >= VOTE_FLOOR && !isBlacklisted(m, 'any') && kidsGate(m)
-            )
-          : results;
+          return fallbackResults.length > 0 ? fallbackResults : results;
+        };
 
-        const pool = fallbackResults.length > 0 ? fallbackResults : results;
-        if (pool.length === 0) throw new Error(`No results for "${slotLabel}" (page ${tmdbPage})`);
+        let pool: any[] = [];
+        try {
+          pool = await fetchPoolForPage(tmdbPage);
+        } catch (e) {
+          console.warn(`[HeroEngine v4] Error on page ${tmdbPage} for ${slotLabel}, falling back to page 1`, e);
+        }
+
+        if (pool.length === 0 && tmdbPage > 1) {
+          console.warn(`[HeroEngine v4] No results on page ${tmdbPage} for ${slotLabel}, falling back to page 1`);
+          try {
+            pool = await fetchPoolForPage(1);
+          } catch (e) {
+            console.error(`[HeroEngine v4] Fallback to page 1 failed for ${slotLabel}`, e);
+          }
+        }
+
+        if (pool.length === 0) throw new Error(`No results for "${slotLabel}"`);
 
         // v4: use session salt to pick the starting candidate (not day hash)
         const startIdx = salt % pool.length;
