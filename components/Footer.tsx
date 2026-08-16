@@ -26,8 +26,10 @@ const Footer: React.FC = () => {
     { name: t('nav.listTitle', { defaultValue: 'My List' }), path: '/list' },
     { name: t('nav.settingsTitle', { defaultValue: 'Settings' }), path: '/settings' },
     { name: t('footer.privacyPolicy', { defaultValue: 'Privacy Policy' }), path: '/privacy' },
+    { name: t('footer.cookiePolicy', { defaultValue: 'Cookie Policy' }), path: '/cookies' },
     { name: t('footer.cookiePreferences', { defaultValue: 'Cookie Preferences' }), action: () => setShowPrivacyModal(true) },
-    { name: t('footer.contactUs', { defaultValue: 'Contact Us' }), path: '#' }
+    { name: t('footer.termsOfService', { defaultValue: 'Terms of Service' }), path: '/terms' },
+    { name: t('footer.contactUs', { defaultValue: 'Contact Us' }), path: '/contact' }
   ];
 
   return (

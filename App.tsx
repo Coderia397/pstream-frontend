@@ -65,6 +65,10 @@ const BrowseGridPage      = lazy(() => import('./pages/BrowseGridPage'));
 const BrowseLanguagePage  = lazy(() => import('./pages/BrowseLanguagePage'));
 
 const PrivacyPage       = lazy(() => import('./pages/PrivacyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage').then(module => ({ default: module.TermsPage })));
+const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage').then(module => ({ default: module.CookiePolicyPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(module => ({ default: module.ContactPage })));
+const PasswordRecoveryWall = lazy(() => import('./components/PasswordRecoveryWall').then(module => ({ default: module.PasswordRecoveryWall })));
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'));
 
 // Prefetch nav pages + hero data during idle time
@@ -108,7 +112,7 @@ const App: React.FC = () => {
   const isMobileSearchActive = searchParams.get('search') === 'true';
   const { setPageTitle } = useTitle();
   const { t } = useTranslation();
-  const { isInitialized, user, initializeAuth } = useAuthStore();
+  const { isInitialized, user, initializeAuth, recoveryMode } = useAuthStore();
   const { updateProgress, getProgress } = useWatchStore();
   const { initializeCast } = useCastStore();
   const profilesLoaded = useProfileStore(s => s.isLoaded);
@@ -469,6 +473,14 @@ const App: React.FC = () => {
 
 
 
+  if (recoveryMode) {
+    return (
+      <Suspense fallback={PageFallback}>
+        <PasswordRecoveryWall />
+      </Suspense>
+    );
+  }
+
   if (!isInitialized) {
     return <div className="h-screen w-screen bg-black flex items-center justify-center"></div>;
   }
@@ -501,7 +513,10 @@ const App: React.FC = () => {
         <Route path="/settings/*" element={<SettingsPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
         <Route path="/browse/:rowKey" element={<BrowseGridPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/cookies" element={<CookiePolicyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<NotFoundPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
       </Routes>
     </Suspense>

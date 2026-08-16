@@ -267,7 +267,9 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const logout = useCallback(() => {
     signOut();
   }, [signOut]);
-  const deleteAccountData = useCallback(async () => { return true; }, []);
+  const deleteAccountData = useCallback(async () => { 
+    return await useAuthStore.getState().deleteAccount(); 
+  }, []);
   const importProfileData = useCallback(async (_data: any) => { return true; }, []);
 
   return (

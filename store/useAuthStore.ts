@@ -13,6 +13,9 @@ interface AuthStore {
   initializeAuth: () => void;
   syncFromCloud: () => Promise<void>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<boolean>;
+  recoveryMode: boolean;
+  setRecoveryMode: (active: boolean) => void;
 }
 
 let realtimeChannel: any = null;
@@ -208,6 +211,8 @@ const setupRealtimeSubscription = (userId: string) => {
 export const useAuthStore = create<AuthStore>()((set, get) => ({
   user: null,
   isInitialized: false,
+  recoveryMode: false,
+  setRecoveryMode: (active) => set({ recoveryMode: active }),
 
   initializeAuth: () => {
     // Check active session
@@ -223,6 +228,11 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
 
     // Listen for auth changes
     supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('[AuthStore] Auth state changed:', _event, session?.user?.id);
+      if (_event === 'PASSWORD_RECOVERY') {
+        get().setRecoveryMode(true);
+      }
+      
       const user = session?.user || null;
       const prevUser = get().user;
       set({ user });
@@ -421,6 +431,25 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
     teardownRealtimeSubscription();
     useProfileStore.getState().reset();
     await supabase.auth.signOut();
+  },
+
+  deleteAccount: async () => {
+    try {
+      const { error } = await supabase.rpc('delete_user');
+      if (error) {
+        console.error('Failed to delete account from backend:', error);
+        return false;
+      }
+      teardownRealtimeSubscription();
+      useProfileStore.getState().reset();
+      useWatchStore.getState().clearHistory();
+      useLibraryStore.getState().clearLibrary();
+      await supabase.auth.signOut();
+      return true;
+    } catch (err) {
+      console.error('Account deletion error:', err);
+      return false;
+    }
   }
 }));
 
