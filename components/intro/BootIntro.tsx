@@ -43,12 +43,15 @@ const BootIntroInner: React.FC = () => {
   const isInitialized = useAuthStore((s) => s.isInitialized);
   const [hasPlayed] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return !!sessionStorage.getItem('pstream_intro_played');
+    const lastPlayed = localStorage.getItem('pstream_intro_played_at');
+    if (!lastPlayed) return false;
+    const elapsed = Date.now() - parseInt(lastPlayed, 10);
+    return elapsed < 12 * 60 * 60 * 1000; // 12 hours
   });
 
   useEffect(() => {
     if (!hasPlayed && typeof window !== 'undefined') {
-      sessionStorage.setItem('pstream_intro_played', '1');
+      localStorage.setItem('pstream_intro_played_at', Date.now().toString());
     }
   }, [hasPlayed]);
 
