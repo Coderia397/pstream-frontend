@@ -156,6 +156,7 @@ export const useDynamicManifest = (
 
   const [rows, setRows] = useState<SmartRow[]>([]);
   const [computing, setComputing] = useState(true);
+  const [computedCacheKey, setComputedCacheKey] = useState<string>('');
 
   useEffect(() => {
     let active = true;
@@ -390,6 +391,7 @@ export const useDynamicManifest = (
 
     if (active) {
       setRows(finalManifest);
+      setComputedCacheKey(cacheKey);
       setComputing(false);
     }
   };
@@ -461,7 +463,7 @@ export const useDynamicManifest = (
 
 
   // isLoading is true when either the key hasn't been committed yet OR raw loading flag is set
-  const isLoading = computing || committedCacheKey !== cacheKey || rawLoading;
+  const isLoading = (computing && computedCacheKey !== cacheKey) || committedCacheKey !== cacheKey || rawLoading;
 
   useEffect(() => {
     clearSeenIds();
