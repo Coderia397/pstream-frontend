@@ -41,9 +41,20 @@ const BootIntro: React.FC = () => <BootIntroInner />;
 
 const BootIntroInner: React.FC = () => {
   const isInitialized = useAuthStore((s) => s.isInitialized);
+  const [hasPlayed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !!sessionStorage.getItem('pstream_intro_played');
+  });
+
+  useEffect(() => {
+    if (!hasPlayed && typeof window !== 'undefined') {
+      sessionStorage.setItem('pstream_intro_played', '1');
+    }
+  }, [hasPlayed]);
+
   const [phase, setPhase] = useState<'playing' | 'fading' | 'done'>('playing');
-  const [built, setBuilt] = useState(false);
-  const builtAtRef = useRef<number | null>(null);
+  const [built, setBuilt] = useState(hasPlayed);
+  const builtAtRef = useRef<number | null>(hasPlayed ? 0 : null);
 
   // bootReady: the session has resolved (fires signed-in or not).
   const bootReady = isInitialized;
@@ -58,20 +69,26 @@ const BootIntroInner: React.FC = () => {
 
   // Hard safety cap — force the fade even if bootReady never arrives.
   useEffect(() => {
+    if (hasPlayed) return; // Skip safety cap if we're instantly bypassing
     const id = setTimeout(() => {
       setPhase((p) => (p === 'playing' ? 'fading' : p));
     }, SAFETY_CAP_MS);
     return () => clearTimeout(id);
-  }, []);
+  }, [hasPlayed]);
 
   // Decide when to begin fading: built + a brief settle + bootReady.
   useEffect(() => {
     if (phase !== 'playing' || !built || !bootReady) return;
+    if (hasPlayed) {
+      // Instant bypass without fading when reloading
+      setPhase('done');
+      return;
+    }
     const elapsed = builtAtRef.current ? Date.now() - builtAtRef.current : 0;
     const wait = Math.max(0, MIN_HOLD_AFTER_BUILT_MS - elapsed);
     const id = setTimeout(() => setPhase('fading'), wait);
     return () => clearTimeout(id);
-  }, [phase, built, bootReady]);
+  }, [phase, built, bootReady, hasPlayed]);
 
   // After the fade transition completes, unmount.
   useEffect(() => {
@@ -83,6 +100,7 @@ const BootIntroInner: React.FC = () => {
   if (phase === 'done') return null;
 
   const markBuilt = () => {
+    if (hasPlayed) return;
     builtAtRef.current = builtAtRef.current ?? Date.now();
     setBuilt(true);
   };
