@@ -227,6 +227,8 @@ export const useDynamicManifest = (
         myListRow = { key: 'my-list', title: t('rows.myList', { defaultValue: 'My List' }), data: filteredList };
     }
 
+    let finalManifest: SmartRow[] = [];
+
     // ── KIDS MODE ─────────────────────────────────────────────────────────────
     // The standard pools are adult-leaning and get emptied by the kids content
     // filter (blank Series/Films pages). Serve a dedicated kids catalog instead.
@@ -255,7 +257,7 @@ export const useDynamicManifest = (
       };
     }
 
-    let finalManifest = manifest;
+    finalManifest = manifest;
 
     // ── 2. NEW & POPULAR PAGE ─────────────────────────────────────────────────
     if (pageType === 'new_popular') {
