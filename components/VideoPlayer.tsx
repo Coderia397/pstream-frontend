@@ -21,7 +21,7 @@ import { useVideoElementEvents } from '../hooks/useVideoElementEvents';
 import VideoPlayerControls from './VideoPlayerControls';
 import VideoPlayerSettings from './VideoPlayerSettings';
 import VideoPlayerSettingsTouch from './VideoPlayerSettingsTouch';
-import { ArrowLeftIcon } from '@phosphor-icons/react';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 
 
 const GIGA_BACKEND_URL = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';

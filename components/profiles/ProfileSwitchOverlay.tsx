@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useProfileStore } from '../../store/useProfileStore';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import KidsAvatar from './KidsAvatar';
@@ -78,7 +78,7 @@ const ProfileSwitchOverlay: React.FC = () => {
   return (
     <AnimatePresence>
       {switchingProfile && (
-        <motion.div
+        <m.div
           key={switchingProfile.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -88,7 +88,7 @@ const ProfileSwitchOverlay: React.FC = () => {
         >
           {/* Kids on mobile: stripes bloom out from behind the tile */}
           {isKidsTile && isMobile && (
-            <motion.div
+            <m.div
               initial={{ scale: 0.14, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
@@ -97,14 +97,14 @@ const ProfileSwitchOverlay: React.FC = () => {
               {KIDS_STRIPES.map((bg, i) => (
                 <div key={i} className="flex-1 h-full" style={{ background: bg }} />
               ))}
-            </motion.div>
+            </m.div>
           )}
 
           <div className="relative flex items-center justify-center">
             {/* Desktop: red arc orbiting the tile, per the Netflix reference */}
             {!isMobile && <OrbitArc />}
 
-            <motion.div
+            <m.div
               initial={{ scale: 0.82, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -122,7 +122,7 @@ const ProfileSwitchOverlay: React.FC = () => {
                   referrerPolicy="no-referrer"
                 />
               )}
-            </motion.div>
+            </m.div>
           </div>
 
           {isMobile && (
@@ -130,7 +130,7 @@ const ProfileSwitchOverlay: React.FC = () => {
               <SwitchSpinner rainbow={isKidsTile} />
             </div>
           )}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

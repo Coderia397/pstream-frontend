@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { XIcon, ArrowSquareDownIcon } from '@phosphor-icons/react';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { ArrowSquareDown as ArrowSquareDownIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareDown';
 
 const DISMISSED_KEY = 'pstream-pwa-prompt-dismissed';
 const DISMISSED_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Movie } from '../types';
 import { fetchData, isUrlCached } from '../services/api';
 import { useGlobalContext } from '../context/GlobalContext';
@@ -174,7 +174,7 @@ const RowMobile: React.FC<RowMobileProps> = ({
   if (!initialLoad && movies.length === 0) return null;
 
   return (
-    <motion.div
+    <m.div
       ref={viewRef}
       initial={{ opacity: 0, y: 5 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -237,7 +237,7 @@ const RowMobile: React.FC<RowMobileProps> = ({
           onRemove={(movie) => clearVideoState(movie.id)}
         />
       )}
-    </motion.div>
+    </m.div>
   );
 };
 

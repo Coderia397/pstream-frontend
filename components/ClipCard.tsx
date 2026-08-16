@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import {
-  SpeakerHighIcon, SpeakerXIcon, PlusIcon, CheckIcon,
-  ShareNetworkIcon, PlayIcon,
-} from '@phosphor-icons/react';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { SpeakerX as SpeakerXIcon } from '@phosphor-icons/react/dist/ssr/SpeakerX';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { ShareNetwork as ShareNetworkIcon } from '@phosphor-icons/react/dist/ssr/ShareNetwork';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { Movie } from '../types';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useUIStore } from '../store/useUIStore';

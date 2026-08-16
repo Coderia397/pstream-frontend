@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { XIcon, LinkIcon, DotsThreeIcon, CheckIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Link as LinkIcon } from '@phosphor-icons/react/dist/ssr/Link';
+import { DotsThree as DotsThreeIcon } from '@phosphor-icons/react/dist/ssr/DotsThree';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
 import { useLockBodyScroll } from '../hooks/useLockBodyScroll';
 
 // ─── Simplified, brand-colored glyphs ──────────────────────────────────────
@@ -122,13 +125,13 @@ const ShareSheet: React.FC<ShareSheetProps> = ({ open, title, url, thumbnailUrl,
     <AnimatePresence>
       {open && (
         <>
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[10080] bg-black/60"
             onClick={onClose}
           />
-          <motion.div
+          <m.div
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'tween', ease: [0.16, 1, 0.3, 1], duration: 0.3 }}
             className="fixed inset-x-0 bottom-0 z-[10090] bg-[#1c1c1c] rounded-t-2xl px-4 pt-2 pb-[calc(20px+env(safe-area-inset-bottom))]"
@@ -175,16 +178,16 @@ const ShareSheet: React.FC<ShareSheetProps> = ({ open, title, url, thumbnailUrl,
 
             <AnimatePresence>
               {toast && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                   className="mt-5 flex items-center justify-center gap-2 text-white/90 text-[13px] font-medium"
                 >
                   <CheckIcon size={16} weight="bold" className="text-green-400" />
                   {toast}
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>,

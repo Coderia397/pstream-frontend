@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import VideoPlayer from '../components/VideoPlayer';
+const VideoPlayer = lazy(() => import('../components/VideoPlayer'));
 import ErrorBoundary from '../components/ErrorBoundary';
 import NotFoundPage from './NotFoundPage';
 import { getMovieDetails } from '../services/api';
@@ -127,16 +127,25 @@ const CinemaPage: React.FC = () => {
 
     return (
         <ErrorBoundary>
-            <VideoPlayer
-                movie={movie}
-                season={type === 'tv' ? season : undefined}
-                episode={type === 'tv' ? episode : undefined}
-                resumeTime={resumeTime}
-                onClose={handleClose}
-                onEpisodeChange={(newSeason, newEpisode) => {
-                    setSearchParams({ season: String(newSeason), episode: String(newEpisode) }, { replace: true });
-                }}
-            />
+            <Suspense fallback={
+                <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-gray-400 text-sm">{t('common.loading', { defaultValue: 'Loading player...' })}</span>
+                    </div>
+                </div>
+            }>
+                <VideoPlayer
+                    movie={movie}
+                    season={type === 'tv' ? season : undefined}
+                    episode={type === 'tv' ? episode : undefined}
+                    resumeTime={resumeTime}
+                    onClose={handleClose}
+                    onEpisodeChange={(newSeason, newEpisode) => {
+                        setSearchParams({ season: String(newSeason), episode: String(newEpisode) }, { replace: true });
+                    }}
+                />
+            </Suspense>
         </ErrorBoundary>
     );
 };

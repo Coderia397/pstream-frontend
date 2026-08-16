@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeftIcon } from '@phosphor-icons/react';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { Movie } from '../types';
 import { useNotifications } from '../hooks/useNotifications';
 import { getOptimizedImageUrl } from '../utils/deviceHelper';

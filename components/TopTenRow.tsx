@@ -1,14 +1,20 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion, animate } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
-import {
-  CaretRightIcon, CaretLeftIcon, CheckIcon, PlusIcon,
-  ThumbsUpIcon, ThumbsDownIcon, CaretDownIcon,
-  BookOpenIcon, ArrowCounterClockwiseIcon,
-  SpeakerSlashIcon, SpeakerHighIcon, XIcon
-} from '@phosphor-icons/react';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { ThumbsUp as ThumbsUpIcon } from '@phosphor-icons/react/dist/ssr/ThumbsUp';
+import { ThumbsDown as ThumbsDownIcon } from '@phosphor-icons/react/dist/ssr/ThumbsDown';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { BookOpen as BookOpenIcon } from '@phosphor-icons/react/dist/ssr/BookOpen';
+import { ArrowCounterClockwise as ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
+import { SpeakerSlash as SpeakerSlashIcon } from '@phosphor-icons/react/dist/ssr/SpeakerSlash';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useIsInTheaters } from '../hooks/useIsInTheaters';
 import CinemaPlayButton from './CinemaPlayButton';
@@ -158,7 +164,7 @@ const RatingPill: React.FC<{ rating: MovieRating | undefined; onRate: (r: MovieR
 
       <AnimatePresence>
         {expanded && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scaleX: 0, x: '-50%', y: '-50%' }}
             animate={{ opacity: 1, scaleX: 1, x: '-50%', y: '-50%' }}
             exit={{ opacity: 0, scaleX: 0, x: '-50%', y: '-50%' }}
@@ -183,7 +189,7 @@ const RatingPill: React.FC<{ rating: MovieRating | undefined; onRate: (r: MovieR
                 />
               );
             })}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
@@ -651,7 +657,7 @@ const TopTenCard: React.FC<{
                 transformOrigin: hoverPosition === 'left' ? 'top left' : hoverPosition === 'right' ? 'top right' : 'top center',
               }}
             >
-              <motion.div
+              <m.div
                 className="bg-[#181818] rounded-md overflow-hidden shadow-[0_2px_20px_rgba(0,0,0,0.65)]"
                 initial={{ opacity: 0, y: 22, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -880,7 +886,7 @@ const TopTenCard: React.FC<{
                     );
                   })()}
                 </div>
-              </motion.div>
+              </m.div>
             </div>
           )}
         </AnimatePresence>,
@@ -1029,14 +1035,7 @@ const TopTenRow: React.FC<TopTenRowProps> = ({ title, fetchUrl, data, onSelect, 
 
     const target = Math.round(rawTarget / step) * step;
 
-    animate(container.scrollLeft, target, {
-      type: "spring",
-      stiffness: 100,
-      damping: 20,
-      onUpdate: (val) => {
-        container.scrollLeft = val;
-      }
-    });
+    container.scrollTo({ left: target, behavior: 'smooth' });
   };
 
   const hasEngagedInfinite = useRef(false);
@@ -1094,7 +1093,7 @@ const TopTenRow: React.FC<TopTenRowProps> = ({ title, fetchUrl, data, onSelect, 
     `transition-[opacity,background-color] duration-200 opacity-0 pointer-events-none`;
 
   return (
-    <motion.div
+    <m.div
       ref={viewRef}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -1165,7 +1164,7 @@ const TopTenRow: React.FC<TopTenRowProps> = ({ title, fetchUrl, data, onSelect, 
           <CaretRightIcon size={64} weight="bold" className="text-white" />
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

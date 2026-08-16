@@ -1,5 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { PlayIcon, InfoIcon, DotsThreeVerticalIcon } from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { Info as InfoIcon } from '@phosphor-icons/react/dist/ssr/Info';
+import { DotsThreeVertical as DotsThreeVerticalIcon } from '@phosphor-icons/react/dist/ssr/DotsThreeVertical';
 import { useGlobalContext } from '../context/GlobalContext';
 import { Movie } from '../types';
 import { BadgeOverlay, ProgressIndicator, getWatchData } from './MovieCardBadges';

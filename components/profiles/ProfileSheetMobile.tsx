@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  XIcon, PlusIcon, PencilSimpleIcon, LockSimpleIcon, CaretRightIcon,
-  GearSixIcon, UserIcon, QuestionIcon, SignOutIcon,
-} from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { GearSix as GearSixIcon } from '@phosphor-icons/react/dist/ssr/GearSix';
+import { User as UserIcon } from '@phosphor-icons/react/dist/ssr/User';
+import { Question as QuestionIcon } from '@phosphor-icons/react/dist/ssr/Question';
+import { SignOut as SignOutIcon } from '@phosphor-icons/react/dist/ssr/SignOut';
 import { Profile } from '../../types';
 import { useProfileStore } from '../../store/useProfileStore';
 import { useAuthStore, activateProfile } from '../../store/useAuthStore';
@@ -156,7 +161,7 @@ const ProfileSheetMobile: React.FC<ProfileSheetMobileProps> = ({ open, onClose }
         {open && (
           <>
             {/* Backdrop */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -166,7 +171,7 @@ const ProfileSheetMobile: React.FC<ProfileSheetMobileProps> = ({ open, onClose }
             />
 
             {/* Sheet */}
-            <motion.div
+            <m.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
@@ -279,7 +284,7 @@ const ProfileSheetMobile: React.FC<ProfileSheetMobileProps> = ({ open, onClose }
                   onClick={() => { onClose(); signOut(); }}
                 />
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SpeakerSlashIcon, SpeakerHighIcon, ArrowCounterClockwiseIcon } from '@phosphor-icons/react';
+import { SpeakerSlash as SpeakerSlashIcon } from '@phosphor-icons/react/dist/ssr/SpeakerSlash';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { ArrowCounterClockwise as ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
 import HeroMoreInfoButton from './HeroMoreInfoButton';
 import { useTranslation } from 'react-i18next';
 import { Movie } from '../types';

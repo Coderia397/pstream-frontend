@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
-import {
-  SpeakerSlashIcon, SpeakerHighIcon, CheckIcon, PlusIcon,
-  CaretDownIcon, BookOpenIcon, ArrowCounterClockwiseIcon, XIcon,
-} from '@phosphor-icons/react';
+import { SpeakerSlash as SpeakerSlashIcon } from '@phosphor-icons/react/dist/ssr/SpeakerSlash';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { BookOpen as BookOpenIcon } from '@phosphor-icons/react/dist/ssr/BookOpen';
+import { ArrowCounterClockwise as ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import { useGlobalContext } from '../context/GlobalContext';
 import { GENRES } from '../constants';
 import { Movie } from '../types';
@@ -197,7 +201,7 @@ const MovieCardPopup = React.forwardRef<HTMLDivElement, MovieCardPopupProps>((
         transformOrigin,
       }}
     >
-      <motion.div
+      <m.div
         className="bg-[#181818] rounded-md overflow-hidden shadow-[0_2px_20px_rgba(0,0,0,0.65)]"
         initial={{ opacity: 0, y: 22, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -422,7 +426,7 @@ const MovieCardPopup = React.forwardRef<HTMLDivElement, MovieCardPopupProps>((
         })()}
       </div>
 
-      </motion.div>
+      </m.div>
     </div>
   );
 });

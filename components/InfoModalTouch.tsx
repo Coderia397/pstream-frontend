@@ -1,7 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PlayIcon, PauseIcon, CheckIcon, PlusIcon, SpeakerSlashIcon, SpeakerHighIcon, ThumbsUpIcon, ThumbsDownIcon, HeartIcon, ArrowCounterClockwiseIcon, XIcon } from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { Pause as PauseIcon } from '@phosphor-icons/react/dist/ssr/Pause';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { SpeakerSlash as SpeakerSlashIcon } from '@phosphor-icons/react/dist/ssr/SpeakerSlash';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { ThumbsUp as ThumbsUpIcon } from '@phosphor-icons/react/dist/ssr/ThumbsUp';
+import { ThumbsDown as ThumbsDownIcon } from '@phosphor-icons/react/dist/ssr/ThumbsDown';
+import { Heart as HeartIcon } from '@phosphor-icons/react/dist/ssr/Heart';
+import { ArrowCounterClockwise as ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import { Movie, Episode } from '../types';
 import { IMG_PATH, REQUESTS } from '../constants';
 import { useGlobalContext } from '../context/GlobalContext';

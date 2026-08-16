@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CaretRightIcon, GoogleLogoIcon, EnvelopeIcon, LockSimpleIcon,
-  EyeIcon, EyeSlashIcon, CaretLeftIcon, UserIcon } from '@phosphor-icons/react';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { GoogleLogo as GoogleLogoIcon } from '@phosphor-icons/react/dist/ssr/GoogleLogo';
+import { Envelope as EnvelopeIcon } from '@phosphor-icons/react/dist/ssr/Envelope';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
+import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
+import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
+import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
+import { User as UserIcon } from '@phosphor-icons/react/dist/ssr/User';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import logo from '../assets/logos/pstream-logo.svg';
 import landingBg from '../assets/landing-bg.png';
 import { supabase } from '../services/supabaseClient';
@@ -294,7 +300,7 @@ const LandingTopTenCard: React.FC<{ movie: Movie; index: number }> = ({ movie, i
     : `https://image.tmdb.org/t/p/w780${movie.poster_path}`;
 
   return (
-    <motion.div
+    <m.div
       whileHover={{ scale: 1.05, y: -4 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={`relative flex-none ${SIZES.card} ml-6 sm:ml-8 md:ml-10 lg:ml-12 mr-4 md:mr-6 flex items-end select-none z-10 cursor-default`}
@@ -311,7 +317,7 @@ const LandingTopTenCard: React.FC<{ movie: Movie; index: number }> = ({ movie, i
         {/* Subtle blur overlay so it looks intentionally non-interactive */}
         <div className="absolute inset-0 bg-black/10 pointer-events-none" />
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

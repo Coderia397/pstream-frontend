@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { XIcon, PencilSimpleIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
 import { AVATAR_CATEGORIES, DEFAULT_AVATAR } from '../../constants';
 import { Profile } from '../../types';
 
@@ -63,7 +64,7 @@ const AddEditProfileModal: React.FC<AddEditProfileModalProps> = ({
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
       onClick={onCancel}
     >
-      <motion.div
+      <m.div
         initial={{ opacity: 0, scale: 0.96, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
@@ -155,7 +156,7 @@ const AddEditProfileModal: React.FC<AddEditProfileModalProps> = ({
           </label>
           <AnimatePresence>
             {pinEnabled && (
-              <motion.div
+              <m.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
@@ -170,7 +171,7 @@ const AddEditProfileModal: React.FC<AddEditProfileModalProps> = ({
                   placeholder={t('profiles.enterPin', { defaultValue: 'Enter 4-digit PIN' })}
                   className="w-full sm:w-48 bg-transparent border border-white/20 rounded-sm px-4 py-2.5 text-white text-base tracking-[0.3em] placeholder:tracking-normal placeholder:text-white/30 outline-none focus:ring-2 focus:ring-white/60 transition-shadow"
                 />
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>
@@ -236,7 +237,7 @@ const AddEditProfileModal: React.FC<AddEditProfileModalProps> = ({
 
         <AnimatePresence>
           {pickingAvatar && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -275,10 +276,10 @@ const AddEditProfileModal: React.FC<AddEditProfileModalProps> = ({
                   </div>
                 </div>
               ))}
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </m.div>
     </div>
   );
 };

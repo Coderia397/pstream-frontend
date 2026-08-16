@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-    SignOutIcon, TranslateIcon, SubtitlesIcon,
-    PlayCircleIcon, ClockIcon, CaretRightIcon, ShieldWarningIcon,
-    LockSimpleIcon, BellIcon, ShieldCheckIcon, ArrowsLeftRightIcon,
-} from '@phosphor-icons/react';
+import { SignOut as SignOutIcon } from '@phosphor-icons/react/dist/ssr/SignOut';
+import { Translate as TranslateIcon } from '@phosphor-icons/react/dist/ssr/Translate';
+import { Subtitles as SubtitlesIcon } from '@phosphor-icons/react/dist/ssr/Subtitles';
+import { PlayCircle as PlayCircleIcon } from '@phosphor-icons/react/dist/ssr/PlayCircle';
+import { Clock as ClockIcon } from '@phosphor-icons/react/dist/ssr/Clock';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { ShieldWarning as ShieldWarningIcon } from '@phosphor-icons/react/dist/ssr/ShieldWarning';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
+import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
+import { ShieldCheck as ShieldCheckIcon } from '@phosphor-icons/react/dist/ssr/ShieldCheck';
+import { ArrowsLeftRight as ArrowsLeftRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowsLeftRight';
 import { DEFAULT_AVATAR } from '../constants';
 import KidsAvatar from '../components/profiles/KidsAvatar';
 import { useProfileStore } from '../store/useProfileStore';

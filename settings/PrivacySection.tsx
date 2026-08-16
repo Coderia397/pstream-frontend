@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useTranslation } from 'react-i18next';
-import { TrashIcon, WarningCircleIcon } from '@phosphor-icons/react';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
+import { WarningCircle as WarningCircleIcon } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 
 const PrivacySection: React.FC = () => {
     const { deleteAccountData } = useGlobalContext();

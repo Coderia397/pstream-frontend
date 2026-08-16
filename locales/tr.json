@@ -460,5 +460,43 @@
     "privacy": {
         "dataWiped": "Veriler silindi",
         "confirmDeleteAction": "EVET, VERİLERİ SİL"
+    },
+    "privacyPage": {
+        "title": "Privacy Policy",
+        "lastUpdated": "Last updated: August 2026",
+        "section1Title": "1. What Data We Collect",
+        "section1Desc": "When you use Pstream, we collect certain personal data to provide and improve our service. This includes:",
+        "s1L1": "<0>Account Information:</0> Your email address when you sign up via Supabase Auth.",
+        "s1L2": "<0>Profile Data:</0> Names, avatars, and settings for any profiles created under your account.",
+        "s1L3": "<0>Usage Data:</0> Your watch history, continue watching progress, and \"My List\" preferences.",
+        "section2Title": "2. Lawful Basis for Processing (UK GDPR)",
+        "section2Desc": "Under the UK General Data Protection Regulation (UK GDPR), the lawful bases we rely on for processing this information are:",
+        "s2L1": "<0>Contractual Necessity:</0> To provide you with the streaming aggregation and profile features you signed up for.",
+        "s2L2": "<0>Legitimate Interests:</0> To analyze general platform usage and improve performance (using strictly anonymized data).",
+        "section3Title": "3. How We Store Your Data",
+        "section3Desc": "Your data is securely stored using Supabase (our backend provider). We use Row-Level Security (RLS) to ensure that your watch history and profiles are strictly isolated and only accessible by your authenticated account.",
+        "section4Title": "4. Your Data Protection Rights",
+        "section4Desc": "You have the right to:",
+        "s4L1": "<0>Access:</0> Request copies of your personal data.",
+        "s4L2": "<0>Erasure:</0> Request that we erase your personal data (\"Right to be Forgotten\"). You can delete your account and all associated data directly from the Settings page.",
+        "s4L3": "<0>Rectification:</0> Correct any information you believe is inaccurate.",
+        "section5Title": "5. Third-Party Services",
+        "section5Desc": "We use third-party APIs (such as TMDB for metadata and Cloudflare Turnstile for bot protection). These services operate under their own privacy policies. We proxy sensitive API requests through our backend to minimize client-side data exposure.",
+        "section6Title": "6. Contact",
+        "section6Desc": "If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact the repository maintainers."
+    },
+    "cookieConsent": {
+        "title": "Privacy Preference Center",
+        "saveSettings": "Save Settings",
+        "generalDesc": "General Description",
+        "essential": "Essential Cookies",
+        "performance": "Performance Cookies",
+        "desc1": "This cookie tool will help you understand the use of cookies on the Pstream service, and how you can control the use of these cookies.",
+        "desc2": "Privacy settings in most browsers allow you to prevent your browser from accepting some or all cookies, notify you when it receives a new cookie, or disable cookies altogether."
+    },
+    "footer": {
+        "cookiePreferences": "Cookie Preferences",
+        "privacyPolicy": "Privacy Policy",
+        "contactUs": "Contact Us"
     }
 }

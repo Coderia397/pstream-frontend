@@ -8,11 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { useAuthStore, activateProfile } from './store/useAuthStore';
 import { useWatchStore } from './store/useWatchStore';
 import { useProfileStore } from './store/useProfileStore';
-import { LoginWall } from './components/LoginWall';
-import { useCastStore } from './store/useCastStore';
-import WhosWatchingGate from './components/profiles/WhosWatchingGate';
-import ProfileSwitchOverlay from './components/profiles/ProfileSwitchOverlay';
-import { AnimatePresence, motion } from 'framer-motion';
+// Eager imports removed for lazy loading
+import { AnimatePresence, m } from 'framer-motion';
 
 const TAB_ORDER = ['home', 'tv', 'movies', 'new', 'list', 'clips', 'language', 'settings'];
 
@@ -44,8 +41,13 @@ const pageTransition = {
 // Components (always needed — eager)
 import Layout from './components/Layout';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
-import InfoModal from './components/InfoModal';
-import LoginPage from './pages/LoginPage';
+
+const InfoModal = lazy(() => import('./components/InfoModal'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const LoginWall = lazy(() => import('./components/LoginWall').then(m => ({ default: m.LoginWall })));
+const WhosWatchingGate = lazy(() => import('./components/profiles/WhosWatchingGate'));
+const ProfileSwitchOverlay = lazy(() => import('./components/profiles/ProfileSwitchOverlay'));
+import { useCastStore } from './store/useCastStore';
 import { dimensionsAsMovies } from './data/notFoundDimensions';
 
 // Pages (lazy — each becomes its own split chunk)
@@ -61,7 +63,8 @@ const SearchResultsPage = lazy(() => import('./pages/SearchResultsPage'));
 const SettingsPage     = lazy(() => import('./pages/SettingsPage'));
 const BrowseGridPage      = lazy(() => import('./pages/BrowseGridPage'));
 const BrowseLanguagePage  = lazy(() => import('./pages/BrowseLanguagePage'));
-const GhostPage           = lazy(() => import('./pages/GhostPage'));
+
+const PrivacyPage       = lazy(() => import('./pages/PrivacyPage'));
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'));
 
 // Prefetch nav pages + hero data during idle time
@@ -73,13 +76,8 @@ idle(() => {
   import('./pages/NewPopularPage');
   import('./pages/MyListPage');
   import('./pages/BrowseLanguagePage');
-  // Warm hero data for all main pages so backdrop images are browser-cached before first visit
-  import('./services/HeroEngine').then(({ HeroEngine }) => {
-    HeroEngine.getHero('home');
-    HeroEngine.getHero('tv');
-    HeroEngine.getHero('movie');
-    HeroEngine.getHero('new_popular');
-  });
+  // Removed aggressive HeroEngine prefetching to stop TMDB request storms and main-thread locking.
+  // Pages will fetch their own hero data when mounted.
 });
 
 const PageFallback = <div className="h-screen w-screen bg-black" />;
@@ -389,7 +387,7 @@ const App: React.FC = () => {
   const isWatching = location.pathname.startsWith('/watch');
   const isSettings = location.pathname.startsWith('/settings');
 
-  const knownRoutes = ['/', '/browse', '/browse/series', '/browse/films', '/latest', '/browse/my-list', '/browse/language', '/clips', '/notifications', '/login', '/ghost', '/matrix'];
+  const knownRoutes = ['/', '/browse', '/browse/series', '/browse/films', '/latest', '/browse/my-list', '/browse/language', '/clips', '/notifications', '/login'];
   const is404Route = !knownRoutes.includes(backgroundLocation.pathname)
     && !backgroundLocation.pathname.startsWith('/settings')
     && !backgroundLocation.pathname.startsWith('/browse')
@@ -469,16 +467,7 @@ const App: React.FC = () => {
     );
   }
 
-  if (location.pathname === '/ghost' || location.pathname === '/matrix') {
-    return (
-      <Suspense fallback={PageFallback}>
-        <Routes>
-          <Route path="/ghost"  element={<GhostPage />} />
-          <Route path="/matrix" element={<Navigate to="/ghost" replace />} />
-        </Routes>
-      </Suspense>
-    );
-  }
+
 
   if (!isInitialized) {
     return <div className="h-screen w-screen bg-black flex items-center justify-center"></div>;
@@ -512,6 +501,7 @@ const App: React.FC = () => {
         <Route path="/settings/*" element={<SettingsPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
         <Route path="/browse/:rowKey" element={<BrowseGridPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="*" element={<NotFoundPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
       </Routes>
     </Suspense>
@@ -520,7 +510,7 @@ const App: React.FC = () => {
   const mainContent = isMobile ? (
     <div className="relative w-full overflow-hidden">
       <AnimatePresence mode="popLayout" initial={true} custom={dir}>
-        <motion.div
+        <m.div
           key={backgroundLocation.pathname}
           custom={dir}
           variants={pageVariants}
@@ -538,7 +528,7 @@ const App: React.FC = () => {
           className="w-full min-h-screen bg-black"
         >
           {innerRoutes}
-        </motion.div>
+        </m.div>
       </AnimatePresence>
     </div>
   ) : (

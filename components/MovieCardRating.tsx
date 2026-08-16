@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ThumbsUpIcon, ThumbsDownIcon } from '@phosphor-icons/react';
+import { ThumbsUp as ThumbsUpIcon } from '@phosphor-icons/react/dist/ssr/ThumbsUp';
+import { ThumbsDown as ThumbsDownIcon } from '@phosphor-icons/react/dist/ssr/ThumbsDown';
 import TooltipWrapper from './TooltipWrapper';
 
 export type MovieRating = 'like' | 'dislike' | 'love';
@@ -91,7 +92,7 @@ export const RatingPill: React.FC<{
       </button>
       <AnimatePresence>
         {expanded && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scaleX: 0, x: '-50%', y: '-50%' }}
             animate={{ opacity: 1, scaleX: 1, x: '-50%', y: '-50%' }}
             exit={{ opacity: 0, scaleX: 0, x: '-50%', y: '-50%' }}
@@ -116,7 +117,7 @@ export const RatingPill: React.FC<{
                 />
               );
             })}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

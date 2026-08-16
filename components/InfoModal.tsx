@@ -1,8 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { XIcon, PlayIcon, CheckIcon, PlusIcon, SpeakerSlashIcon, SpeakerHighIcon, ThumbsUpIcon, ThumbsDownIcon, HeartIcon, TicketIcon, ArrowCounterClockwiseIcon } from '@phosphor-icons/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { SpeakerSlash as SpeakerSlashIcon } from '@phosphor-icons/react/dist/ssr/SpeakerSlash';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { ThumbsUp as ThumbsUpIcon } from '@phosphor-icons/react/dist/ssr/ThumbsUp';
+import { ThumbsDown as ThumbsDownIcon } from '@phosphor-icons/react/dist/ssr/ThumbsDown';
+import { Heart as HeartIcon } from '@phosphor-icons/react/dist/ssr/Heart';
+import { Ticket as TicketIcon } from '@phosphor-icons/react/dist/ssr/Ticket';
+import { ArrowCounterClockwise as ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
+import { AnimatePresence, m } from 'framer-motion';
 import { Movie, Episode } from '../types';
 import { IMG_PATH, REQUESTS } from '../constants';
 import { useGlobalContext } from '../context/GlobalContext';
@@ -113,7 +123,7 @@ const RatingPillOption: React.FC<{
     >
       <AnimatePresence>
         {isHovered && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 4, scale: 0.9, x: '-50%' }}
             animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
             exit={{ opacity: 0, y: 2, scale: 0.95, x: '-50%' }}
@@ -127,7 +137,7 @@ const RatingPillOption: React.FC<{
             </div>
             {/* Tooltip Arrow */}
             <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#e6e6e6] -mt-[1px]" />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -158,7 +168,7 @@ const InfoModalRatingPill: React.FC<{ rating: MovieRating | undefined; onRate: (
 
             <AnimatePresence>
                 {expanded && (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scaleX: 0, x: '-50%', y: '-50%' }}
                         animate={{ opacity: 1, scaleX: 1, x: '-50%', y: '-50%' }}
                         exit={{ opacity: 0, scaleX: 0, x: '-50%', y: '-50%' }}
@@ -183,7 +193,7 @@ const InfoModalRatingPill: React.FC<{ rating: MovieRating | undefined; onRate: (
                                />
                              );
                         })}
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
         </div>

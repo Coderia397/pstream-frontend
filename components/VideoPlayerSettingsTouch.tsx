@@ -1,6 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Episode, InternalTrack } from '../types';
-import { ArrowLeftIcon, CheckIcon, CaretRightIcon, XIcon, PlayIcon } from '@phosphor-icons/react';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { useTranslation } from 'react-i18next';
 import { useGlobalContext } from '../context/GlobalContext';
 

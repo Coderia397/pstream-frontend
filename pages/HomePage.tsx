@@ -8,7 +8,7 @@ import TopTenRow from '../components/TopTenRow';
 import { useDynamicManifest } from '../hooks/useDynamicManifest';
 import ManifestSkeleton from '../components/ManifestSkeleton';
 import HeroSkeleton from '../components/HeroSkeleton';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import CategorySubNav, { Genre } from '../components/CategorySubNav';
 import { HOME_MOBILE_GENRES, resolveGenreId, isTvOnlyGenreId, isMovieOnlyGenreId } from '../data/pageGenres';
 import { HeroEngine } from '../services/HeroEngine';
@@ -76,7 +76,7 @@ const HomePage: React.FC<PageProps> = ({ onSelectMovie, onPlay, seekTime, onView
 
       <AnimatePresence initial={false}>
         {showSkeleton && (
-          <motion.div
+          <m.div
             key="skeletons"
             className="absolute inset-0 z-[100] bg-black md:bg-[#141414] pointer-events-none"
             initial={{ opacity: 1 }}
@@ -87,7 +87,7 @@ const HomePage: React.FC<PageProps> = ({ onSelectMovie, onPlay, seekTime, onView
             <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 px-[var(--app-x)] pt-4 md:pt-10">
               <ManifestSkeleton count={6} />
             </main>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 

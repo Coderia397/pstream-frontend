@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { MotionConfig } from 'framer-motion';
+import { MotionConfig, LazyMotion } from 'framer-motion';
 import App from './App';
 import BootIntro from './components/intro/BootIntro';
 import { GlobalProvider } from './context/GlobalContext';
@@ -29,30 +29,23 @@ root.render(
   // "reduce motion" setting: transform/layout movement is dropped while opacity
   // fades are kept, so the UI still reads as responsive without the motion that
   // triggers vestibular discomfort. CSS animations are handled in index.css.
-  <MotionConfig reducedMotion="user">
-    <TitleProvider>
-      <HeroColorProvider>
-      <GlobalProvider>
-        <ErrorBoundary>
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <App />
-            {/* App-open ident (mobile only) — covers cold-boot loading, then fades */}
-            <BootIntro />
-          </BrowserRouter>
-        </ErrorBoundary>
-      </GlobalProvider>
-      </HeroColorProvider>
-    </TitleProvider>
-  </MotionConfig>
+  <LazyMotion features={() => import('./features').then(res => res.default)}>
+    <MotionConfig reducedMotion="user">
+      <TitleProvider>
+        <HeroColorProvider>
+        <GlobalProvider>
+          <ErrorBoundary>
+            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+              <App />
+              {/* App-open ident (mobile only) — covers cold-boot loading, then fades */}
+              <BootIntro />
+            </BrowserRouter>
+          </ErrorBoundary>
+        </GlobalProvider>
+        </HeroColorProvider>
+      </TitleProvider>
+    </MotionConfig>
+  </LazyMotion>
 );
 
-// Register Service Worker for Media Background Interceptor
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-            console.log('[SW] Registered with scope:', registration.scope);
-        }).catch(err => {
-            console.error('[SW] Registration failed:', err);
-        });
-    });
-}
+

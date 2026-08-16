@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import {
-  CaretDownIcon, PencilSimpleIcon, ArrowSquareOutIcon,
-  IdentificationCardIcon, UserIcon,
-} from '@phosphor-icons/react';
+import { AnimatePresence, m } from 'framer-motion';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
+import { ArrowSquareOut as ArrowSquareOutIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut';
+import { IdentificationCard as IdentificationCardIcon } from '@phosphor-icons/react/dist/ssr/IdentificationCard';
+import { User as UserIcon } from '@phosphor-icons/react/dist/ssr/User';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { DEFAULT_AVATAR } from '../../constants';
 import KidsAvatar from './KidsAvatar';
@@ -131,7 +132,7 @@ const NavbarProfileMenu: React.FC = () => {
       <AnimatePresence>
         {open && (
           /* pt-[18px] doubles as an invisible hover bridge between trigger and panel */
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -194,7 +195,7 @@ const NavbarProfileMenu: React.FC = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

@@ -172,7 +172,6 @@ function makeLabel(lang: string): string {
 
 // SubDL search runs on our resolver, not in the browser.
 //
-// It used to call api.subdl.com directly with VITE_SUBDL_API_KEY — but Vite
 // inlines VITE_* values into the shipped bundle, so that key was readable by
 // anyone who opened the site's JS. Only the SEARCH needs the key; the subtitle
 // files it returns are plain public URLs the browser still fetches itself, so

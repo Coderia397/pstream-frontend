@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayIcon } from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { useTranslation } from 'react-i18next';
 
 interface AutoplayCountdownProps {

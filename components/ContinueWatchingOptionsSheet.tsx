@@ -1,8 +1,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { XCircleIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { XCircle as XCircleIcon } from '@phosphor-icons/react/dist/ssr/XCircle';
 import { Movie } from '../types';
 import { useLockBodyScroll } from '../hooks/useLockBodyScroll';
 
@@ -28,7 +28,7 @@ const ContinueWatchingOptionsSheet: React.FC<ContinueWatchingOptionsSheetProps> 
     <AnimatePresence>
       {open && movie && (
         <>
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -36,7 +36,7 @@ const ContinueWatchingOptionsSheet: React.FC<ContinueWatchingOptionsSheetProps> 
             className="fixed inset-0 z-[10040] bg-black/60"
             onClick={onClose}
           />
-          <motion.div
+          <m.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -64,7 +64,7 @@ const ContinueWatchingOptionsSheet: React.FC<ContinueWatchingOptionsSheetProps> 
             >
               {t('common.cancel', { defaultValue: 'Cancel' })}
             </button>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>,

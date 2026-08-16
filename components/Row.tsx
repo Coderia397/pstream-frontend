@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CaretRightIcon, CaretLeftIcon } from '@phosphor-icons/react';
-import { animate } from 'framer-motion';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
 import { Movie, RowProps } from '../types';
 import MovieCard from './MovieCard';
 import { fetchData, isUrlCached, getMovieImages } from '../services/api';
@@ -11,7 +11,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { getWatchData } from './MovieCardBadges';
 import RowMobile from './RowMobile';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 const Row: React.FC<RowProps & { index?: number }> = ({ title, fetchUrl, data, onSelect, onPlay, rowKey, onViewAll, index = 0 }) => {
   const { t } = useTranslation();
@@ -323,14 +323,7 @@ const Row: React.FC<RowProps & { index?: number }> = ({ title, fetchUrl, data, o
     // Snap to nearest card
     const target = Math.round(rawTarget / step) * step;
 
-    animate(container.scrollLeft, target, {
-      type: "spring",
-      stiffness: 100,
-      damping: 20,
-      onUpdate: (val) => {
-        container.scrollLeft = val;
-      }
-    });
+    container.scrollTo({ left: target, behavior: 'smooth' });
   };
 
   const handleManualScroll = () => {
@@ -368,7 +361,7 @@ const Row: React.FC<RowProps & { index?: number }> = ({ title, fetchUrl, data, o
   if (!initialLoad && movies.length === 0) return null;
 
   return (
-    <motion.div
+    <m.div
       ref={viewRef}
       initial={{ opacity: 0, y: 6 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -486,7 +479,7 @@ const Row: React.FC<RowProps & { index?: number }> = ({ title, fetchUrl, data, o
           </>
         )}
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

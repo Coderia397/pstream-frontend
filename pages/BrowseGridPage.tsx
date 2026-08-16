@@ -6,7 +6,8 @@ import MovieCardTouch from '../components/MovieCardTouch';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { fetchData } from '../services/api';
 import { REQUESTS } from '../constants';
-import { ArrowLeftIcon, CaretDownIcon } from '@phosphor-icons/react';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 import { useTranslation } from 'react-i18next';
 
 interface BrowseGridPageProps {

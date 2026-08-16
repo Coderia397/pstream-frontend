@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { BellIcon } from '@phosphor-icons/react';
+import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
 import { useNotifications, formatRelativeTime } from '../hooks/useNotifications';
 import { getOptimizedImageUrl } from '../utils/deviceHelper';
 

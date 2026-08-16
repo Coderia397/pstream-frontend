@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { XIcon } from '@phosphor-icons/react';
-import { motion } from 'framer-motion';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { m } from 'framer-motion';
 import { Profile } from '../../types';
 import { useIsMobile } from '../../hooks/useIsMobile';
 
@@ -56,7 +56,7 @@ const ProfilePinPrompt: React.FC<ProfilePinPromptProps> = ({ profile, onUnlock, 
   if (isMobile) {
     return (
       <div className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.18 }}
@@ -66,7 +66,7 @@ const ProfilePinPrompt: React.FC<ProfilePinPromptProps> = ({ profile, onUnlock, 
             {t('profiles.enterPinShort', { defaultValue: 'Enter your PIN to access this profile.' })}
           </p>
 
-          <motion.div
+          <m.div
             animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
             transition={{ duration: 0.4 }}
             className="flex items-center justify-center gap-4 mb-8"
@@ -84,7 +84,7 @@ const ProfilePinPrompt: React.FC<ProfilePinPromptProps> = ({ profile, onUnlock, 
                 className="w-8 h-10 bg-transparent border-0 border-b-2 border-white/80 focus:border-white rounded-none text-center text-white text-2xl font-bold outline-none transition-colors caret-white"
               />
             ))}
-          </motion.div>
+          </m.div>
 
           <div className="flex justify-end">
             <button
@@ -94,7 +94,7 @@ const ProfilePinPrompt: React.FC<ProfilePinPromptProps> = ({ profile, onUnlock, 
               {t('common.cancel', { defaultValue: 'Cancel' })}
             </button>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     );
   }
@@ -126,7 +126,7 @@ const ProfilePinPrompt: React.FC<ProfilePinPromptProps> = ({ profile, onUnlock, 
         })}
       </h1>
 
-      <motion.div
+      <m.div
         animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
         transition={{ duration: 0.4 }}
         className="flex items-center gap-3"
@@ -144,7 +144,7 @@ const ProfilePinPrompt: React.FC<ProfilePinPromptProps> = ({ profile, onUnlock, 
             className="w-14 h-16 sm:w-16 sm:h-20 bg-transparent border-2 border-white/40 rounded-md text-center text-white text-3xl font-bold outline-none focus:border-white transition-colors"
           />
         ))}
-      </motion.div>
+      </m.div>
     </div>
   );
 };

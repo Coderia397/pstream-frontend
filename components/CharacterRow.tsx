@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
-import { animate } from 'framer-motion';
+import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
 import { Movie } from '../types';
 import { getMovieDetails } from '../services/api';
 import { IMG_PATH } from '../constants';
@@ -70,14 +70,7 @@ const CharacterRow: React.FC<CharacterRowProps> = ({ onSelectMovie, title = "Cha
         // Snap to nearest card
         const target = Math.round(rawTarget / step) * step;
 
-        animate(container.scrollLeft, target, {
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            onUpdate: (val) => {
-                container.scrollLeft = val;
-            }
-        });
+        container.scrollTo({ left: target, behavior: 'smooth' });
     };
 
     const handleManualScroll = () => {

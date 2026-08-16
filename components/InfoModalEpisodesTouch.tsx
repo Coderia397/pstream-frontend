@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CaretUpIcon, CaretDownIcon, CheckIcon, PlayIcon } from '@phosphor-icons/react';
+import { CaretUp as CaretUpIcon } from '@phosphor-icons/react/dist/ssr/CaretUp';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { Episode, Movie } from '../types';
 import { useGlobalContext } from '../context/GlobalContext';
 

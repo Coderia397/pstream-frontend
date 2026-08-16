@@ -15,37 +15,11 @@ import type { Movie } from '../types';
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-export const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const PROXY_FALLBACK = (import.meta as any).env?.VITE_GIGA_BACKEND_URL 
+  ? `${(import.meta as any).env.VITE_GIGA_BACKEND_URL}/tmdb` 
+  : 'https://resolver.pstream.watch/tmdb';
 
-// Key rotation support: VITE_TMDB_API_KEYS takes priority (comma-separated).
-// Falls back to single VITE_TMDB_API_KEY, then empty string.
-const _keysRaw = (import.meta as any).env?.VITE_TMDB_API_KEYS || '';
-const _keys: string[] = _keysRaw
-  ? _keysRaw.split(',').map((k: string) => k.trim()).filter(Boolean)
-  : [(import.meta as any).env?.VITE_TMDB_API_KEY || ''];
-
-let _keyIdx = 0;
-const _failedKeys = new Set<number>();
-let _allExhaustedUntil = 0;
-
-function getKey(): string {
-  return _keys[_keyIdx] || '';
-}
-
-function rotateKey(): boolean {
-  _failedKeys.add(_keyIdx);
-  for (let i = 0; i < _keys.length; i++) {
-    const next = (_keyIdx + 1 + i) % _keys.length;
-    if (!_failedKeys.has(next)) {
-      _keyIdx = next;
-      console.warn(`[TMDB] Rotated to key index ${_keyIdx}`);
-      return true;
-    }
-  }
-  _allExhaustedUntil = Date.now() + 15 * 60 * 1000; // 15 min cooldown
-  console.error('[TMDB] All API keys exhausted!');
-  return false;
-}
+export const TMDB_BASE_URL = (import.meta as any).env?.VITE_EDGE_PROXY_URL || PROXY_FALLBACK;
 
 // ─── Content Blacklist (NSFW & Sensitive Content) ───────────────────────────
 export const BLACKLIST = {
@@ -203,16 +177,13 @@ export function setTmdbLanguage(lang: string) {
 const tmdb: AxiosInstance = axios.create({ baseURL: TMDB_BASE_URL });
 
 tmdb.interceptors.request.use((config) => {
-  // Only inject api_key/language if they aren't already hardcoded in the URL string
   const url = config.url || '';
-  const hasApiKey = url.includes('api_key=');
   const hasLang   = url.includes('language=');
 
   config.params = {
-    ...(!hasApiKey && { api_key: getKey() }),
     ...(!hasLang   && { language: _lang }),
     include_adult: false,
-    ...config.params,  // caller params WIN — they can override language per-call
+    ...config.params,
   };
 
   // Merge duplicates in the URL since TMDB 400s if multiple identical keys exist
@@ -250,10 +221,6 @@ tmdb.interceptors.response.use(
   (res) => res,
   async (err) => {
     const status = err.response?.status;
-    // Key exhausted — rotate to next key and retry once
-    if ((status === 401 || status === 403 || status === 429) && _keys.length > 1) {
-      if (rotateKey()) return tmdb.request(err.config);
-    }
     // 502/503 from TMDB — transient gateway error, retry once after 500ms
     if ((status === 502 || status === 503) && !err.config._retried502) {
       err.config._retried502 = true;

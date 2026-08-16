@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeftIcon, PencilSimpleIcon, PlusIcon, TrashIcon, LockSimpleIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
 import { Profile } from '../../types';
 import { useProfileStore } from '../../store/useProfileStore';
 import { AVATAR_CATEGORIES, ALL_AVATARS, DEFAULT_AVATAR } from '../../constants';

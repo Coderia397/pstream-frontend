@@ -7,7 +7,7 @@ import { useWatchStore } from '../store/useWatchStore';
 import { Movie } from '../types';
 import MovieCard from '../components/MovieCard';
 import CategorySubNav, { Genre } from '../components/CategorySubNav';
-import { PlaylistIcon } from '@phosphor-icons/react';
+import { Playlist as PlaylistIcon } from '@phosphor-icons/react/dist/ssr/Playlist';
 import Row from '../components/Row';
 import { REQUESTS } from '../constants';
 import { useTasteEngine } from '../hooks/useTasteEngine';

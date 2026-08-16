@@ -6,7 +6,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { fetchData } from '../services/api';
 import { BASE_URL, REQUESTS, SHADOW_BANNED_IDS } from '../constants';
 import { LANG_LABELS } from '../data/languages';
-import { CaretDownIcon } from '@phosphor-icons/react';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 
 const BROWSE_LANGUAGES = [
   { code: 'en', label: 'English' },

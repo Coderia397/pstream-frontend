@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { CaretDownIcon, SquaresFourIcon, RowsIcon } from '@phosphor-icons/react';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { SquaresFour as SquaresFourIcon } from '@phosphor-icons/react/dist/ssr/SquaresFour';
+import { Rows as RowsIcon } from '@phosphor-icons/react/dist/ssr/Rows';
 import { useIsMobile } from '../hooks/useIsMobile';
 import CategorySubNavMobile from './CategorySubNavMobile';
 

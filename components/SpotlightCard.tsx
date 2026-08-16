@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PlayIcon, PauseIcon, PlusIcon, CheckIcon, SpeakerHighIcon, SpeakerSlashIcon } from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { Pause as PauseIcon } from '@phosphor-icons/react/dist/ssr/Pause';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { SpeakerSlash as SpeakerSlashIcon } from '@phosphor-icons/react/dist/ssr/SpeakerSlash';
 import { useTranslation } from 'react-i18next';
 import { MaturityBadge } from './MovieCardBadges';
 import { Movie } from '../types';

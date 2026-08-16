@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { AppSettings } from '../types';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useNavigate } from 'react-router-dom';
-import { CaretRightIcon, UsersThreeIcon } from '@phosphor-icons/react';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { UsersThree as UsersThreeIcon } from '@phosphor-icons/react/dist/ssr/UsersThree';
 import { DEFAULT_AVATAR } from '../constants';
 import KidsAvatar from '../components/profiles/KidsAvatar';
 

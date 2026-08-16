@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  LockSimpleIcon, EnvelopeSimpleIcon, DeviceMobileIcon, DevicesIcon,
-  ShieldWarningIcon, CaretRightIcon, CheckCircleIcon,
-} from '@phosphor-icons/react';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
+import { EnvelopeSimple as EnvelopeSimpleIcon } from '@phosphor-icons/react/dist/ssr/EnvelopeSimple';
+import { DeviceMobile as DeviceMobileIcon } from '@phosphor-icons/react/dist/ssr/DeviceMobile';
+import { Devices as DevicesIcon } from '@phosphor-icons/react/dist/ssr/Devices';
+import { ShieldWarning as ShieldWarningIcon } from '@phosphor-icons/react/dist/ssr/ShieldWarning';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { CheckCircle as CheckCircleIcon } from '@phosphor-icons/react/dist/ssr/CheckCircle';
 import { useGlobalContext } from '../context/GlobalContext';
 import { supabase } from '../services/supabaseClient';
 

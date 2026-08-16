@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext, DEFAULT_SETTINGS } from '../context/GlobalContext';
 import SettingsLayout from '../settings/SettingsLayout';
-import { LockSimpleIcon, CaretRightIcon } from '@phosphor-icons/react';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
 import { Movie } from '../types';
 
 interface SettingsPageProps {

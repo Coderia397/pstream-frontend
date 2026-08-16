@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-    ArrowLeftIcon, HouseIcon, UserCircleIcon, TranslateIcon,
-    SubtitlesIcon, PlayCircleIcon, ClockIcon, ShieldCheckIcon,
-    IdentificationCardIcon, CaretDownIcon, KeyIcon, SignOutIcon,
-    PencilSimpleIcon
-} from '@phosphor-icons/react';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
+import { House as HouseIcon } from '@phosphor-icons/react/dist/ssr/House';
+import { UserCircle as UserCircleIcon } from '@phosphor-icons/react/dist/ssr/UserCircle';
+import { Translate as TranslateIcon } from '@phosphor-icons/react/dist/ssr/Translate';
+import { Subtitles as SubtitlesIcon } from '@phosphor-icons/react/dist/ssr/Subtitles';
+import { PlayCircle as PlayCircleIcon } from '@phosphor-icons/react/dist/ssr/PlayCircle';
+import { Clock as ClockIcon } from '@phosphor-icons/react/dist/ssr/Clock';
+import { ShieldCheck as ShieldCheckIcon } from '@phosphor-icons/react/dist/ssr/ShieldCheck';
+import { IdentificationCard as IdentificationCardIcon } from '@phosphor-icons/react/dist/ssr/IdentificationCard';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { Key as KeyIcon } from '@phosphor-icons/react/dist/ssr/Key';
+import { SignOut as SignOutIcon } from '@phosphor-icons/react/dist/ssr/SignOut';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
 import SubtitleSection from './SubtitleSection';
 import PlaybackSection from './PlaybackSection';
 import LanguageSection from './LanguageSection';

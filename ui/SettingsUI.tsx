@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckIcon, CaretDownIcon } from '@phosphor-icons/react';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 
 // --- Netflix-style pill toggle switch ---
 // The one and only toggle-switch visual in the app: blue track when on,

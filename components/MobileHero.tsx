@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Plus, Check, House } from '@phosphor-icons/react';
+import { Play } from '@phosphor-icons/react/dist/ssr/Play';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Check } from '@phosphor-icons/react/dist/ssr/Check';
+import { House } from '@phosphor-icons/react/dist/ssr/House';
 import { useTranslation } from 'react-i18next';
 import { useLibraryStore } from '../store/useLibraryStore';
 import { useShallow } from 'zustand/react/shallow';

@@ -154,19 +154,26 @@ export const useDynamicManifest = (
     getVideoState, getLastWatchedEpisode,
   } = useGlobalContext();
 
-  const rows = useMemo<SmartRow[]>(() => {
-    const manifest: SmartRow[] = [];
-    const usedUrls = new Set<string>(); // URL-signature dedup registry
+  const [rows, setRows] = useState<SmartRow[]>([]);
+  const [computing, setComputing] = useState(true);
 
-    const addRow = (row: SmartRow): boolean => {
-      if (row.fetchUrl) {
-        const sig = makeUrlSig(row.fetchUrl);
-        if (usedUrls.has(sig)) return false;
-        usedUrls.add(sig);
-      }
-      manifest.push(row);
-      return true;
-    };
+  useEffect(() => {
+    let active = true;
+    setComputing(true);
+
+    const compute = () => {
+      const manifest: SmartRow[] = [];
+      const usedUrls = new Set<string>(); // URL-signature dedup registry
+
+      const addRow = (row: SmartRow): boolean => {
+        if (row.fetchUrl) {
+          const sig = makeUrlSig(row.fetchUrl);
+          if (usedUrls.has(sig)) return false;
+          usedUrls.add(sig);
+        }
+        manifest.push(row);
+        return true;
+      };
 
     const hash = getDailyHash();
     const year = new Date().getFullYear();
@@ -381,22 +388,46 @@ export const useDynamicManifest = (
       return capAndShuffle(manifest, hash, tasteNames);
     }
 
-    return manifest;
+    if (active) {
+      setRows(manifest);
+      setComputing(false);
+    }
+  };
+
+    const idleId = (window as any).requestIdleCallback 
+      ? (window as any).requestIdleCallback(compute, { timeout: 1000 })
+      : setTimeout(compute, 1000);
+    return () => {
+        active = false;
+        if ((window as any).cancelIdleCallback) (window as any).cancelIdleCallback(idleId);
+        else clearTimeout(idleId);
+    };
   }, [pageType, selectedGenreId, selectedGenreName, continueWatching, myList, user, activeProfile, isKidsMode, getLikedMovies, t]);
 
   // Prefetch ALL rows (page 1 + page 2) at manifest-build time so Row components
   // join in-flight requests instead of starting new ones when they mount.
   // Also kick off background hero fetches for all page types so switching pages is instant.
   useEffect(() => {
-    rows.forEach(row => {
-      if (!row.fetchUrl) return;
-      fetchData(row.fetchUrl);
-      const p2 = row.fetchUrl.includes('page=')
-        ? row.fetchUrl.replace(/page=\d+/, 'page=2')
-        : `${row.fetchUrl}${row.fetchUrl.includes('?') ? '&' : '?'}page=2`;
-      fetchData(p2);
-    });
-    HeroEngine.prefetchAll();
+    const doPrefetch = () => {
+      rows.forEach(row => {
+        if (!row.fetchUrl) return;
+        fetchData(row.fetchUrl);
+        const p2 = row.fetchUrl.includes('page=')
+          ? row.fetchUrl.replace(/page=\d+/, 'page=2')
+          : `${row.fetchUrl}${row.fetchUrl.includes('?') ? '&' : '?'}page=2`;
+        fetchData(p2);
+      });
+      HeroEngine.prefetchAll();
+    };
+
+    const idleId = (window as any).requestIdleCallback 
+      ? (window as any).requestIdleCallback(doPrefetch, { timeout: 2000 })
+      : setTimeout(doPrefetch, 2000);
+
+    return () => {
+      if ((window as any).cancelIdleCallback) (window as any).cancelIdleCallback(idleId);
+      else clearTimeout(idleId);
+    };
   }, [rows]);
 
   const cacheKey = `${isKidsMode ? 'kids-' : ''}${pageType}-${selectedGenreId || 'all'}`;
@@ -404,6 +435,7 @@ export const useDynamicManifest = (
 
   // Synchronously verify if hero and the first 3 rows' API responses are already cached
   const isDataCached = useMemo(() => {
+    if (rows.length === 0) return false;
     // 1. Check if Hero is cached
     const heroCacheKey = selectedGenreId ? `${pageType}_${selectedGenreId}` : pageType;
     const heroCached = HeroEngine.getCachedHero(heroCacheKey);
@@ -427,8 +459,9 @@ export const useDynamicManifest = (
   const [committedCacheKey, setCommittedCacheKey] = useState<string>(cacheKey);
   const [rawLoading, setRawLoading] = useState<boolean>(!skipSkeleton);
 
+
   // isLoading is true when either the key hasn't been committed yet OR raw loading flag is set
-  const isLoading = committedCacheKey !== cacheKey || rawLoading;
+  const isLoading = computing || committedCacheKey !== cacheKey || rawLoading;
 
   useEffect(() => {
     clearSeenIds();

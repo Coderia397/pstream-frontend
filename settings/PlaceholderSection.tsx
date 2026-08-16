@@ -1,5 +1,5 @@
 import React from 'react';
-import { WarningCircleIcon } from '@phosphor-icons/react';
+import { WarningCircle as WarningCircleIcon } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 
 interface PlaceholderSectionProps {
     title: string;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useGlobalContext } from '../context/GlobalContext';
 import { Movie } from '../types';
 import { fetchData } from '../services/api';
@@ -239,7 +239,7 @@ const TopTenRowMobile: React.FC<TopTenRowMobileProps> = ({
   if (!loading && movies.length === 0) return null;
 
   return (
-    <motion.div
+    <m.div
       ref={viewRef}
       initial={{ opacity: 0, y: 15 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -291,7 +291,7 @@ const TopTenRowMobile: React.FC<TopTenRowMobileProps> = ({
           <div className="flex-none w-6 sm:w-10 h-full pointer-events-none" />
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

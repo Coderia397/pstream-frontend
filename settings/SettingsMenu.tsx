@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { TranslateIcon, SubtitlesIcon, PlayCircleIcon, CaretRightIcon, ClockIcon, ShieldCheckIcon, IdentificationCardIcon } from '@phosphor-icons/react';
+import { Translate as TranslateIcon } from '@phosphor-icons/react/dist/ssr/Translate';
+import { Subtitles as SubtitlesIcon } from '@phosphor-icons/react/dist/ssr/Subtitles';
+import { PlayCircle as PlayCircleIcon } from '@phosphor-icons/react/dist/ssr/PlayCircle';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { Clock as ClockIcon } from '@phosphor-icons/react/dist/ssr/Clock';
+import { ShieldCheck as ShieldCheckIcon } from '@phosphor-icons/react/dist/ssr/ShieldCheck';
+import { IdentificationCard as IdentificationCardIcon } from '@phosphor-icons/react/dist/ssr/IdentificationCard';
 import { useTranslation } from 'react-i18next';
 import { useGlobalContext } from '../context/GlobalContext';
 import KidsAvatar from '../components/profiles/KidsAvatar';

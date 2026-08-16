@@ -1,22 +1,20 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    PlayIcon,
-    PauseIcon,
-    ArrowCounterClockwiseIcon,
-    ArrowClockwiseIcon,
-    SpeakerHighIcon,
-    SpeakerLowIcon,
-    SpeakerXIcon,
-    SkipForwardIcon,
-    CardsThreeIcon,
-    SubtitlesIcon,
-    CornersOutIcon,
-    CornersInIcon,
-    ArrowLeftIcon,
-    CropIcon,
-    GearIcon,
-} from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { Pause as PauseIcon } from '@phosphor-icons/react/dist/ssr/Pause';
+import { ArrowCounterClockwise as ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
+import { ArrowClockwise as ArrowClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowClockwise';
+import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
+import { SpeakerLow as SpeakerLowIcon } from '@phosphor-icons/react/dist/ssr/SpeakerLow';
+import { SpeakerX as SpeakerXIcon } from '@phosphor-icons/react/dist/ssr/SpeakerX';
+import { SkipForward as SkipForwardIcon } from '@phosphor-icons/react/dist/ssr/SkipForward';
+import { CardsThree as CardsThreeIcon } from '@phosphor-icons/react/dist/ssr/CardsThree';
+import { Subtitles as SubtitlesIcon } from '@phosphor-icons/react/dist/ssr/Subtitles';
+import { CornersOut as CornersOutIcon } from '@phosphor-icons/react/dist/ssr/CornersOut';
+import { CornersIn as CornersInIcon } from '@phosphor-icons/react/dist/ssr/CornersIn';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
+import { Crop as CropIcon } from '@phosphor-icons/react/dist/ssr/Crop';
+import { Gear as GearIcon } from '@phosphor-icons/react/dist/ssr/Gear';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { Episode } from '../types';
 import { SkipSegment } from '../hooks/useSkipTimestamps';

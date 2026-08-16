@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CaretLeftIcon, CaretRightIcon, BookOpenIcon } from '@phosphor-icons/react';
+import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { BookOpen as BookOpenIcon } from '@phosphor-icons/react/dist/ssr/BookOpen';
 import { Movie } from '../types';
 import BookHero from '../components/BookHero';
 

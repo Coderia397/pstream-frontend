@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  DownloadSimpleIcon, CaretRightIcon, ShareNetworkIcon, DotsThreeVerticalIcon,
-} from '@phosphor-icons/react';
+import { DownloadSimple as DownloadSimpleIcon } from '@phosphor-icons/react/dist/ssr/DownloadSimple';
+import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
+import { ShareNetwork as ShareNetworkIcon } from '@phosphor-icons/react/dist/ssr/ShareNetwork';
+import { DotsThreeVertical as DotsThreeVerticalIcon } from '@phosphor-icons/react/dist/ssr/DotsThreeVertical';
 import { useGlobalContext } from '../context/GlobalContext';
 import RowMobile from '../components/RowMobile';
 import MovieCardTouch from '../components/MovieCardTouch';
@@ -13,7 +14,7 @@ import { Movie } from '../types';
 import { getOptimizedImageUrl } from '../utils/deviceHelper';
 import { useTrailerHistoryStore } from '../store/useTrailerHistoryStore';
 import { useProfileStore } from '../store/useProfileStore';
-import { PlayIcon } from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 
 interface MyNetflixSectionProps {
   onSelectMovie: (movie: Movie, time?: number, videoId?: string) => void;

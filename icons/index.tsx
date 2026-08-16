@@ -5,7 +5,6 @@
  *
  * Usage:
  *   // before
- *   import { PlayIcon } from '@phosphor-icons/react';
  *   // after
  *   import { PlayIcon } from '../icons';
  *

@@ -1,5 +1,9 @@
 import React, { useState, useEffect, startTransition } from 'react';
-import { House, AirplayIcon, ScreencastIcon, ArrowSquareOutIcon, BellIcon } from '@phosphor-icons/react';
+import { House } from '@phosphor-icons/react/dist/ssr/House';
+import { Airplay as AirplayIcon } from '@phosphor-icons/react/dist/ssr/Airplay';
+import { Screencast as ScreencastIcon } from '@phosphor-icons/react/dist/ssr/Screencast';
+import { ArrowSquareOut as ArrowSquareOutIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut';
+import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
 import { useNotifications } from '../hooks/useNotifications';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
@@ -15,7 +19,7 @@ import KidsBadge from './profiles/KidsBadge';
 import KidsAvatar from './profiles/KidsAvatar';
 import BottomNavMobile, { BottomNavItem } from './BottomNavMobile';
 import ProfileSheetMobile from './profiles/ProfileSheetMobile';
-import { CaretDownIcon } from '@phosphor-icons/react';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 // removing red pulsing underline from Nav
 // ─── Component ────────────────────────────────────────────────────────────────
 interface NavbarMobileProps {

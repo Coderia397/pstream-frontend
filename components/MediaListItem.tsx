@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PlayIcon } from '@phosphor-icons/react';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { Movie } from '../types';
 import { getMovieImages, getCachedMovieImages } from '../services/api';
 

@@ -22,12 +22,11 @@ export default defineConfig({
       manifest: false,
 
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,ttf,otf}'],
-        globIgnores: ['**/*.{m3u8,ts,mp4,webm}'],
+        globPatterns: ['**/*.{js,css,html,ico,svg,ttf,otf}'],
+        globIgnores: ['**/*.{m3u8,ts,mp4,webm,map,png,jpg,jpeg,webp}', '**/vendor-*.js', '**/useDynamicManifest*.js'],
         navigateFallbackDenylist: [/^\/api/],
 
-        // INCREASES LIMIT TO 5MB to allow landing-bg.png to be cached
-        maximumFileSizeToCacheInBytes: 5242880
+        maximumFileSizeToCacheInBytes: 2097152
       }
     })
   ],
@@ -66,7 +65,6 @@ export default defineConfig({
           'vendor-supabase': ['@supabase/supabase-js'],
           'vendor-motion': ['framer-motion'],
           'vendor-i18n': ['i18next', 'react-i18next', 'iso-639-1'],
-          'vendor-icons': ['@phosphor-icons/react'],
         },
       },
     },

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { TicketIcon, PlayIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Ticket as TicketIcon } from '@phosphor-icons/react/dist/ssr/Ticket';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { useTranslation } from 'react-i18next';
 import { Movie } from '../types';
 import { useIsInTheaters } from '../hooks/useIsInTheaters';
@@ -80,7 +81,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
         return (
             <>
                 {/* Droplet 1 (Left Splash) */}
-                <motion.div
+                <m.div
                     initial={{ x: 0, y: 0, scale: 0 }}
                     animate={{
                         x: [-2, -14, -18, -12],
@@ -96,7 +97,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                 />
 
                 {/* Droplet 2 (Right Splash) */}
-                <motion.div
+                <m.div
                     initial={{ x: 0, y: 0, scale: 0 }}
                     animate={{
                         x: [2, 14, 18, 12],
@@ -112,7 +113,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                 />
 
                 {/* Droplet 3 (Bottom-Center Drip) */}
-                <motion.div
+                <m.div
                     initial={{ x: 0, y: 0, scale: 0 }}
                     animate={{
                         x: [0, -1, 2, 0],
@@ -167,7 +168,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                     className="relative w-full h-full flex items-center justify-center text-current"
                 >
                     {/* Ticket Icon (Rest State) */}
-                    <motion.div
+                    <m.div
                         initial={false}
                         animate={isHovered 
                             ? { scale: 0.05, y: -6, opacity: 0 } 
@@ -177,10 +178,10 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                         className="absolute flex items-center justify-center text-current"
                     >
                         <TicketIcon size={22} weight="fill" />
-                    </motion.div>
+                    </m.div>
 
                     {/* Play Icon (Hover State) */}
-                    <motion.div
+                    <m.div
                         initial={false}
                         animate={isHovered 
                             ? { scale: 1, y: 0, opacity: 1 } 
@@ -190,7 +191,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                         className="absolute flex items-center justify-center text-current"
                     >
                         <PlayIcon size={24} weight="fill" className="ml-0.5" />
-                    </motion.div>
+                    </m.div>
 
                     {/* Liquid splatters */}
                     {renderDroplets()}
@@ -237,7 +238,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                     className="relative w-6 h-6 md:w-9 md:h-9 flex items-center justify-center text-current"
                 >
                     {/* Ticket Icon (Rest State) */}
-                    <motion.div
+                    <m.div
                         initial={false}
                         animate={isHovered 
                             ? { scale: 0.05, y: -6, opacity: 0 } 
@@ -247,10 +248,10 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                         className="absolute flex items-center justify-center text-current"
                     >
                         <TicketIcon weight="fill" className="text-[20px] md:text-[30px]" />
-                    </motion.div>
+                    </m.div>
 
                     {/* Play Icon (Hover State) */}
-                    <motion.div
+                    <m.div
                         initial={false}
                         animate={isHovered 
                             ? { scale: 1, y: 0, opacity: 1 } 
@@ -260,7 +261,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                         className="absolute flex items-center justify-center text-current"
                     >
                         <PlayIcon weight="fill" className="text-[20px] md:text-[30px]" />
-                    </motion.div>
+                    </m.div>
 
                     {/* Liquid splatters */}
                     {renderDroplets()}
@@ -270,7 +271,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                 <div className="relative overflow-hidden h-6 flex items-center ml-2">
                     <AnimatePresence mode="wait">
                         {!isHovered ? (
-                            <motion.span
+                            <m.span
                                 key="theaters-txt"
                                 initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -279,9 +280,9 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                                 className="whitespace-nowrap"
                             >
                                 {t('hero.inTheaters', { defaultValue: 'In Theaters' })}
-                            </motion.span>
+                            </m.span>
                         ) : (
-                            <motion.span
+                            <m.span
                                 key="play-txt"
                                 initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -290,7 +291,7 @@ const CinemaPlayButton: React.FC<CinemaPlayButtonProps> = ({
                                 className="whitespace-nowrap"
                             >
                                 {playLabel}
-                            </motion.span>
+                            </m.span>
                         )}
                     </AnimatePresence>
                 </div>

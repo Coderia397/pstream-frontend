@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CaretLeftIcon, HouseIcon, InfoIcon, PlayIcon, WarningIcon } from '@phosphor-icons/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
+import { House as HouseIcon } from '@phosphor-icons/react/dist/ssr/House';
+import { Info as InfoIcon } from '@phosphor-icons/react/dist/ssr/Info';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { Warning as WarningIcon } from '@phosphor-icons/react/dist/ssr/Warning';
+import { AnimatePresence, m } from 'framer-motion';
 import { Movie } from '../types';
 import Row from '../components/Row';
 import MobileHero from '../components/MobileHero';
@@ -232,7 +236,7 @@ const NotFoundPage: React.FC<NotFoundPageProps> = ({ onSelectMovie, onPlay }) =>
             {/* Click outside to close */}
             <div className="absolute inset-0" onClick={() => setIsDrawerOpen(false)} />
 
-            <motion.div
+            <m.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -293,7 +297,7 @@ const NotFoundPage: React.FC<NotFoundPageProps> = ({ onSelectMovie, onPlay }) =>
                 <CaretLeftIcon size={20} weight="bold" />
                 <span>{t('notFound.homeButton', { defaultValue: 'Return to Home' })}</span>
               </button>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

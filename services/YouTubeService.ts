@@ -3,7 +3,6 @@ import axios from 'axios';
 
 // Trailer search runs on our own resolver, NOT in the browser.
 //
-// This used to call the YouTube Data API directly with VITE_YOUTUBE_API_KEYS.
 // Vite inlines any VITE_* value into the shipped bundle, so those keys were
 // readable by anyone who opened the JS — and no amount of client-side code can
 // hide a key the browser has to use. Searching server-side means no key ever

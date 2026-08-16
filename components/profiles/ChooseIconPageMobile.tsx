@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeftIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { AVATAR_CATEGORIES } from '../../constants';
 import { useCategoryLogo } from '../../hooks/useCategoryLogo';
 
@@ -55,7 +55,7 @@ const ChooseIconPageMobile: React.FC<ChooseIconPageMobileProps> = ({ open, curre
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
@@ -107,7 +107,7 @@ const ChooseIconPageMobile: React.FC<ChooseIconPageMobileProps> = ({ open, curre
               </div>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

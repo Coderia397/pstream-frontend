@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PlusIcon, CheckIcon, PlayIcon, CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Check as CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
+import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
+import { CaretUp as CaretUpIcon } from '@phosphor-icons/react/dist/ssr/CaretUp';
 import { Movie } from '../types';
 import { getMovieImages } from '../services/api';
 import { MaturityBadge } from './MovieCardBadges';

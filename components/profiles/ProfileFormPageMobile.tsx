@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeftIcon, PencilSimpleIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
 import { DEFAULT_AVATAR } from '../../constants';
 import { Profile } from '../../types';
 import { ToggleSwitch } from '../../ui/SettingsUI';
@@ -67,7 +68,7 @@ const ProfileFormPageMobile: React.FC<ProfileFormPageMobileProps> = ({
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
@@ -150,7 +151,7 @@ const ProfileFormPageMobile: React.FC<ProfileFormPageMobileProps> = ({
               </div>
               <AnimatePresence>
                 {pinEnabled && (
-                  <motion.div
+                  <m.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
@@ -165,7 +166,7 @@ const ProfileFormPageMobile: React.FC<ProfileFormPageMobileProps> = ({
                       placeholder={t('profiles.enterPin', { defaultValue: 'Enter 4-digit PIN' })}
                       className="w-full mt-4 bg-black/30 border border-white/15 rounded-lg px-4 py-3 text-white text-base tracking-[0.3em] placeholder:tracking-normal placeholder:text-white/30 outline-none focus:ring-2 focus:ring-white/40 transition-shadow"
                     />
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
             </div>
@@ -213,7 +214,7 @@ const ProfileFormPageMobile: React.FC<ProfileFormPageMobileProps> = ({
             onClose={() => setChoosingIcon(false)}
             onSelect={(url) => { setAvatarUrl(url); setChoosingIcon(false); }}
           />
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

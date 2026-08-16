@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppSettings } from '../types';
 import { SettingsToggle, SettingsSlider } from '../ui/SettingsUI';
-import { CaretDownIcon } from '@phosphor-icons/react';
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 
 interface SubtitleSettingsProps {
     settings: AppSettings;

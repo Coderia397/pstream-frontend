@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PlusIcon, PencilSimpleIcon, LockSimpleIcon, XIcon } from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
+import { LockSimple as LockSimpleIcon } from '@phosphor-icons/react/dist/ssr/LockSimple';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import pstreamWordmark from '../../assets/logos/pstream-logo.svg';
 import { Profile } from '../../types';
 import { useProfileStore } from '../../store/useProfileStore';
@@ -448,7 +451,7 @@ const WhosWatchingGate: React.FC = () => {
             }}
           >
             <AnimatePresence>
-              <motion.div
+              <m.div
                 key={activeSlide!.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -462,7 +465,7 @@ const WhosWatchingGate: React.FC = () => {
                   className="absolute inset-x-0 top-0 h-24"
                   style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 100%)' }}
                 />
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         )}
@@ -479,7 +482,7 @@ const WhosWatchingGate: React.FC = () => {
             title logo + Top-10 rank line anchored just above the picker. */}
         <div className={`relative flex-1 flex flex-col items-center px-8 ${anyLocked || !activeSlide ? 'justify-center' : 'justify-end pb-3'}`}>
           {anyLocked ? (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.35 }}
@@ -489,10 +492,10 @@ const WhosWatchingGate: React.FC = () => {
               <h1 className="text-white text-[26px] font-bold text-center">
                 {t('profiles.lockIsOn', { defaultValue: 'Profile Lock is ON' })}
               </h1>
-            </motion.div>
+            </m.div>
           ) : activeSlide ? (
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={activeSlide.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -520,17 +523,17 @@ const WhosWatchingGate: React.FC = () => {
                     </span>
                   </div>
                 )}
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           ) : (
-            <motion.h1
+            <m.h1
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
               className="text-white text-[28px] font-bold text-center"
             >
               {t('profiles.whosWatching', { defaultValue: "Who's watching?" })}
-            </motion.h1>
+            </m.h1>
           )}
         </div>
 
@@ -629,14 +632,14 @@ const WhosWatchingGate: React.FC = () => {
     <div className="fixed inset-0 z-[150] bg-black flex flex-col items-center justify-center px-6 overflow-y-auto">
       <img src={pstreamWordmark} alt="Pstream" className="h-8 sm:h-9 absolute top-8 left-8 sm:left-14" />
 
-      <motion.h1
+      <m.h1
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="text-white text-3xl sm:text-5xl font-medium mb-10 sm:mb-14 text-center"
       >
         {t('profiles.whosWatching', { defaultValue: "Who's watching?" })}
-      </motion.h1>
+      </m.h1>
 
       <div className="flex flex-wrap items-start justify-center gap-6 sm:gap-8 max-w-[900px]">
         {profiles.map((profile) => (
