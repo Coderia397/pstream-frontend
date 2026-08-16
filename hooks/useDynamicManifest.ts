@@ -231,11 +231,11 @@ export const useDynamicManifest = (
     // The standard pools are adult-leaning and get emptied by the kids content
     // filter (blank Series/Films pages). Serve a dedicated kids catalog instead.
     if (isKidsMode) {
-      return buildKidsManifest(pageType, {
+      finalManifest = buildKidsManifest(pageType, {
         year, continueWatchingRow, myListRow, selectedGenreId, selectedGenreName,
         hash, continueWatching, profileName: activeProfile?.name,
       });
-    }
+    } else {
 
     // "Top Picks for {name}" — Netflix's signature taste row, built from the
     // profile's strongest genre with a high quality floor. Guaranteed placement
@@ -254,6 +254,8 @@ export const useDynamicManifest = (
         fetchUrl: REQUESTS.fetchByGenre(media, resolvedId, 'popularity.desc', '&vote_count.gte=200'),
       };
     }
+
+    let finalManifest = manifest;
 
     // ── 2. NEW & POPULAR PAGE ─────────────────────────────────────────────────
     if (pageType === 'new_popular') {
@@ -322,11 +324,9 @@ export const useDynamicManifest = (
         result.splice(at, 0, top10Rows[i]);
       }
 
-      return result;
-    }
-
-    // ── 3. DYNAMIC HOME MANIFEST & PERSONALIZATION ENGINE ─────────────────────
-    if (pageType === 'home') {
+      finalManifest = result;
+    } else if (pageType === 'home') {
+      // ── 3. DYNAMIC HOME MANIFEST & PERSONALIZATION ENGINE ─────────────────────
       buildHomeGenreManifest({
         manifest,
         selectedGenreId,
@@ -343,11 +343,9 @@ export const useDynamicManifest = (
       });
 
       if (topPicksRow) manifest.push(topPicksRow);
-      return capAndShuffle(manifest, hash, tasteNames);
-    }
-
-    // ── 4. MOVIE SUBPAGE PERSONALIZATION ENGINE ───────────────────────────────
-    if (pageType === 'movie') {
+      finalManifest = capAndShuffle(manifest, hash, tasteNames);
+    } else if (pageType === 'movie') {
+      // ── 4. MOVIE SUBPAGE PERSONALIZATION ENGINE ───────────────────────────────
       buildMovieSubpageManifest({
         manifest,
         selectedGenreId,
@@ -364,11 +362,9 @@ export const useDynamicManifest = (
       });
 
       if (topPicksRow) manifest.push(topPicksRow);
-      return capAndShuffle(manifest, hash, tasteNames);
-    }
-
-    // ── 5. TV SUBPAGE PERSONALIZATION ENGINE ──────────────────────────────────
-    if (pageType === 'tv') {
+      finalManifest = capAndShuffle(manifest, hash, tasteNames);
+    } else if (pageType === 'tv') {
+      // ── 5. TV SUBPAGE PERSONALIZATION ENGINE ──────────────────────────────────
       buildTvSubpageManifest({
         manifest,
         selectedGenreId,
@@ -385,11 +381,13 @@ export const useDynamicManifest = (
       });
 
       if (topPicksRow) manifest.push(topPicksRow);
-      return capAndShuffle(manifest, hash, tasteNames);
+      finalManifest = capAndShuffle(manifest, hash, tasteNames);
+    }
+
     }
 
     if (active) {
-      setRows(manifest);
+      setRows(finalManifest);
       setComputing(false);
     }
   };
