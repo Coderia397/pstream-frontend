@@ -101,7 +101,7 @@
         "viewingHistoryEmpty": "Ihr Verlauf ist derzeit leer.",
         "viewingHistoryTitle": "Kürzliche Aktivitäten",
         "transferTitle": "Profil übertragen",
-        "transferDesc": "Ihre p-stream-Identität ist portabel. Verwenden Sie Ihre 12-Wörter-Phrase, um sich auf jedem Gerät anzumelden.",
+        "transferDesc": "Ihre Pstream-Identität ist portabel. Verwenden Sie Ihre 12-Wörter-Phrase, um sich auf jedem Gerät anzumelden.",
         "transferHeader": "Wir haben die Übertragung dieses Profils vereinfacht",
         "transferFeature1": "Verlauf, Empfehlungen, Meine Liste und mehr übertragen",
         "transferFeature2": "Habe dein eigenes Konto oder tritt einem vorhandenen bei und behalte alles, was du an diesem Profil liebst",
@@ -112,7 +112,7 @@
     "rows": {
         "trending": "Angesagt",
         "topRated": "Top-bewertet",
-        "netflixOriginals": "P-Stream Originale",
+        "netflixOriginals": "Pstream Originale",
         "action": "Action",
         "comedy": "Komödien",
         "horror": "Horror",

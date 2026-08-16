@@ -100,7 +100,7 @@
         "viewingHistoryEmpty": "視聴履歴がありません。",
         "viewingHistoryTitle": "最近のアクティビティ",
         "transferTitle": "プロフィールの移行",
-        "transferDesc": "p-streamのIDは持ち運び可能です。12語の復元フレーズを使用して、任意のデバイスでサインインしてください。",
+        "transferDesc": "PstreamのIDは持ち運び可能です。12語の復元フレーズを使用して、任意のデバイスでサインインしてください。",
         "transferHeader": "このプロフィールの移行を簡単にしました",
         "transferFeature1": "視聴履歴、おすすめ、マイリストなどを移行",
         "transferFeature2": "自分のアカウントを持つか既存のアカウントに参加し、このプロフィールのすべてを引き継ぎましょう",
@@ -111,7 +111,7 @@
     "rows": {
         "trending": "今注目の作品",
         "topRated": "評価の高い作品",
-        "netflixOriginals": "P-Streamオリジナル",
+        "netflixOriginals": "Pstreamオリジナル",
         "action": "アクション",
         "comedy": "コメディ",
         "horror": "ホラー",

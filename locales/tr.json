@@ -100,7 +100,7 @@
         "viewingHistoryEmpty": "İzleme geçmişiniz şu anda boş.",
         "viewingHistoryTitle": "Son Etkinlik",
         "transferTitle": "Profili Transfer Et",
-        "transferDesc": "p-stream kimliğiniz taşınabilirdir. Herhangi bir cihazda oturum açmak için 12 kelimelik kurtarma ifadenizi kullanın.",
+        "transferDesc": "Pstream kimliğiniz taşınabilirdir. Herhangi bir cihazda oturum açmak için 12 kelimelik kurtarma ifadenizi kullanın.",
         "transferHeader": "Bu profilin aktarımını kolaylaştırdık",
         "transferFeature1": "İzleme geçmişini, önerileri, Listem ve daha fazlasını aktar",
         "transferFeature2": "Kendi hesabınıza sahip olun veya mevcut birine katılın ve bu profille ilgili sevdiğiniz her şeyi koruyun",
@@ -111,7 +111,7 @@
     "rows": {
         "trending": "Şu Anda Revaçta",
         "topRated": "En Çok Beğenilenler",
-        "netflixOriginals": "P-Stream Orijinal İçerikleri",
+        "netflixOriginals": "Pstream Orijinal İçerikleri",
         "action": "Aksiyon Filmleri",
         "comedy": "Komedi Filmleri",
         "horror": "Korku Filmleri",

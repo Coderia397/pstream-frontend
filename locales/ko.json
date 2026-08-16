@@ -100,7 +100,7 @@
         "viewingHistoryEmpty": "시청 기록이 없습니다.",
         "viewingHistoryTitle": "최근 활동",
         "transferTitle": "프로필 이전",
-        "transferDesc": "p-stream ID는 이식 가능합니다. 12단어 복구 문구로 모든 기기에서 로그인할 수 있습니다.",
+        "transferDesc": "Pstream ID는 이식 가능합니다. 12단어 복구 문구로 모든 기기에서 로그인할 수 있습니다.",
         "transferHeader": "이 프로필 전송을 간소화했습니다",
         "transferFeature1": "시청 기록, 추천, 내가 찜한 콘텐츠 등을 전송",
         "transferFeature2": "자신의 계정을 보유하거나 기존 계정에 참여하고 이 프로필의 모든 좋아하는 것을 유지하세요",
@@ -111,7 +111,7 @@
     "rows": {
         "trending": "현재 인기 콘텐츠",
         "topRated": "높은 평점의 작품",
-        "netflixOriginals": "P-Stream 오리지널",
+        "netflixOriginals": "Pstream 오리지널",
         "action": "액션",
         "comedy": "코미디",
         "horror": "공포",

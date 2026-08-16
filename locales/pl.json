@@ -103,7 +103,7 @@
         "viewingHistoryEmpty": "Twoja historia oglądania jest pusta.",
         "viewingHistoryTitle": "Ostatnia aktywność",
         "transferTitle": "Przenieś profil",
-        "transferDesc": "Twoja tożsamość p-stream jest przenośna. Użyj swojej 12-wyrazowej frazy, aby zalogować się na dowolnym urządzeniu.",
+        "transferDesc": "Twoja tożsamość Pstream jest przenośna. Użyj swojej 12-wyrazowej frazy, aby zalogować się na dowolnym urządzeniu.",
         "transferHeader": "Uprościliśmy transfer tego profilu",
         "transferFeature1": "Przenieś historię oglądania, rekomendacje, Moją listę i więcej",
         "transferFeature2": "Miej własne konto lub dołącz do istniejącego i zachowaj wszystko, co lubisz w tym profilu",
@@ -114,7 +114,7 @@
     "rows": {
         "trending": "Dzisiaj na topie",
         "topRated": "Najlepiej oceniane",
-        "netflixOriginals": "Oryginalne produkcje P-Stream",
+        "netflixOriginals": "Oryginalne produkcje Pstream",
         "action": "Kino akcji",
         "comedy": "Komedie",
         "horror": "Horrory",

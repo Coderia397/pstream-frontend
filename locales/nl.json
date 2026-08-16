@@ -101,7 +101,7 @@
         "viewingHistoryEmpty": "Je kijkgeschiedenis is momenteel leeg.",
         "viewingHistoryTitle": "Recente activiteit",
         "transferTitle": "Profiel overdragen",
-        "transferDesc": "Je p-stream-identiteit is draagbaar. Gebruik je herstelzin van 12 woorden om op elk apparaat in te loggen.",
+        "transferDesc": "Je Pstream-identiteit is draagbaar. Gebruik je herstelzin van 12 woorden om op elk apparaat in te loggen.",
         "transferHeader": "We hebben de overdracht van dit profiel vereenvoudigd",
         "transferFeature1": "Verplaats kijkgeschiedenis, aanbevelingen, Mijn lijst en meer",
         "transferFeature2": "Heb je eigen account of sluit je aan bij een bestaand account en behoud alles wat je aan dit profiel leuk vindt",
@@ -112,7 +112,7 @@
     "rows": {
         "trending": "Nu trending",
         "topRated": "Best beoordeeld",
-        "netflixOriginals": "P-Stream Originals",
+        "netflixOriginals": "Pstream Originals",
         "action": "Actiefilms",
         "comedy": "Comedies",
         "horror": "Horrorfilms",

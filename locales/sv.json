@@ -101,7 +101,7 @@
         "viewingHistoryEmpty": "Din visningshistorik är för närvarande tom.",
         "viewingHistoryTitle": "Senaste aktivitet",
         "transferTitle": "Överför profil",
-        "transferDesc": "Din p-stream-identitet är portabel. Använd din 12-ords återställningsfras för att logga in på valfri enhet.",
+        "transferDesc": "Din Pstream-identitet är portabel. Använd din 12-ords återställningsfras för att logga in på valfri enhet.",
         "transferHeader": "Vi har förenklat överföringen av den här profilen",
         "transferFeature1": "Flytta din historik, rekommendationer, Min lista med mera",
         "transferFeature2": "Ha ditt eget konto eller gå med i ett befintligt och behåll allt du älskar med den här profilen",
@@ -112,7 +112,7 @@
     "rows": {
         "trending": "Trendar just nu",
         "topRated": "Toppbetyg",
-        "netflixOriginals": "P-Stream Originals",
+        "netflixOriginals": "Pstream Originals",
         "action": "Actionfilmer",
         "comedy": "Komedier",
         "horror": "Skräckfilmer",

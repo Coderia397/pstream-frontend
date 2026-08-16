@@ -101,7 +101,7 @@
         "viewingHistoryEmpty": "Votre historique est vide.",
         "viewingHistoryTitle": "Activité récente",
         "transferTitle": "Transférer le profil",
-        "transferDesc": "Votre identité p-stream est portable. Utilisez votre phrase de 12 mots pour vous connecter sur n'importe quel appareil.",
+        "transferDesc": "Votre identité Pstream est portable. Utilisez votre phrase de 12 mots pour vous connecter sur n'importe quel appareil.",
         "transferHeader": "Nous avons simplifié le transfert de profil",
         "transferFeature1": "Transférez votre historique, vos recommandations, Ma liste et plus encore",
         "transferFeature2": "Ayez votre propre compte ou rejoignez-en un existant et conservez tout ce que vous aimez de ce profil",
@@ -112,7 +112,7 @@
     "rows": {
         "trending": "Tendances actuelles",
         "topRated": "Les mieux notés",
-        "netflixOriginals": "Originaux P-Stream",
+        "netflixOriginals": "Originaux Pstream",
         "action": "Action",
         "comedy": "Comédie",
         "horror": "Horreur",
