@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
@@ -30,6 +32,14 @@ export default defineConfig({
       }
     })
   ],
+  // Declared here rather than in a postcss.config file: PostCSS only
+  // loads a .ts config when a TypeScript loader is present, and this
+  // project has no other reason to add one.
+  css: {
+    postcss: {
+      plugins: [tailwindcss(), autoprefixer()],
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
