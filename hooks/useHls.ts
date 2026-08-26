@@ -191,39 +191,14 @@ export const useHls = (videoRef: React.RefObject<HTMLVideoElement>, options: Use
                 fragLoadingRetryDelay: 500,
             };
 
-            // XHR setup: disable credentials, and for VaPlayer's rotating CDN domains,
-            // reroute segment/variant XHR requests through /proxy/stream for CORS injection.
-            // VaPlayer CDN domains block HF IPs but not residential browsers — so we use
-            // noProxy for the manifest (browser fetches directly) but proxy each segment
-            // to get CORS headers added server-side.
+            // XHR setup: disable credentials.
+            // VaPlayer proxy logic has been removed since the backend proxy route is gone.
             const referer = streamReferer;
-            const gigaBase = (import.meta as any).env?.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
-            const isBackendProxyStream = !!streamUrl && streamUrl.includes('/proxy/stream?url=');
-
-            // VaPlayer CDN patterns that need proxy-based CORS injection for segments
-            const VAPLAYER_CDN_PATTERNS = [
-                'contentmonetizationlab.site', 'smartmarketingacademy.site',
-                'personalbrandgrowth.site', 'wealthcreationmethod.site',
-                'neonhorizonworkshops.com', 'wanderlynest.com', 'orchidpixelgardens.com',
-                'brightpathsignals.com', 'cloudnestra.com', 'justhd.tv',
-            ];
-
             (hlsConfig as any).xhrSetup = (xhr: XMLHttpRequest, url: string) => {
                 xhr.withCredentials = false;
                 if (!url) return;
 
-                // Check if this XHR is for a VaPlayer CDN segment that needs CORS proxy
-                const isVaPlayerCdn = VAPLAYER_CDN_PATTERNS.some(p => url.includes(p));
-
-                if (isVaPlayerCdn && !url.startsWith(gigaBase)) {
-                    // Reroute through our CORS proxy — adds Access-Control-Allow-Origin
-                    // while the browser's residential IP makes the actual CDN connection
-                    const headers = referer
-                        ? { referer, origin: (() => { try { return new URL(referer).origin; } catch { return ''; } })() }
-                        : {};
-                    const proxyUrl = `${gigaBase}/proxy/stream?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
-                    xhr.open('GET', proxyUrl, true);
-                } else if (referer && isBackendProxyStream) {
+                if (referer) {
                     try { xhr.setRequestHeader('X-Referer', referer); } catch (_) { }
                 }
             };

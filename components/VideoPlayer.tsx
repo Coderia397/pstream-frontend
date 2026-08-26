@@ -25,23 +25,12 @@ import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/Arrow
 
 
 const GIGA_BACKEND_URL = import.meta.env.VITE_GIGA_BACKEND_URL || 'https://resolver.pstream.watch';
-const FORCE_PROXY_HOST_PATTERNS: RegExp[] = [];
 const RETRY_BASE_DELAY_MS = 1200;
 const RETRY_MAX_DELAY_MS = 5000;
 // Hard cap on automatic re-resolves when a stream won't start, so a genuinely
 // unplayable title can't hammer the resolver (and the phone hosting it).
 const MAX_RESOLVE_RETRIES = 3;
 const SOURCE_FAILURE_COOLDOWN_MS = 20 * 1000;
-
-function shouldForceProxy(source: any): boolean {
-    const rawUrl = String(source?.url || '');
-    try {
-        const host = new URL(rawUrl).hostname;
-        return FORCE_PROXY_HOST_PATTERNS.some((pattern) => pattern.test(host));
-    } catch (_) {
-        return false;
-    }
-}
 
 // Splits a plain-text segment by (ALL CAPS PARENS) and dims those tokens.
 function renderTextWithHI(text: string, baseStyle: React.CSSProperties, keyPrefix: string): React.ReactNode[] {
@@ -609,22 +598,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
 
         const activeReferer = hlsSource.referer || globalReferer || '';
         let finalUrl = hlsSource.url;
-        const forceProxy = shouldForceProxy(hlsSource);
 
         if (hlsSource.directManifest) {
             const blob = new Blob([hlsSource.directManifest], { type: 'application/vnd.apple.mpegurl' });
             finalUrl = URL.createObjectURL(blob);
-        } else if (hlsSource.noProxy && !forceProxy) {
-            finalUrl = hlsSource.url;
-            console.log(`[VideoPlayer] ⚡ Direct (no-proxy) stream: ${finalUrl.substring(0, 60)}...`);
         } else {
-            let origin = '';
-            try {
-                const refUrl = activeReferer.startsWith('//') ? `https:${activeReferer}` : activeReferer;
-                origin = refUrl ? new URL(refUrl).origin : '';
-            } catch (e) { }
-            const headersObj = { referer: activeReferer, origin };
-            finalUrl = `${GIGA_BACKEND_URL}/proxy/stream?url=${encodeURIComponent(hlsSource.url)}&headers=${encodeURIComponent(JSON.stringify(headersObj))}`;
+            finalUrl = hlsSource.url;
+            console.log(`[VideoPlayer] ⚡ Direct stream: ${finalUrl.substring(0, 60)}...`);
         }
 
         setStreamUrl(finalUrl);
@@ -661,20 +641,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
         reportedSuccessRef.current = null;
 
         const activeReferer = candidate.referer || '';
-        const forceProxy = shouldForceProxy(candidate);
         let finalUrl = candidate.url;
-        if (candidate.noProxy && !forceProxy) {
-            finalUrl = candidate.url;
-            console.log(`[VideoPlayer] ⚡ Direct (no-proxy) stream: ${finalUrl.substring(0, 60)}...`);
-        } else {
-            let origin = '';
-            try {
-                const refUrl = activeReferer.startsWith('//') ? `https:${activeReferer}` : activeReferer;
-                origin = refUrl ? new URL(refUrl).origin : '';
-            } catch (e) { }
-            const headersObj = { referer: activeReferer, origin };
-            finalUrl = `${GIGA_BACKEND_URL}/proxy/stream?url=${encodeURIComponent(candidate.url)}&headers=${encodeURIComponent(JSON.stringify(headersObj))}`;
-        }
+        console.log(`[VideoPlayer] ⚡ Direct stream: ${finalUrl.substring(0, 60)}...`);
         setStreamUrl(finalUrl);
         setIsStreamM3U8(!!candidate.isM3U8);
         setStreamReferer(activeReferer || null);
