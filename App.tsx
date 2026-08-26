@@ -41,6 +41,7 @@ const pageTransition = {
 // Components (always needed — eager)
 import Layout from './components/Layout';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
+import UpdatePrompt from './components/UpdatePrompt';
 
 const InfoModal = lazy(() => import('./components/InfoModal'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -594,6 +595,7 @@ const App: React.FC = () => {
       <ProfileSwitchOverlay />
 
       {isMobile && <PWAInstallPrompt />}
+      <UpdatePrompt />
     </div>
   );
 }
