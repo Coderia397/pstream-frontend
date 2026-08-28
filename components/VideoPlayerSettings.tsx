@@ -129,16 +129,8 @@ export const AudioSubPanel: React.FC<{
     const STEP = 0.5; // seconds per +/- press
     const offsetLabel = subtitleOffset === 0 ? '0.0s' : `${subtitleOffset > 0 ? '+' : ''}${subtitleOffset.toFixed(1)}s`;
 
-    const formatSubDuration = (sec: number): string => {
-        const h = Math.floor(sec / 3600);
-        const m = Math.floor((sec % 3600) / 60);
-        if (h > 0) return `${h}h ${m}m`;
-        return `${m}m`;
-    };
-
-    const getSubtitleDisplayLabel = (cap: any, fallbackLabel: string) => {
-        return fallbackLabel;
-    };
+    // No-op: placeholder for future label enrichment (e.g. SDH/CC suffixes).
+    const getSubtitleDisplayLabel = (_cap: any, fallbackLabel: string) => fallbackLabel;
 
 
     const renderAudioColumn = () => (

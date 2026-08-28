@@ -84,16 +84,8 @@ export const AudioSubPanelTouch: React.FC<{
 
     const rowCls = `flex items-center px-4 py-4 cursor-pointer active:bg-white/10 transition-colors duration-150 select-none group border-b border-white/5`;
 
-    const formatSubDuration = (sec: number): string => {
-        const h = Math.floor(sec / 3600);
-        const m = Math.floor((sec % 3600) / 60);
-        if (h > 0) return `${h}h ${m}m`;
-        return `${m}m`;
-    };
-
-    const getSubtitleDisplayLabel = (cap: any, fallbackLabel: string) => {
-        return fallbackLabel;
-    };
+    // No-op: placeholder for future label enrichment (e.g. SDH/CC suffixes).
+    const getSubtitleDisplayLabel = (_cap: any, fallbackLabel: string) => fallbackLabel;
 
     const hasAudioTracks = audioTracks.length > 0 || (internalTracks && internalTracks.filter(t => t.type === 'audio').length > 0);
 
