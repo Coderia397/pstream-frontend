@@ -53,12 +53,6 @@ interface VideoPlayerControlsProps {
     onSubtitlesClick?: () => void;
     onEpisodesClick?: () => void;
     currentCaption?: string | null;
-    allSources?: any[];
-    currentSourceIndex?: number;
-    qualities?: Array<{ height: number; bitrate: number; level: number }>;
-    currentQuality?: number;
-    onQualityChange?: (level: number) => void;
-    isMenuOpen?: boolean;
     showUI: boolean;
     activePanel?: 'none' | 'episodes' | 'seasons' | 'audioSubtitles' | 'quality' | 'servers' | 'playback';
     setActivePanel?: (panel: any) => void;
