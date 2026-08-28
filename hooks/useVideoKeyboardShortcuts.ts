@@ -35,7 +35,6 @@ export interface VideoKeyboardActions {
     setIsMuted: (v: boolean) => void;
     setPpRippleTrigger: (fn: (t: number) => number) => void;
     setSeekFlash: (v: { side: 'left' | 'right'; ts: number } | null) => void;
-    showHud: (icon: string, text: string) => void;
     showControls: () => void;
 }
 
@@ -45,7 +44,7 @@ export function useVideoKeyboardShortcuts(a: VideoKeyboardActions) {
         currentCaption, subtitleOffset, hasNextEpisode, hasPreviousEpisode, userMutedRef,
         onClose, toggleFullscreen, handleNextEpisode, handlePreviousEpisode,
         setCurrentCaption, setSubtitleOffset, setVolume, setIsMuted,
-        setPpRippleTrigger, setSeekFlash, showHud, showControls,
+        setPpRippleTrigger, setSeekFlash, showControls,
     } = a;
 
     useEffect(() => {
@@ -110,7 +109,6 @@ export function useVideoKeyboardShortcuts(a: VideoKeyboardActions) {
                         videoRef.current.muted = false;
                     }
                     if (isMuted) setIsMuted(false);
-                    showHud('🔊', `Volume: ${Math.round(v * 100)}%`);
                     break;
                 }
                 case 'ArrowDown': {
@@ -127,7 +125,6 @@ export function useVideoKeyboardShortcuts(a: VideoKeyboardActions) {
                             if (isMuted) setIsMuted(false);
                         }
                     }
-                    showHud(v === 0 ? '🔇' : '🔉', `Volume: ${Math.round(v * 100)}%`);
                     break;
                 }
                 default:
@@ -162,7 +159,6 @@ export function useVideoKeyboardShortcuts(a: VideoKeyboardActions) {
                             if (videoRef.current) {
                                 videoRef.current.muted = next;
                             }
-                            showHud(next ? '🔇' : '🔊', next ? 'Muted' : 'Unmuted');
                             break;
                         }
                         case 'n':
@@ -182,30 +178,25 @@ export function useVideoKeyboardShortcuts(a: VideoKeyboardActions) {
                         case '[': {
                             const next = parseFloat((subtitleOffset - 0.1).toFixed(1));
                             setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
                             break;
                         }
                         case ']': {
                             const next = parseFloat((subtitleOffset + 0.1).toFixed(1));
                             setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
                             break;
                         }
                         case '{': {
                             const next = parseFloat((subtitleOffset - 1.0).toFixed(1));
                             setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
                             break;
                         }
                         case '}': {
                             const next = parseFloat((subtitleOffset + 1.0).toFixed(1));
                             setSubtitleOffset(next);
-                            showHud('💬', `Subtitle Sync: ${next > 0 ? '+' : ''}${next.toFixed(1)}s`);
                             break;
                         }
                         case '\\':
                             setSubtitleOffset(0);
-                            showHud('💬', 'Subtitle Sync: Reset');
                             break;
                     }
                     break;
@@ -213,5 +204,5 @@ export function useVideoKeyboardShortcuts(a: VideoKeyboardActions) {
         };
         window.addEventListener('keydown', handleKey);
         return () => window.removeEventListener('keydown', handleKey);
-    }, [activePanel, onClose, hasNextEpisode, handleNextEpisode, hasPreviousEpisode, handlePreviousEpisode, isFullscreen, isPseudoFullscreen, toggleFullscreen, captions, currentCaption, showControls, isMuted, subtitleOffset, setSubtitleOffset, videoRef, setCurrentCaption, setVolume, setIsMuted, setPpRippleTrigger, setSeekFlash, showHud, userMutedRef]);
+    }, [activePanel, onClose, hasNextEpisode, handleNextEpisode, hasPreviousEpisode, handlePreviousEpisode, isFullscreen, isPseudoFullscreen, toggleFullscreen, captions, currentCaption, showControls, isMuted, subtitleOffset, setSubtitleOffset, videoRef, setCurrentCaption, setVolume, setIsMuted, setPpRippleTrigger, setSeekFlash, userMutedRef]);
 }
