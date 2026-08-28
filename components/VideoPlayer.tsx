@@ -1221,7 +1221,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
     return (
         <div
             ref={containerRef}
-            className={`fixed z-[20000] flex flex-col font-sans select-none overflow-hidden bg-black ${isPseudoFullscreen ? 'inset-0' : (isFullscreen ? '' : 'inset-0')}`}
+            className={`fixed inset-0 z-[20000] flex flex-col font-sans select-none overflow-hidden bg-black w-full h-[100dvh]`}
             style={{
                 ...(isPseudoFullscreen ? { position: 'fixed', zIndex: 20001 } : {}),
                 paddingTop: 'env(safe-area-inset-top, 0px)',
@@ -1285,8 +1285,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
             {/* The player: direct stream resolved from the backend, driven by useHls. */}
             <video
                 ref={videoRef}
-                className="absolute inset-0 w-full h-full bg-black"
-                style={{ objectFit: 'contain' }}
+                className="absolute inset-0 w-full h-full bg-black z-0"
+                style={{ objectFit: videoFit }}
                 playsInline
                 {...{ 'webkit-playsinline': 'true' } as any}
                 autoPlay

@@ -25,7 +25,7 @@ export const PanelShellTouch: React.FC<{
         >
             <div
                 id="video-panel-shell-touch"
-                className={`${commonPanelCls} w-[90vw] max-w-[400px] max-h-[80svh] pointer-events-auto rounded-md shadow-2xl left-1/2 -translate-x-1/2`}
+                className={`settings-panel-touch ${commonPanelCls} w-[90vw] max-w-[400px] max-h-[80svh] pointer-events-auto rounded-md shadow-2xl left-1/2 -translate-x-1/2`}
                 style={{ bottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}
                 onClick={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}

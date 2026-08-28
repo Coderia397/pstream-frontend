@@ -48,7 +48,7 @@ export const PanelShell: React.FC<{
             >
                 <div
                     id="video-panel-shell"
-                    className={`${commonPanelCls} ${desktopClass || 'w-[90vw] max-w-[550px] max-h-[80svh]'} pointer-events-auto`}
+                    className={`settings-panel ${commonPanelCls} ${desktopClass || 'w-[90vw] max-w-[550px] max-h-[80svh]'} pointer-events-auto`}
                     style={{ borderRadius: 0, bottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}
                     onClick={(e) => e.stopPropagation()}
                 >
@@ -71,7 +71,7 @@ export const PanelShell: React.FC<{
     return (
         <div
             id="video-panel-shell"
-            className={`${commonPanelCls} ${desktopClass || 'w-[550px] h-[480px]'}`}
+            className={`settings-panel ${commonPanelCls} ${desktopClass || 'w-[550px] h-[480px]'}`}
             style={{ borderRadius: 0 }}
         >
             {showHeader && (
