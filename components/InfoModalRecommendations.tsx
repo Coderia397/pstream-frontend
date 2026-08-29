@@ -91,7 +91,7 @@ const RecCard: React.FC<RecCardProps> = React.memo(({ rec, onPlay, onOpenModal }
                     <img
                         src={backdrop}
                         alt={title}
-                        className={`w-full h-full object-cover transition-opacity duration-200 ${imgLoaded ? 'opacity-90 group-hover:opacity-100' : 'opacity-0'}`}
+                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-200"
                         loading="lazy"
                         decoding="async"
                         onLoad={() => setImgLoaded(true)}

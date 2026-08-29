@@ -380,7 +380,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onSelect, onPlay, isGrid =
           src={imageSrc}
           onLoad={() => setImageLoaded(true)}
           className={`w-full h-full object-cover rounded-sm backdrop-pop ${isBook && !isGrid ? 'object-[50%_30%]' : 'object-center'}`}
-          style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.25s ease-out' }}
           alt={movie.name || movie.title}
           loading={preload ? 'eager' : 'lazy'}
           decoding="async"
