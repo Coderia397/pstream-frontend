@@ -69,6 +69,8 @@ const PrivacyPage       = lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage').then(module => ({ default: module.TermsPage })));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage').then(module => ({ default: module.CookiePolicyPage })));
 const ContactPage = lazy(() => import('./pages/ContactPage').then(module => ({ default: module.ContactPage })));
+const DMCAPage = lazy(() => import('./pages/DMCAPage'));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const PasswordRecoveryWall = lazy(() => import('./components/PasswordRecoveryWall').then(module => ({ default: module.PasswordRecoveryWall })));
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'));
 
@@ -392,12 +394,34 @@ const App: React.FC = () => {
   const isWatching = location.pathname.startsWith('/watch');
   const isSettings = location.pathname.startsWith('/settings');
 
-  const knownRoutes = ['/', '/browse', '/browse/series', '/browse/films', '/latest', '/browse/my-list', '/browse/language', '/clips', '/notifications', '/login'];
-  const is404Route = !knownRoutes.includes(backgroundLocation.pathname)
-    && !backgroundLocation.pathname.startsWith('/settings')
-    && !backgroundLocation.pathname.startsWith('/browse')
-    && !backgroundLocation.pathname.startsWith('/watch')
-    && !backgroundLocation.pathname.startsWith('/title');
+  const VALID_ROOT_ROUTES = new Set([
+    '/',
+    '/browse',
+    '/browse/series',
+    '/browse/films',
+    '/latest',
+    '/browse/my-list',
+    '/browse/language',
+    '/clips',
+    '/notifications',
+    '/login',
+    '/privacy',
+    '/terms',
+    '/cookies',
+    '/contact',
+    '/dmca',
+    '/disclaimer',
+    '/tv',
+    '/movies',
+    '/new',
+    '/list',
+  ]);
+  const is404Route =
+    !VALID_ROOT_ROUTES.has(backgroundLocation.pathname) &&
+    !backgroundLocation.pathname.startsWith('/settings') &&
+    !backgroundLocation.pathname.startsWith('/browse/') &&
+    !backgroundLocation.pathname.startsWith('/watch/') &&
+    !backgroundLocation.pathname.startsWith('/title/');
 
   const handleTabChange = useCallback((tab: string) => {
     setQuery('');
@@ -503,6 +527,10 @@ const App: React.FC = () => {
     <Suspense fallback={PageFallback}>
       <Routes location={backgroundLocation}>
         <Route path="/" element={<Navigate to="/browse" replace />} />
+        <Route path="/tv" element={<Navigate to="/browse/series" replace />} />
+        <Route path="/movies" element={<Navigate to="/browse/films" replace />} />
+        <Route path="/new" element={<Navigate to="/latest" replace />} />
+        <Route path="/list" element={<Navigate to="/browse/my-list" replace />} />
         <Route path="/browse" element={<HomePage onSelectMovie={handleSelectMovie} onPlay={handlePlay} seekTime={heroSeekTime} onViewAll={handleViewAll} />} />
         <Route path="/browse/series" element={<ShowsPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} onViewAll={handleViewAll} />} />
         <Route path="/browse/films" element={<MoviesPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} seekTime={heroSeekTime} onViewAll={handleViewAll} />} />
@@ -514,10 +542,12 @@ const App: React.FC = () => {
         <Route path="/settings/*" element={<SettingsPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
         <Route path="/browse/:rowKey" element={<BrowseGridPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
         <Route path="/login" element={<LoginPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/cookies" element={<CookiePolicyPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/dmca" element={<DMCAPage />} />
+        <Route path="/disclaimer" element={<DisclaimerPage />} />
         <Route path="*" element={<NotFoundPage onSelectMovie={handleSelectMovie} onPlay={handlePlay} />} />
       </Routes>
     </Suspense>
