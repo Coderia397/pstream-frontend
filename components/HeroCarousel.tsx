@@ -363,7 +363,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelect, onPlay, fetchUrl,
     <div
       id="hero-container"
       ref={containerRef}
-      className="relative w-full aspect-video max-h-[80vh] overflow-hidden group bg-black"
+      className="relative w-full aspect-video max-h-[90vh] overflow-hidden group bg-black"
     >
       {/* Global Skeleton Overlay (Unified Blink) */}
       {loading && (
