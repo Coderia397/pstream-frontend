@@ -58,7 +58,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelect, onPlay, fetchUrl,
   // If we started with cached data, mark app ready immediately
   useEffect(() => {
     if (!loading) setIsAppReady(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isVideoReady, setIsVideoReady] = useState(false);
@@ -363,7 +363,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelect, onPlay, fetchUrl,
     <div
       id="hero-container"
       ref={containerRef}
-      className="relative w-full aspect-video overflow-hidden group bg-black"
+      className="relative w-full aspect-video max-h-[80vh] overflow-hidden group bg-black"
     >
       {/* Global Skeleton Overlay (Unified Blink) */}
       {loading && (
@@ -402,7 +402,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelect, onPlay, fetchUrl,
             if (heroPlayerRef.current && typeof heroPlayerRef.current.getCurrentTime === 'function') {
               t = heroPlayerRef.current.getCurrentTime() || t;
             }
-          } catch {}
+          } catch { }
           onSelect(m, t > 0 ? t : undefined);
         }}
         hasVideoEnded={hasVideoEnded}

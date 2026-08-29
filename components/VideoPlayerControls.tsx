@@ -364,7 +364,7 @@ const NextEpisodePopup: React.FC<{
                             cursor: 'pointer',
                             alignSelf: 'flex-start',
                         }}>
-                            Play Now
+                            {t('player.playNow', { defaultValue: 'Play Now' })}
                         </button>
                     )}
                 </div>
@@ -1002,7 +1002,7 @@ const VideoPlayerControls: React.FC<VideoPlayerControlsProps> = ({
                                 <>
                                     {/* LEFT GROUP */}
                                     <div className="flex items-center min-w-0 gap-5 md:gap-8" style={{ flex: '1 1 0%' }}>
-                                        <button onClick={handlePlayPause} onMouseDown={() => onInteraction?.()} className={`${btn} ml-2 md:ml-3`} aria-label={isPlaying ? 'Pause' : 'Play'}>
+                                        <button onClick={handlePlayPause} onMouseDown={() => onInteraction?.()} className={`${btn} ml-2 md:ml-3`} aria-label={isPlaying ? t('player.pause', { defaultValue: 'Pause' }) : t('player.play', { defaultValue: 'Play' })}>
                                             {isPlaying ? <PauseIcon size={ICON_SIZE} weight="fill" /> : <PlayIcon size={ICON_SIZE} weight="fill" />}
                                         </button>
                                         <button onClick={() => { onSeek(-10); onInteraction?.(); triggerSeekFlash('left'); }} className={`${btn} -ml-4 md:-ml-6`} aria-label={t('player.rewind10s')}>

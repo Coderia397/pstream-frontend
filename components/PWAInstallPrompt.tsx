@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import { ArrowSquareDown as ArrowSquareDownIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareDown';
 
@@ -34,6 +35,7 @@ function markDismissed() {
 }
 
 export default function PWAInstallPrompt() {
+    const { t } = useTranslation();
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [visible, setVisible] = useState(false);
     const [isIOSDevice] = useState(isIOS);
@@ -79,14 +81,17 @@ export default function PWAInstallPrompt() {
                     <img src="/icons/icon-192.png" alt="Pstream" className="w-8 h-8 rounded-lg" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm font-semibold leading-tight">Install Pstream</p>
+                    <p className="text-white text-sm font-semibold leading-tight">{t('pwa.install', { defaultValue: 'Install Pstream' })}</p>
                     {isIOSDevice ? (
                         <p className="text-white/60 text-xs mt-0.5">
-                            Tap <strong>Share</strong> then <strong>Add to Home Screen</strong>
+                            {t('common.installDesc1', { defaultValue: 'Tap' })}{' '}
+                            <strong>{t('common.share', { defaultValue: 'Share' })}</strong>{' '}
+                            {t('common.installDesc2', { defaultValue: 'then' })}{' '}
+                            <strong>{t('common.installDesc3', { defaultValue: 'Add to Home Screen' })}</strong>
                         </p>
                     ) : (
                         <p className="text-white/60 text-xs mt-0.5">
-                            Get the full-screen experience
+                            {t('pwa.fullscreenDesc', { defaultValue: 'Get the full-screen experience' })}
                         </p>
                     )}
                 </div>
@@ -96,13 +101,13 @@ export default function PWAInstallPrompt() {
                         className="shrink-0 bg-white text-black text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5"
                     >
                         <ArrowSquareDownIcon size={14} weight="bold" />
-                        Install
+                        {t('pwa.installButton', { defaultValue: 'Install' })}
                     </button>
                 )}
                 <button
                     onClick={dismiss}
                     className="shrink-0 text-white/40 hover:text-white/70 transition-colors"
-                    aria-label="Dismiss"
+                    aria-label={t('common.dismiss', { defaultValue: 'Dismiss' })}
                 >
                     <XIcon size={18} weight="bold" />
                 </button>

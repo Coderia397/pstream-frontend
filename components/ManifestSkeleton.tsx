@@ -11,7 +11,7 @@ export const ManifestSkeleton: React.FC<ManifestSkeletonProps> = ({ count = 5 })
   return (
     <div className="space-y-10 md:space-y-12">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="animate-pulse px-4 md:px-14 lg:px-16">
+        <div key={i} className="animate-pulse px-[var(--app-x)]">
           {/* Row Title Placeholder */}
           <div 
             className="h-5 sm:h-6 bg-white/10 rounded mb-5"
@@ -25,8 +25,8 @@ export const ManifestSkeleton: React.FC<ManifestSkeletonProps> = ({ count = 5 })
                 key={j} 
                 className={`flex-none rounded-md bg-white/[0.06] border border-white/[0.03] transition-all relative overflow-hidden
                   ${isMobile 
-                    ? 'w-[calc((100vw-3rem)/3.2)] sm:w-[calc((100vw-3rem)/4.3)] aspect-[2/3] mr-1' 
-                    : 'w-[calc((100vw-3.5rem)/5.3)] lg:w-[calc((100vw-4rem)/6.7)] aspect-[7/5] mr-1.5'
+                    ? 'w-[calc((100vw-3rem)/3.2)] sm:w-[calc((100vw-3rem)/4.3)] aspect-[7/4.20] mr-1' 
+                    : 'w-[calc((100vw-3.5rem)/5.3)] lg:w-[calc((100vw-4rem)/6.7)] aspect-[7/4.20] mr-1.5'
                   }`}
                 style={{ animationDelay: `${(i * 6 + j) * 0.03}s` }}
               >
@@ -34,7 +34,7 @@ export const ManifestSkeleton: React.FC<ManifestSkeletonProps> = ({ count = 5 })
                 <div className="absolute inset-0 bg-gradient-to-b from-[#222222]/20 via-[#181818]/45 to-black/60 pointer-events-none" />
                 
                 {/* Horizontal shimmer line */}
-                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.8s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" style={{ animationDelay: `${(i * 6 + j) * 0.04}s` }} />
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/[0.05] to-transparent pointer-events-none" style={{ animationDelay: `${(i * 6 + j) * 0.04}s` }} />
                 
                 {/* Text placeholder for horizontal desktop cards only */}
                 {!isMobile && (

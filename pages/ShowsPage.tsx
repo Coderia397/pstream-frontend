@@ -51,7 +51,7 @@ const ShowsPage: React.FC<PageProps> = ({ onSelectMovie, onPlay, onViewAll }) =>
   }, [selectedGenre?.id]);
 
   return (
-    <div className="relative">
+    <div className={`relative ${isLoading ? 'min-h-[100vh]' : ''}`}>
         <CategorySubNav
           title={t('nav.shows', { defaultValue: 'Series' })}
           genres={isKidsMode ? KIDS_TV_GENRES : TV_GENRES}
@@ -68,7 +68,7 @@ const ShowsPage: React.FC<PageProps> = ({ onSelectMovie, onPlay, onViewAll }) =>
             transition={{ duration: 0.3 }}
           >
              <HeroSkeleton />
-             <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 px-[var(--app-x)] pt-4 md:pt-10">
+             <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 pt-4 md:pt-10">
                 <ManifestSkeleton count={8} />
              </main>
           </m.div>

@@ -192,7 +192,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ initialView, initialEmail, onClos
         <button
           onClick={handleGoogle}
           disabled={googleLoading}
-          className="w-full h-12 mb-5 bg-white text-black rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-gray-100 transition-all active:scale-[0.98] disabled:opacity-60"
+          className="w-full h-12 mb-5 bg-white text-black rounded-[4px] font-bold flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors duration-150 active:scale-95 disabled:opacity-60"
         >
           <GoogleLogoIcon size={20} weight="bold" />
           {googleLoading ? t('auth.redirecting') : t('auth.continueWithGoogle')}
@@ -274,7 +274,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ initialView, initialEmail, onClos
 
           {error && <p className="text-red-400 text-xs">{error}</p>}
           <button type="submit" disabled={loading}
-            className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-50 mt-1">
+            className="w-full py-3.5 bg-netflix-red hover:bg-[#b80710] text-white rounded-[4px] font-bold text-sm shadow-lg transition-colors duration-150 active:scale-95 disabled:opacity-50 mt-1">
             {loading
               ? (view === 'signup' ? t('auth.creating') : t('auth.signingIn'))
               : (view === 'signup' ? t('auth.createAccount') : t('auth.signIn'))}
@@ -598,14 +598,14 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-black text-white font-inter min-h-screen">
+    <div className="bg-black text-white font-sans min-h-screen">
 
       {/* ── Navbar (logo + sign in only) ─────────────────────────────────── */}
       <nav className="fixed top-0 w-full z-[80] bg-gradient-to-b from-black/80 to-transparent px-6 md:px-20 lg:px-32 xl:px-44 2xl:px-56 py-4 flex items-center justify-between">
         <img src={logo} alt="Pstream" className="h-5 md:h-7 cursor-pointer" onClick={() => {}} />
         <button
           onClick={() => setAuthView('signin')}
-          className="px-5 py-2 bg-[#e50914] text-white text-sm font-bold rounded hover:bg-[#f40612] transition-all active:scale-95"
+          className="px-5 py-2 bg-netflix-red text-white text-sm font-bold rounded-[4px] hover:bg-[#b80710] shadow-lg transition-colors duration-150 active:scale-95"
         >
           {t('auth.signIn')}
         </button>
@@ -640,7 +640,7 @@ const LoginPage: React.FC = () => {
             />
             <button
               type="submit"
-              className="w-full sm:w-[35%] h-14 bg-[#e50914] hover:bg-[#f40612] text-white font-bold text-lg rounded flex items-center justify-center gap-2 whitespace-nowrap transition-all hover:scale-[1.02] active:scale-95 shadow-xl"
+              className="w-full sm:w-[35%] h-14 bg-netflix-red hover:bg-[#b80710] text-white font-bold text-lg rounded-[4px] flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-150 active:scale-95 shadow-xl"
             >
               {t('auth.getStarted')}
               <CaretRightIcon size={22} weight="bold" />
@@ -687,7 +687,7 @@ const LoginPage: React.FC = () => {
           />
           <button
             type="submit"
-            className="w-full sm:w-[35%] h-14 bg-[#e50914] hover:bg-[#f40612] text-white font-bold text-lg rounded flex items-center justify-center gap-2 whitespace-nowrap transition-all hover:scale-[1.02] active:scale-95 shadow-xl"
+            className="w-full sm:w-[35%] h-14 bg-netflix-red hover:bg-[#b80710] text-white font-bold text-lg rounded-[4px] flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-150 active:scale-95 shadow-xl"
           >
             {t('auth.getStarted')} <CaretRightIcon size={22} weight="bold" />
           </button>

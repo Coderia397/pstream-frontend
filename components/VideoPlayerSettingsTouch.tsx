@@ -149,7 +149,7 @@ export const AudioSubPanelTouch: React.FC<{
                         <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 shrink-0">
                             <div className="flex flex-col">
                                 <span className="text-sm font-bold text-white">{t('player.syncSubtitles')}</span>
-                                <span className="text-xs text-white/50">{subtitleOffset === 0 ? 'Default timing' : `${subtitleOffset > 0 ? '+' : ''}${subtitleOffset.toFixed(1)}s delay`}</span>
+                                <span className="text-xs text-white/50">{subtitleOffset === 0 ? t('player.defaultTiming', { defaultValue: 'Default timing' }) : `${subtitleOffset > 0 ? '+' : ''}${subtitleOffset.toFixed(1)}s delay`}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <button
@@ -231,6 +231,7 @@ export const ServerPanelTouch: React.FC<{
     onSourceChange: (index: number) => void;
     onClose: () => void;
 }> = ({ allSources, currentSourceIndex, onSourceChange, onClose }) => {
+    const { t } = useTranslation();
     const rowCls = `flex items-center justify-between px-4 py-4 cursor-pointer active:bg-white/10 transition border-b border-white/5 select-none`;
 
     return (
@@ -248,7 +249,7 @@ export const ServerPanelTouch: React.FC<{
                             <div className="flex items-center gap-2">
                                 <span className="text-[10px] uppercase font-bold text-white/30">{source.provider || 'External'}</span>
                                 <span className="text-[10px] text-white/30">•</span>
-                                <span className="text-xs text-white/40 truncate">{source.quality || 'Auto'} • {source.isM3U8 ? 'Adaptive' : 'Direct'}</span>
+                                <span className="text-xs text-white/40 truncate">{source.quality || t('player.auto', { defaultValue: 'Auto' })} • {source.isM3U8 ? t('player.adaptive', { defaultValue: 'Adaptive' }) : t('player.direct', { defaultValue: 'Direct' })}</span>
                             </div>
                         </div>
                     </div>
@@ -313,6 +314,7 @@ export const QualityMenuTouch: React.FC<{
     onSourceChange?: (index: number) => void;
     onRequestFallback?: () => void;
 }> = ({ qualities, currentQuality, onQualityChange, onClose, allSources, currentSourceIndex, onSourceChange, onRequestFallback }) => {
+    const { t } = useTranslation();
     const rowCls = `flex items-center px-4 py-4 cursor-pointer active:bg-white/10 transition border-b border-white/5 select-none`;
 
     // 1. If it's a Debrid/Direct stream, show all sources as quality levels
@@ -336,7 +338,7 @@ export const QualityMenuTouch: React.FC<{
                             </div>
                             <div className="flex flex-col">
                                 <span className={`text-base font-bold ${isSelected ? 'text-white' : 'text-white/80'}`}>{q.label}</span>
-                                {q.seeders > 0 && <span className="text-[10px] text-white/40 uppercase font-bold">{q.seeders} SEEDERS</span>}
+                                {q.seeders > 0 && <span className="text-[10px] text-white/40 uppercase font-bold">{t('player.seeders', { count: q.seeders, defaultValue: `${q.seeders} SEEDERS` })}</span>}
                             </div>
                         </div>
                     );
@@ -354,7 +356,7 @@ export const QualityMenuTouch: React.FC<{
                         {currentQuality === -1 && <CheckIcon size={30} weight="bold" className="text-red-500" />}
                     </div>
                     <div className="flex flex-col gap-0.5">
-                        <span className={`text-base font-bold ${currentQuality === -1 ? 'text-white' : 'text-white/60'}`}>Auto</span>
+                        <span className={`text-base font-bold ${currentQuality === -1 ? 'text-white' : 'text-white/60'}`}>{t('player.auto', { defaultValue: 'Auto' })}</span>
                     </div>
                 </div>
                 {qualities.map((q, i) => (
@@ -367,7 +369,7 @@ export const QualityMenuTouch: React.FC<{
                             {currentQuality === q.level && <CheckIcon size={30} weight="bold" className="text-red-500" />}
                         </div>
                         <span className={`text-base font-bold ${currentQuality === q.level ? 'text-white' : 'text-white/60'}`}>
-                            {q.height > 0 ? `${q.height}p` : 'Unknown'}
+                            {q.height > 0 ? `${q.height}p` : t('common.unknown', { defaultValue: 'Unknown' })}
                         </span>
                     </div>
                 ))}
@@ -377,7 +379,7 @@ export const QualityMenuTouch: React.FC<{
 
     return (
         <div className="p-8 text-center text-white/40 text-sm">
-            Quality selection is unavailable for this source.
+            {t('player.qualityUnavailable', { defaultValue: 'Quality selection is unavailable for this source.' })}
         </div>
     );
 };
@@ -438,7 +440,7 @@ export const EpisodeExplorerTouch: React.FC<{
                             <div className="w-8 flex-shrink-0">
                                 {selectedSeason === s && <CheckIcon size={20} weight="bold" className="text-red-500" />}
                             </div>
-                            Season {s}
+                            {t('common.seasonNum', { season: s, defaultValue: `Season ${s}` })}
                         </div>
                     ))}
                 </div>
@@ -450,7 +452,7 @@ export const EpisodeExplorerTouch: React.FC<{
                         onClick={(e) => { e.stopPropagation(); setActivePanel('seasons'); }}
                     >
                         <ArrowLeftIcon size={28} weight="bold" className="text-white" />
-                        <span className="text-lg font-bold">Season {previewSeason}</span>
+                        <span className="text-lg font-bold">{t('common.seasonNum', { season: previewSeason, defaultValue: `Season ${previewSeason}` })}</span>
                     </div>
                     <div ref={episodesContainerRef} className="overflow-y-auto flex-1 scrollbar-hide pb-8">
                         {currentSeasonEpisodes.map(ep => {
@@ -520,7 +522,7 @@ export const EpisodeExplorerTouch: React.FC<{
                                                 }}
                                             >
                                                 <PlayIcon size={30} weight="fill" />
-                                                Play Episode {ep.episode_number}
+                                                {t('player.playEpisodeNum', { num: ep.episode_number, defaultValue: `Play Episode ${ep.episode_number}` })}
                                             </button>
                                         </div>
                                     )}

@@ -314,7 +314,7 @@ export const ServerPanel: React.FC<{
             {!isMobile && (
                 <div className="px-8 py-6 border-b border-white/10 flex-shrink-0">
                     <span className="text-white text-2xl font-bold">{t('player.selectServer')}</span>
-                    <p className="text-sm text-white/40 mt-1">Switch servers if you experience buffering or if the current one is offline.</p>
+                    <p className="text-sm text-white/40 mt-1">{t('videoPlayer.switchServers', { defaultValue: 'Switch servers if you experience buffering or if the current one is offline.' })}</p>
                 </div>
             )}
             <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-[#555] scrollbar-track-transparent py-2">
@@ -375,7 +375,7 @@ export const QualityMenu: React.FC<{
                 {!isMobile && (
                     <div className="px-8 py-6 border-b border-white/10 flex-shrink-0">
                         <span className="text-white text-2xl font-bold">{t('player.videoQuality')}</span>
-                        <p className="text-sm text-white/40 mt-1">Select your preferred resolution for this stream.</p>
+                        <p className="text-sm text-white/40 mt-1">{t('videoPlayer.selectResolution', { defaultValue: 'Select your preferred resolution for this stream.' })}</p>
                     </div>
                 )}
                 <div className="overflow-y-auto max-h-[50vh] py-2 scroll-list">
@@ -388,7 +388,7 @@ export const QualityMenu: React.FC<{
                                 </div>
                                 <div className="flex flex-col">
                                     <span className={`text-base font-bold ${isSelected ? 'text-white' : 'text-white/80'}`}>{q.label}</span>
-                                    {q.seeders > 0 && <span className="text-[10px] text-white/40 uppercase font-bold">{q.seeders} SEEDERS</span>}
+                                    {q.seeders > 0 && <span className="text-[10px] text-white/40 uppercase font-bold">{t('player.seeders', { count: q.seeders, defaultValue: `${q.seeders} SEEDERS` })}</span>}
                                 </div>
                             </div>
                         );
@@ -412,7 +412,7 @@ export const QualityMenu: React.FC<{
                     )}
                     <div className="flex flex-col gap-0.5">
                         <span className={`text-sm font-bold ${currentQuality === -1 ? 'text-white' : 'text-white/60'}`}>{t('player.auto')}</span>
-                        {!isMobile && <div className="text-xs text-white/50">Adjusts automatically</div>}
+                        {!isMobile && <div className="text-xs text-white/50">{t('videoPlayer.adjustsAutomatically', { defaultValue: 'Adjusts automatically' })}</div>}
                     </div>
                 </div>
                 <div className="overflow-y-auto max-h-[50vh] py-2 scroll-list">
@@ -439,7 +439,7 @@ export const QualityMenu: React.FC<{
 
     return (
         <div className="p-12 text-center text-white/40 italic">
-            Quality selection is unavailable for this source.
+            {t('player.qualityUnavailable', { defaultValue: 'Quality selection is unavailable for this source.' })}
         </div>
     );
 };
@@ -512,7 +512,7 @@ export const EpisodeExplorer: React.FC<{
                                 }`}
                             >
                                 {selectedSeason === s && <CheckIcon size={24} weight="bold" className="absolute left-[18px] top-1/2 -translate-y-1/2 text-white" />}
-                                Season {s}
+                                {t('common.seasonNum', { season: s, defaultValue: `Season ${s}` })}
                             </div>
                         ))}
                     </div>
@@ -527,7 +527,7 @@ export const EpisodeExplorer: React.FC<{
                         title={t('player.switchSeason')}
                     >
                         <ArrowLeftIcon size={26} weight="bold" className="text-white/70 flex-shrink-0" />
-                        <span className="text-[22px] font-bold">Season {selectedSeason}</span>
+                        <span className="text-[22px] font-bold">{t('common.seasonNum', { season: selectedSeason, defaultValue: `Season ${selectedSeason}` })}</span>
                     </div>
                     <div ref={episodesContainerRef} className="overflow-y-auto scroll-list flex-1 scrollbar-hide">
                         {currentSeasonEpisodes.map(ep => {

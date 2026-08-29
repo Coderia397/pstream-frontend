@@ -485,11 +485,11 @@ const InfoModalTouch: React.FC<InfoModalTouchProps> = ({
                             >
                                 <div className="relative w-full h-[3px] bg-white/25 rounded-full">
                                     <div
-                                        className="absolute left-0 top-0 bottom-0 bg-[#e50914] rounded-full"
+                                        className="absolute left-0 top-0 bottom-0 bg-netflix-red rounded-full"
                                         style={{ width: `${trailerPct}%` }}
                                     />
                                     <div
-                                        className="absolute top-1/2 -translate-y-1/2 w-[12px] h-[12px] bg-[#e50914] rounded-full shadow-lg pointer-events-none"
+                                        className="absolute top-1/2 -translate-y-1/2 w-[12px] h-[12px] bg-netflix-red rounded-full shadow-lg pointer-events-none"
                                         style={{ left: `calc(${trailerPct}% - 6px)` }}
                                     />
                                 </div>
@@ -545,7 +545,7 @@ const InfoModalTouch: React.FC<InfoModalTouchProps> = ({
                         return (
                             <Link
                                 to={watchUrl}
-                                className="w-full bg-white text-black h-[50px] rounded-[2px] font-extrabold text-[17px] flex items-center justify-center hover:bg-gray-200 transition active:scale-[0.98] shadow-md leading-none no-underline gap-2 cursor-pointer"
+                                className="w-full bg-white text-black h-[50px] rounded-[4px] font-bold text-[17px] flex items-center justify-center hover:bg-neutral-200 transition-colors duration-150 active:scale-95 shadow-md leading-none no-underline gap-2 cursor-pointer"
                             >
                                 <PlayIcon size={26} weight="fill" className="text-black" />
                                 <span>{hasResumeTV ? `Resume` : hasResumeMovie ? 'Resume' : 'Play'}</span>
@@ -569,7 +569,7 @@ const InfoModalTouch: React.FC<InfoModalTouchProps> = ({
                         <div className="flex items-center gap-x-3.5 w-full">
                             <div className="flex-1 h-[3px] bg-white/20 rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-[#e50914] rounded-full transition-all duration-300"
+                                    className="h-full bg-netflix-red rounded-full transition-all duration-300"
                                     style={{ width: `${watchPct}%` }}
                                 />
                             </div>
@@ -753,7 +753,7 @@ const InfoModalTouch: React.FC<InfoModalTouchProps> = ({
                         >
                             {t('infoModal.episodesTab', { defaultValue: 'Episodes' })}
                             {activeMobileTab === 'episodes' && (
-                                <div className="absolute left-0 right-0 h-[4px] bg-[#e50914] rounded-none" style={{ bottom: '-1px' }} />
+                                <div className="absolute left-0 right-0 h-[4px] bg-netflix-red rounded-none" style={{ bottom: '-1px' }} />
                             )}
                         </button>
                     )}
@@ -763,7 +763,7 @@ const InfoModalTouch: React.FC<InfoModalTouchProps> = ({
                     >
                         {t('infoModal.moreTab', { defaultValue: 'More Like This' })}
                         {activeMobileTab === 'more' && (
-                            <div className="absolute left-0 right-0 h-[4px] bg-[#e50914] rounded-none" style={{ bottom: '-1px' }} />
+                            <div className="absolute left-0 right-0 h-[4px] bg-netflix-red rounded-none" style={{ bottom: '-1px' }} />
                         )}
                     </button>
                 </div>

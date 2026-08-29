@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CaretLeft as CaretLeftIcon } from '@phosphor-icons/react/dist/ssr/CaretLeft';
 import { CaretRight as CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
 import { Movie } from '../types';
@@ -15,7 +16,8 @@ interface CharacterRowProps {
     title?: string;
 }
 
-const CharacterRow: React.FC<CharacterRowProps> = ({ onSelectMovie, title = "Characters" }) => {
+const CharacterRow: React.FC<CharacterRowProps> = ({ onSelectMovie, title }) => {
+    const { t } = useTranslation();
     const [characters, setCharacters] = useState<Movie[]>([]);
     const rowRef = useRef<HTMLDivElement>(null);
     const [isHovered, setIsHovered] = useState(false);
@@ -98,7 +100,7 @@ const CharacterRow: React.FC<CharacterRowProps> = ({ onSelectMovie, title = "Cha
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
             <h2 className="text-white text-lg md:text-xl font-bold mb-4 drop-shadow-sm px-2">
-                {title}
+                {title || t('common.characters', { defaultValue: 'Characters' })}
             </h2>
 
             <div className="relative group/row">

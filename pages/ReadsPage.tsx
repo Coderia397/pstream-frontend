@@ -32,6 +32,7 @@ const IssueCard: React.FC<{
     onRead: (book: Movie, chapterId: string) => void;
     isVisible: boolean;
 }> = ({ issue, seriesTitle, onRead, isVisible }) => {
+    const { t } = useTranslation();
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -78,7 +79,7 @@ const IssueCard: React.FC<{
                     </>
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">
-                        Issue #{issue.issueNumber}
+                        {t('reads.issueNum', { num: issue.issueNumber, defaultValue: `Issue #${issue.issueNumber}` })}
                     </div>
                 )}
 
@@ -91,7 +92,7 @@ const IssueCard: React.FC<{
 
                 {/* Issue Label on Card */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
-                    <span className="text-white text-xs font-medium">Issue #{issue.issueNumber}</span>
+                    <span className="text-white text-xs font-medium">{t('reads.issueNum', { num: issue.issueNumber, defaultValue: `Issue #${issue.issueNumber}` })}</span>
                 </div>
             </div>
         </div>
@@ -103,6 +104,7 @@ const SeriesRow: React.FC<{
     series: Series;
     onRead: (book: Movie, chapterId: string) => void;
 }> = ({ series, onRead }) => {
+    const { t } = useTranslation();
     const rowRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
@@ -158,7 +160,7 @@ const SeriesRow: React.FC<{
             <h2 className="text-lg md:text-xl font-bold text-white mb-3 px-4 md:px-12 flex items-center gap-2">
                 {series.title}
                 <span className="text-white/30 font-normal text-sm">
-                    {series.issues.length} issues
+                    {t('reads.issuesCount', { count: series.issues.length, defaultValue: `${series.issues.length} issues` })}
                 </span>
             </h2>
 
@@ -228,7 +230,7 @@ const ReadsPage: React.FC<ReadsPageProps> = ({ onSelectBook, onRead }) => {
                     <div className="px-4 md:px-12 py-8">
                         <div className="flex items-center gap-3">
                             <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                            <span className="text-white/50 text-sm">Loading library...</span>
+                            <span className="text-white/50 text-sm">{t('common.loadingLibrary', { defaultValue: 'Loading library...' })}</span>
                         </div>
                     </div>
                 ) : seriesList.length > 0 ? (
@@ -243,7 +245,7 @@ const ReadsPage: React.FC<ReadsPageProps> = ({ onSelectBook, onRead }) => {
                     </>
                 ) : (
                     <div className="px-4 md:px-12 py-8">
-                        <div className="text-white/40 text-sm">No comics in library</div>
+                        <div className="text-white/40 text-sm">{t('common.noComics', { defaultValue: 'No comics in library' })}</div>
                     </div>
                 )}
             </main>

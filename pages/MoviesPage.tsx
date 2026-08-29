@@ -43,7 +43,7 @@ const MoviesPage: React.FC<PageProps> = ({ onSelectMovie, onPlay, seekTime, onVi
   const { rows, isLoading } = useDynamicManifest('movie', selectedGenre?.id, selectedGenre?.name);
 
   return (
-    <div className="relative">
+    <div className={`relative ${isLoading ? 'min-h-[100vh]' : ''}`}>
         <CategorySubNav
           title={t('nav.movies', { defaultValue: 'Movies' })}
           genres={isKidsMode ? KIDS_MOVIE_GENRES : MOVIE_GENRES}
@@ -61,7 +61,7 @@ const MoviesPage: React.FC<PageProps> = ({ onSelectMovie, onPlay, seekTime, onVi
             transition={{ duration: 0.3 }}
           >
               <HeroSkeleton />
-              <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 px-[var(--app-x)] pt-4 md:pt-10">
+              <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 pt-4 md:pt-10">
                  <ManifestSkeleton count={8} />
               </main>
           </m.div>

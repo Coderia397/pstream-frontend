@@ -1310,7 +1310,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                                 <h2 className="text-white font-bold text-2xl mt-1 drop-shadow-md">
                                     {t('player.season', { defaultValue: 'Season' })} {playingSeasonNumber}
                                 </h2>
-                                <h3 className="text-white font-bold text-xl mt-3 drop-shadow-md">{currentEpisodeName}: Ep. {currentEpisode}</h3>
+                                <h3 className="text-white font-bold text-xl mt-3 drop-shadow-md">{currentEpisodeName}: {t('player.episodeCodeShort', { episode: currentEpisode, defaultValue: `Ep. ${currentEpisode}` })}</h3>
                             </>
                         )}
 

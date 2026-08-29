@@ -65,7 +65,7 @@ const HomePage: React.FC<PageProps> = ({ onSelectMovie, onPlay, seekTime, onView
   const showSkeleton = isLoading;
 
   return (
-    <div className="relative">
+    <div className={`relative ${showSkeleton ? 'min-h-[100vh]' : ''}`}>
       <CategorySubNav
         title={t('nav.home', { defaultValue: 'Home' })}
         genres={isKidsMode ? [] : HOME_MOBILE_GENRES}
@@ -84,7 +84,7 @@ const HomePage: React.FC<PageProps> = ({ onSelectMovie, onPlay, seekTime, onView
             transition={{ duration: 0.3 }}
           >
             <HeroSkeleton />
-            <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 px-[var(--app-x)] pt-4 md:pt-10">
+            <main className="relative z-10 pb-12 -mt-2 sm:-mt-4 md:-mt-6 space-y-4 md:space-y-6 pt-4 md:pt-10">
               <ManifestSkeleton count={6} />
             </main>
           </m.div>

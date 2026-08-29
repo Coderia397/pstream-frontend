@@ -151,16 +151,16 @@ const MyListPage: React.FC<PageProps> = ({ onSelectMovie, onPlay, onViewAll }) =
   return (
     <div className="relative min-h-screen">
       <CategorySubNav
-        title="My List"
+        title={t('nav.myList', { defaultValue: 'My List' })}
         genres={UNIVERSAL_GENRES}
         selectedGenre={selectedGenre}
         onGenreSelect={setSelectedGenre}
       />
 
-      <div className="pt-36 md:pt-44 px-6 md:px-14 lg:px-20 pb-12">
+      <div className="pt-36 md:pt-44 px-[var(--app-x)] pb-12">
         {myList.length > 0 ? (
           processedList.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 animate-fadeIn">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2.5 gap-y-6 animate-fadeIn">
               {processedList.map(movie => (
                 <div key={movie.id} className="relative group">
                   <MovieCard movie={movie} onSelect={onSelectMovie} onPlay={onPlay} isGrid={true} />
@@ -186,7 +186,7 @@ const MyListPage: React.FC<PageProps> = ({ onSelectMovie, onPlay, onViewAll }) =
         )}
       </div>
 
-      <div className="px-6 md:px-14 lg:px-20 pb-16 space-y-8">
+      <div className="px-[var(--app-x)] pb-16 space-y-8">
         {/* Recommended For You row — temporarily disabled
         {topGenres.length > 0 && (
           <Row title={t('rows.recommendedForYou')} fetchUrl={REQUESTS.fetchByGenre('movie', topGenres[0])} onSelect={onSelectMovie} onPlay={onPlay} rowKey="mylist-taste-recommended" onViewAll={onViewAll} />

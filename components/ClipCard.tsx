@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpeakerHigh as SpeakerHighIcon } from '@phosphor-icons/react/dist/ssr/SpeakerHigh';
 import { SpeakerX as SpeakerXIcon } from '@phosphor-icons/react/dist/ssr/SpeakerX';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
@@ -35,6 +36,7 @@ interface ClipCardProps {
  * labels (Sound/My List/Share) together, then they fade back to icon-only.
  */
 const ClipCard: React.FC<ClipCardProps> = ({ movie, onSelect, nextMovie, eager = false }) => {
+  const { t } = useTranslation();
   const { myList, toggleList, globalMute, setGlobalMute } = useGlobalContext();
   const activeVideoId = useUIStore(s => s.activeVideoId);
   const setActiveVideoId = useUIStore(s => s.setActiveVideoId);
@@ -199,21 +201,21 @@ const ClipCard: React.FC<ClipCardProps> = ({ movie, onSelect, nextMovie, eager =
           <div className={`h-[54px] rounded-full bg-[#4d4d4d]/20 backdrop-blur-sm text-white flex items-center justify-center active:scale-90 transition-[width] duration-300 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'w-[68px]' : 'w-[54px]'}`}>
             {globalMute ? <SpeakerXIcon size={22} /> : <SpeakerHighIcon size={22} weight="fill" />}
           </div>
-          <span className={`text-white text-[13px] font-medium drop-shadow-md transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'opacity-100 scale-100 delay-150' : 'opacity-0 scale-90'}`}>{globalMute ? 'Muted' : 'Sound'}</span>
+          <span className={`text-white text-[13px] font-medium drop-shadow-md transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'opacity-100 scale-100 delay-150' : 'opacity-0 scale-90'}`}>{globalMute ? t('common.muted', { defaultValue: 'Muted' }) : t('common.sound', { defaultValue: 'Sound' })}</span>
         </button>
 
         <button onClick={(e) => { e.stopPropagation(); toggleList(movie); }} className="flex flex-col items-center gap-1.5">
           <div className={`h-[54px] rounded-full bg-[#4d4d4d]/20 backdrop-blur-sm text-white flex items-center justify-center active:scale-90 transition-[width] duration-300 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'w-[68px]' : 'w-[54px]'}`}>
             {isAdded ? <CheckIcon size={22} weight="bold" /> : <PlusIcon size={22} weight="bold" />}
           </div>
-          <span className={`text-white text-[13px] font-medium drop-shadow-md transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'opacity-100 scale-100 delay-150' : 'opacity-0 scale-90'}`}>My List</span>
+          <span className={`text-white text-[13px] font-medium drop-shadow-md transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'opacity-100 scale-100 delay-150' : 'opacity-0 scale-90'}`}>{t('nav.myList', { defaultValue: 'My List' })}</span>
         </button>
 
         <button onClick={(e) => { e.stopPropagation(); setShareOpen(true); }} className="flex flex-col items-center gap-1.5">
           <div className={`h-[54px] rounded-full bg-[#4d4d4d]/20 backdrop-blur-sm text-white flex items-center justify-center active:scale-90 transition-[width] duration-300 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'w-[68px]' : 'w-[54px]'}`}>
             <ShareNetworkIcon size={22} />
           </div>
-          <span className={`text-white text-[13px] font-medium drop-shadow-md transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'opacity-100 scale-100 delay-150' : 'opacity-0 scale-90'}`}>Share</span>
+          <span className={`text-white text-[13px] font-medium drop-shadow-md transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.34,1.35,0.64,1)] ${showLabels ? 'opacity-100 scale-100 delay-150' : 'opacity-0 scale-90'}`}>{t('common.share', { defaultValue: 'Share' })}</span>
         </button>
       </div>
 
@@ -231,7 +233,7 @@ const ClipCard: React.FC<ClipCardProps> = ({ movie, onSelect, nextMovie, eager =
             {movie.overview}{' '}
             {!expandOverview && (
               <button onClick={() => setExpandOverview(true)} className="font-bold underline underline-offset-1">
-                more
+                {t('modal.more', { defaultValue: 'more' })}
               </button>
             )}
           </p>

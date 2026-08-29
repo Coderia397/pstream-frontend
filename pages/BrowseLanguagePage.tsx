@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Movie } from '../types';
 import MovieCard from '../components/MovieCard';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -59,6 +60,7 @@ interface BrowseLanguagePageProps {
 }
 
 const BrowseLanguagePage: React.FC<BrowseLanguagePageProps> = ({ onSelectMovie, onPlay }) => {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -213,13 +215,13 @@ const BrowseLanguagePage: React.FC<BrowseLanguagePageProps> = ({ onSelectMovie, 
         {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-20">
           <h1 className="text-white font-normal text-[22px] md:text-[26px] tracking-tight leading-tight">
-            Browse by Language
+            {t('browseLanguage.title', { defaultValue: 'Browse by Language' })}
           </h1>
 
           {/* Language selector */}
           <div className="flex items-center gap-4" ref={dropdownRef}>
             <span className="text-white/90 text-[15px] hidden md:block select-none">
-              Select your preferences
+              {t('browseLanguage.selectPreferences', { defaultValue: 'Select your preferences' })}
             </span>
             <div className="relative">
               <button
@@ -285,8 +287,8 @@ const BrowseLanguagePage: React.FC<BrowseLanguagePageProps> = ({ onSelectMovie, 
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center mt-32 gap-3 text-white/40">
                 <span className="text-4xl">🌐</span>
-                <p className="text-lg">No titles found for {selectedLabel}.</p>
-                <p className="text-sm">Try a different language.</p>
+                <p className="text-lg">{t('browseLanguage.noTitlesFound', { language: selectedLabel, defaultValue: `No titles found for ${selectedLabel}.` })}</p>
+                <p className="text-sm">{t('browseLanguage.tryDifferent', { defaultValue: 'Try a different language.' })}</p>
               </div>
             ) : (
               <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-2.5 gap-y-10">

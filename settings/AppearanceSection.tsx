@@ -32,7 +32,7 @@ const AppearanceSection: React.FC<AppearanceSectionProps> = ({ settings, updateS
             {/* Field 3 */}
             <div>
                 <h3 className="text-xl md:text-2xl text-white mb-2">{t('settings.displayLanguage')}</h3>
-                <p className="text-lg text-gray-400">US / en-US</p>
+                <p className="text-lg text-gray-400">{t('settings.displayLanguageValue', { defaultValue: 'US / en-US' })}</p>
             </div>
 
             <div className="pt-8 border-t border-white/20">

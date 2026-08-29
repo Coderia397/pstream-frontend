@@ -157,7 +157,7 @@ export const BadgeOverlay: React.FC<BadgeOverlayProps> = React.memo(({ badge, is
         className="absolute top-0 right-0 z-10 w-[23px] h-[32px] bg-[#E50914] flex flex-col items-center justify-start pt-[2px] pr-[1px] shadow-sm pointer-events-none"
         style={{ clipPath: 'polygon(100% 0, 100% 100%, 100% 85%, 0 100%, 0 0)' }}
       >
-        <div className="text-white text-[9px] font-bold tracking-tighter leading-none mb-[2px]" style={{ letterSpacing: '0.5px' }}>TOP</div>
+        <div className="text-white text-[9px] font-bold tracking-tighter leading-none mb-[2px]" style={{ letterSpacing: '0.5px' }}>{t('common.top', { defaultValue: 'TOP' })}</div>
         <div className="text-white text-[13px] leading-none" style={{ letterSpacing: '-0.5px' }}>10</div>
       </div>
     );
@@ -256,7 +256,7 @@ export const HoverProgressBar: React.FC<ProgressProps> = React.memo(({ movie, ge
       </div>
       {totalMins > 0 && (
         <span className="text-gray-100 text-[16px] whitespace-nowrap flex-shrink-0 font-medium">
-          {t('common.watchProgress', { watched: watchMins, total: totalMins, defaultValue: '{{watched}} of {{total}}m' })}
+          {t('common.watchProgress', { watched: watchMins, total: totalMins, defaultValue: `${watchMins} of ${totalMins}m` })}
         </span>
       )}
     </div>

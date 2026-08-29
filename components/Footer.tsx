@@ -20,35 +20,37 @@ const Footer: React.FC = () => {
 
   const navLinks = [
     { name: t('nav.homeTitle', { defaultValue: 'Home' }), path: '/' },
-    { name: t('nav.showsTitle', { defaultValue: 'TV Shows' }), path: '/tv' },
-    { name: t('nav.moviesTitle', { defaultValue: 'Movies' }), path: '/movies' },
-    { name: t('nav.newTitle', { defaultValue: 'New & Popular' }), path: '/new' },
-    { name: t('nav.listTitle', { defaultValue: 'My List' }), path: '/list' },
-    { name: t('nav.settingsTitle', { defaultValue: 'Settings' }), path: '/settings' },
+    { name: t('nav.showsTitle', { defaultValue: 'TV Shows' }), path: '/browse/series' },
+    { name: t('nav.moviesTitle', { defaultValue: 'Movies' }), path: '/browse/films' },
+    { name: t('nav.newTitle', { defaultValue: 'New & Popular' }), path: '/latest' },
+    { name: t('nav.listTitle', { defaultValue: 'My List' }), path: '/browse/my-list' },
+    { name: t('nav.settingsTitle', { defaultValue: 'Settings' }), path: '/settings/overview' },
     { name: t('footer.privacyPolicy', { defaultValue: 'Privacy Policy' }), path: '/privacy' },
+    { name: t('footer.termsOfService', { defaultValue: 'Terms of Service' }), path: '/terms' },
+    { name: t('footer.dmca', { defaultValue: 'DMCA' }), path: '/dmca' },
+    { name: t('footer.disclaimer', { defaultValue: 'Disclaimer' }), path: '/disclaimer' },
     { name: t('footer.cookiePolicy', { defaultValue: 'Cookie Policy' }), path: '/cookies' },
     { name: t('footer.cookiePreferences', { defaultValue: 'Cookie Preferences' }), action: () => setShowPrivacyModal(true) },
-    { name: t('footer.termsOfService', { defaultValue: 'Terms of Service' }), path: '/terms' },
     { name: t('footer.contactUs', { defaultValue: 'Contact Us' }), path: '/contact' }
   ];
 
   return (
     <>
-      <footer className="hidden w-full bg-[#141414] text-[#808080] py-12 px-6 md:px-20 lg:px-32 xl:px-44 2xl:px-56 text-sm mt-12">
+      <footer className="w-full bg-[#141414] text-[#808080] py-12 px-6 md:px-20 lg:px-32 xl:px-44 2xl:px-56 text-sm mt-auto">
         <div className="max-w-[1000px] mx-auto">
 
           {/* Social Icons */}
-          <div className="flex space-x-6 mb-8" aria-label="Social Media Links">
-            <InstagramLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" aria-label="Instagram" tabIndex={0} />
-            <TwitterLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" aria-label="Twitter" tabIndex={0} />
-            <YoutubeLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" aria-label="YouTube" tabIndex={0} />
-            <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub">
+          <div className="flex space-x-6 mb-8" aria-label={t('footer.socialMediaLinks', { defaultValue: 'Social Media Links' })}>
+            <InstagramLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" aria-label={t('footer.instagram', { defaultValue: 'Instagram' })} tabIndex={0} />
+            <TwitterLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" aria-label={t('footer.twitter', { defaultValue: 'Twitter' })} tabIndex={0} />
+            <YoutubeLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" aria-label={t('footer.youtube', { defaultValue: 'YouTube' })} tabIndex={0} />
+            <a href="https://github.com" target="_blank" rel="noreferrer" aria-label={t('footer.github', { defaultValue: 'GitHub' })}>
               <GithubLogoIcon size={24} weight="fill" className="hover:text-white cursor-pointer transition-colors duration-200" />
             </a>
           </div>
 
           {/* Links Grid */}
-          <nav aria-label="Footer Navigation" className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-8 mb-8">
+          <nav aria-label={t('footer.navigation', { defaultValue: 'Footer Navigation' })} className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-8 mb-8">
             {navLinks.map((link) => (
               link.path ? (
                 <Link

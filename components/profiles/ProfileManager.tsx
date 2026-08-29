@@ -41,15 +41,18 @@ const Tile: React.FC<{ profile: { avatarUrl?: string; isKids?: boolean }; size: 
 };
 
 /** Full-screen top bar with a back arrow, centred title and optional right action. */
-const FlowHeader: React.FC<{ title: string; onBack: () => void; right?: React.ReactNode }> = ({ title, onBack, right }) => (
-  <div className="sticky top-0 z-20 flex items-center gap-3 px-4 md:px-6 h-16 bg-black md:bg-white border-b border-white/5 md:border-gray-200">
-    <button onClick={onBack} className="p-1 -ml-1 text-white md:text-gray-900 active:scale-90 transition-transform" aria-label="Back">
-      <ArrowLeftIcon size={26} weight="bold" />
-    </button>
-    <h1 className="text-[22px] font-bold text-white md:text-gray-900 flex-1 truncate">{title}</h1>
-    {right}
-  </div>
-);
+const FlowHeader: React.FC<{ title: string; onBack: () => void; right?: React.ReactNode }> = ({ title, onBack, right }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="sticky top-0 z-20 flex items-center gap-3 px-4 md:px-6 h-16 bg-black md:bg-white border-b border-white/5 md:border-gray-200">
+      <button onClick={onBack} className="p-1 -ml-1 text-white md:text-gray-900 active:scale-90 transition-transform" aria-label={t('common.back', { defaultValue: 'Back' })}>
+        <ArrowLeftIcon size={26} weight="bold" />
+      </button>
+      <h1 className="text-[22px] font-bold text-white md:text-gray-900 flex-1 truncate">{title}</h1>
+      {right}
+    </div>
+  );
+};
 
 type Screen =
   | { name: 'list' }

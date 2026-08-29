@@ -206,7 +206,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ settings, updateSetting
     };
 
     return (
-        <div className="relative min-h-screen bg-black md:bg-white flex flex-col font-inter pt-16 md:pt-20">
+        <div className="relative min-h-screen bg-black md:bg-white flex flex-col font-sans pt-16 md:pt-20">
 
             {/* ── Main Content Area (Centered) ────────────────── */}
             <main className={`w-full max-w-[1100px] mx-auto px-6 lg:px-12 py-8 md:py-12 flex flex-col lg:flex-row gap-8 lg:gap-16`}>
@@ -323,7 +323,7 @@ const ProfileEditPage: React.FC<{ settings: AppSettings; updateSettings: (s: Par
 
                 {/* Name input - Labeled Box Style */}
                 <div className="flex-1 w-full flex flex-col gap-4">
-                    <div className="border border-white/20 md:border-gray-400 rounded-sm px-3.5 pt-1.5 pb-2 transition-shadow duration-200 bg-white/5 md:bg-white focus-within:ring-2 focus-within:ring-white md:focus-within:ring-black">
+                    <div className="border border-white/20 md:border-gray-400 rounded-[4px] px-3.5 pt-1.5 pb-2 transition-shadow duration-200 bg-white/5 md:bg-white focus-within:ring-2 focus-within:ring-white md:focus-within:ring-black">
                         <label className="block text-[11px] text-white/50 md:text-gray-500 mb-0.5 font-medium">
                             {t('settings.profileName', { defaultValue: 'Profile name' })}
                         </label>
@@ -348,13 +348,13 @@ const ProfileEditPage: React.FC<{ settings: AppSettings; updateSettings: (s: Par
             <div className="flex flex-col sm:flex-row gap-4">
                 <button
                     onClick={() => { handleSaveName(); navigate('/settings/overview'); }}
-                    className="px-12 py-3 bg-white md:bg-[#111] text-black md:text-white border-none rounded-sm text-base font-bold cursor-pointer hover:bg-white/90 md:hover:bg-black transition-colors active:scale-95"
+                    className="px-12 py-3 bg-white md:bg-[#111] text-black md:text-white border-none rounded-[4px] text-base font-bold cursor-pointer hover:bg-white/90 md:hover:bg-black transition-colors duration-150 active:scale-95 shadow-md"
                 >
                     {t('common.save', { defaultValue: 'Save' })}
                 </button>
                 <button
                     onClick={() => navigate('/settings/overview')}
-                    className="px-12 py-3 bg-transparent text-white/60 md:text-gray-600 border border-white/20 md:border-gray-300 rounded-sm text-base font-bold cursor-pointer hover:bg-white/5 md:hover:bg-gray-50 transition-colors active:scale-95"
+                    className="px-12 py-3 bg-transparent text-white/60 md:text-gray-600 border border-white/20 md:border-gray-300 rounded-[4px] text-base font-bold cursor-pointer hover:bg-white/5 md:hover:bg-gray-50 transition-colors duration-150 active:scale-95"
                 >
                     {t('common.cancel', { defaultValue: 'Cancel' })}
                 </button>

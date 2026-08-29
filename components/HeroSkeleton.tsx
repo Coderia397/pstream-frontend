@@ -20,8 +20,8 @@ export const HeroSkeleton: React.FC = () => {
             <div className="h-3 w-1/3 bg-white/[0.06] rounded" />
             {/* Play/List Buttons row */}
             <div className="flex w-full gap-3 mt-2">
-              <div className="h-[48px] flex-1 bg-white/10 rounded" />
-              <div className="h-[48px] flex-1 bg-white/[0.05] rounded" />
+              <div className="h-[50px] sm:h-[56px] flex-1 bg-white/10 rounded-[4px]" />
+              <div className="h-[50px] sm:h-[56px] flex-1 bg-white/[0.05] rounded-[4px]" />
             </div>
           </div>
         </div>
@@ -40,8 +40,8 @@ export const HeroSkeleton: React.FC = () => {
           <div className="h-4 w-1/2 bg-white/[0.08] rounded" />
           {/* Compact Buttons row */}
           <div className="flex gap-3 w-full max-w-[340px]">
-            <div className="h-[52px] w-[140px] bg-white/10 rounded" />
-            <div className="h-[52px] w-[140px] bg-white/[0.05] rounded" />
+            <div className="h-[50px] sm:h-[56px] w-[140px] bg-white/10 rounded-[4px]" />
+            <div className="h-[50px] sm:h-[56px] w-[140px] bg-white/[0.05] rounded-[4px]" />
           </div>
         </div>
       </div>
@@ -68,8 +68,8 @@ export const HeroSkeleton: React.FC = () => {
           </div>
           {/* Play/Info Buttons row */}
           <div className="flex gap-3 pt-2">
-            <div className="h-12 w-36 bg-white/10 rounded" />
-            <div className="h-12 w-44 bg-white/[0.05] rounded" />
+            <div className="h-[35px] md:h-[45px] w-36 bg-white/10 rounded-[4px]" />
+            <div className="h-[35px] md:h-[45px] w-44 bg-white/[0.05] rounded-[4px]" />
           </div>
         </div>
 

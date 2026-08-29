@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AppSettings } from '../types';
 import SubtitleSettings from './SubtitleSettings';
 import SubtitlePreview from './SubtitlePreview';
@@ -12,6 +13,7 @@ interface SubtitleSectionProps {
 }
 
 const SubtitleSection: React.FC<SubtitleSectionProps> = ({ settings, updateSettings, continueWatching }) => {
+    const { t } = useTranslation();
     const previewBackdrop = continueWatching && continueWatching.length > 0
         ? `${IMG_PATH}${continueWatching[0].backdrop_path}`
         : landingBg;
@@ -26,7 +28,7 @@ const SubtitleSection: React.FC<SubtitleSectionProps> = ({ settings, updateSetti
                 </div>
                 <div className="mt-4 flex items-center justify-center">
                     <span className="text-xs md:text-sm font-bold text-white/30 md:text-gray-400 uppercase tracking-widest">
-                        Live Appearance Preview
+                        {t('subtitles.livePreview', { defaultValue: 'Live Appearance Preview' })}
                     </span>
                 </div>
             </div>

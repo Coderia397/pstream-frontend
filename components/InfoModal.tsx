@@ -625,7 +625,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ movie, initialTime = 0, onClose, 
                         <div className="space-y-4">
                             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-white font-bold text-sm md:text-base mt-2 font-netflix">
                                 {matchScore !== null && (
-                                    <span className="text-green-500 font-extrabold tracking-wide">{matchScore}% Match</span>
+                                    <span className="text-green-500 font-extrabold tracking-wide">{t('common.match', { score: matchScore, defaultValue: `${matchScore}% Match` })}</span>
                                 )}
                                 <span className="text-white tracking-wide">{year}</span>
                                 <span className="text-white tracking-wide">{duration}</span>

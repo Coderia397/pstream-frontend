@@ -554,7 +554,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
                             className="flex items-center justify-center h-[56px] rounded-[4px] bg-[#6d6d6e]/40 hover:bg-[#6d6d6e]/25 text-white font-bold text-[18px] gap-2.5 transition-all active:scale-95 font-sans w-full mt-2"
                         >
                             {isAdded ? <CheckIcon size={24} weight="bold" className="text-white" /> : <PlusIcon size={24} weight="bold" className="text-white" />}
-                            <span>My List</span>
+                            <span>{t('nav.myList')}</span>
                         </button>
                     ) : (
                         <div className="flex items-center gap-3 mt-2">

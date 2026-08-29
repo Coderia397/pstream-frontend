@@ -283,7 +283,7 @@ const NotFoundPage: React.FC<NotFoundPageProps> = ({ onSelectMovie, onPlay }) =>
                 </div>
 
                 <div className="bg-red-500/10 border border-red-500/20 rounded p-4 text-[13px] leading-relaxed text-red-300 font-sans">
-                  <strong>System Notice:</strong> The targeted router endpoint has been de-referenced or has failed to load from our CDN space. Please redirect back to our secure home streaming environment to resume playback.
+                  <strong>{t('notFound.systemNoticeTitle', { defaultValue: 'System Notice:' })}</strong> {t('notFound.systemNoticeDesc', { defaultValue: 'The targeted router endpoint has been de-referenced or has failed to load from our CDN space. Please redirect back to our secure home streaming environment to resume playback.' })}
                 </div>
               </div>
 

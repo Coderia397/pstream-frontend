@@ -513,7 +513,7 @@ const WhosWatchingGate: React.FC = () => {
                 {!!activeSlide.rank && activeSlide.rank <= 10 && (
                   <div className="flex items-center gap-2.5">
                     <span className="bg-[#e50914] rounded-[3px] px-[5px] py-[3px] flex flex-col items-center leading-none shrink-0 shadow">
-                      <span className="text-white text-[7px] font-black tracking-[0.08em]">TOP</span>
+                      <span className="text-white text-[7px] font-black tracking-[0.08em]">{t('common.top', { defaultValue: 'TOP' })}</span>
                       <span className="text-white text-[11px] font-black leading-[0.95]">10</span>
                     </span>
                     <span className="text-white text-[19px] font-bold">

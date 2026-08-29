@@ -1,4 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Play as PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
 import { Info as InfoIcon } from '@phosphor-icons/react/dist/ssr/Info';
 import { DotsThreeVertical as DotsThreeVerticalIcon } from '@phosphor-icons/react/dist/ssr/DotsThreeVertical';
@@ -18,6 +19,7 @@ interface MovieCardTouchProps {
 }
 
 const MovieCardTouch: React.FC<MovieCardTouchProps> = ({ movie, onSelect, onPlay, isGrid = false, continueWatching = false, onOpenOptions }) => {
+  const { t } = useTranslation();
   const {
     getVideoState, getLastWatchedEpisode,
     top10TV, top10Movies
@@ -165,7 +167,7 @@ const MovieCardTouch: React.FC<MovieCardTouchProps> = ({ movie, onSelect, onPlay
                 onSelect(movie, savedState?.time ?? 0, savedState?.videoId);
               }}
               className="text-white/85 active:scale-90 transition-transform p-1"
-              aria-label="Info"
+              aria-label={t('common.info', { defaultValue: 'Info' })}
             >
               <InfoIcon size={20} />
             </button>
@@ -176,7 +178,7 @@ const MovieCardTouch: React.FC<MovieCardTouchProps> = ({ movie, onSelect, onPlay
                 onOpenOptions?.(movie);
               }}
               className="text-white/85 active:scale-90 transition-transform p-1"
-              aria-label="More options"
+              aria-label={t('common.moreOptions', { defaultValue: 'More options' })}
             >
               <DotsThreeVerticalIcon size={20} weight="bold" />
             </button>
