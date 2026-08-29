@@ -360,6 +360,10 @@ const Row: React.FC<RowProps & { index?: number }> = ({ title, fetchUrl, data, o
   if (isHidden) return null;
   if (!initialLoad && movies.length === 0) return null;
 
+  const tTitle = t(`themes.names.${title.replace(/[^a-zA-Z0-9]/g, '')}`, {
+    defaultValue: t(`genres.names.${title.replace(/[^a-zA-Z0-9]/g, '')}`, { defaultValue: title })
+  });
+
   return (
     <m.div
       ref={viewRef}
@@ -378,7 +382,7 @@ const Row: React.FC<RowProps & { index?: number }> = ({ title, fetchUrl, data, o
           className={`text-sm sm:text-base md:text-lg font-bold text-[#e5e5e5] hover:text-white transition cursor-pointer flex items-center group/title w-fit tracking-wide ${canViewAll ? 'hover:text-white' : ''}`}
           onClick={canViewAll ? handleViewAll : undefined}
         >
-          {title}
+          {tTitle}
           {/* Show "Explore All" on desktop when view-all is wired */}
           {!isMobile && canViewAll && (
             <span className="text-xs text-cyan-500 ml-2 opacity-0 group-hover/title:opacity-100 transition-opacity duration-300 flex items-center font-semibold">
