@@ -42,9 +42,9 @@ export function useSubtitleStyle(customSettings?: AppSettings): {
     // Size logic
     const rawFontSize = SUBTITLE_SIZES.find(s => s.id === subtitleSize)?.value || '18px';
     const isSmallOrTiny = subtitleSize === 'small' || subtitleSize === 'tiny';
-    const fontSize = isSmallOrTiny ? rawFontSize : `calc(${rawFontSize} * 0.88)`;
+    const fontSize = rawFontSize;
     // Small scaling for compact views (clamped)
-    const fontSizeCompact = `calc(${fontSize} * 0.7)`;
+    const fontSizeCompact = SUBTITLE_SIZES.find(s => s.id === "small")?.value || "12px";
 
     // Background build
     const alpha = (subtitleOpacity / 100).toFixed(2);
@@ -58,7 +58,7 @@ export function useSubtitleStyle(customSettings?: AppSettings): {
       zIndex:          20,
       pointerEvents:   'none',
       textAlign:       'center',
-      maxWidth:        '80%',
+      maxWidth:        '85%',
       padding:         bg === 'transparent' ? '0' : '6px 14px',
       backgroundColor: bg,
       borderRadius:    bg === 'transparent' ? 0 : 6,

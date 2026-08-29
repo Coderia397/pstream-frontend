@@ -1178,7 +1178,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                     className="subtitle-overlay"
                     style={{
                         ...overlayStyle,
-                        bottom: isMobile ? '2.6rem' : '5.5rem',
+                        bottom: showUI ? (isMobile ? '4.5rem' : '5.5rem') : (isMobile ? '1.5rem' : '2.0rem'),
                         left: currentCueSettings?.position ? currentCueSettings.position : '50%',
                         transform: currentCueSettings?.position 
                             ? (currentCueSettings.align === 'right' || currentCueSettings.align === 'end' 
@@ -1200,7 +1200,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movie, season = 1, episode = 
                         backgroundColor: 'transparent',
                         backdropFilter: 'none',
                         padding: 0,
-                        transition: 'all 0.25s ease',
+                        transition: 'bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s ease, opacity 0.25s ease',
                     }}
                 >
                     <span
