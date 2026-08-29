@@ -21,6 +21,7 @@ const CategorySubNavMobile: React.FC<CategorySubNavMobileProps> = ({
     dropdownLabel,
 }) => {
     const { t } = useTranslation();
+    const tGenre = (name: string) => t(`genres.names.${name.replace(/[^a-zA-Z0-9]/g, '')}`, { defaultValue: name });
     const location = useLocation();
     const navigate = useNavigate();
     const [genreMenuOpen, setGenreMenuOpen] = useState(false);
@@ -240,7 +241,7 @@ const CategorySubNavMobile: React.FC<CategorySubNavMobileProps> = ({
                                     aria-selected={false}
                                     className="text-left text-[20px] font-semibold py-2 transition-colors hover:text-white text-white active:scale-95 whitespace-nowrap"
                                 >
-                                    {genre.name}
+                                    {tGenre(genre.name)}
                                 </button>
                             ))}
                         </div>

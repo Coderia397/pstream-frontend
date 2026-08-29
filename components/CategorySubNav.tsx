@@ -35,6 +35,7 @@ const CategorySubNav: React.FC<CategorySubNavProps> = ({
     dropdownLabel,
 }) => {
     const { t } = useTranslation();
+    const tGenre = (name: string) => t(`genres.names.${name.replace(/[^a-zA-Z0-9]/g, '')}`, { defaultValue: name });
     const isMobile = useIsMobile();
     const [genreMenuOpen, setGenreMenuOpen] = useState(false);
     const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -119,7 +120,7 @@ const CategorySubNav: React.FC<CategorySubNavProps> = ({
                                 {title}
                             </span>
                             <span className="text-white/20 font-normal text-xs md:text-[16px] mx-1.5 md:mx-2.5 whitespace-nowrap">&gt;</span>
-                            <span className="whitespace-nowrap">{selectedGenre.name}</span>
+                            <span className="whitespace-nowrap">{tGenre(selectedGenre.name)}</span>
                         </>
                     ) : (
                         <span>{title}</span>
@@ -159,7 +160,7 @@ const CategorySubNav: React.FC<CategorySubNavProps> = ({
                                                 aria-selected={false}
                                                 className={`text-left text-[15px] md:text-[16px] font-regular transition-colors hover:underline whitespace-nowrap text-white`}
                                             >
-                                                {genre.name}
+                                                {tGenre(genre.name)}
                                             </button>
                                         );
                                     })}
