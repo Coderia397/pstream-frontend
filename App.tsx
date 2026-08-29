@@ -510,6 +510,29 @@ const App: React.FC = () => {
     return <div className="h-screen w-screen bg-black flex items-center justify-center"></div>;
   }
 
+  const isHelpSubdomain = window.location.hostname.startsWith('help.');
+
+  if (isHelpSubdomain) {
+    return (
+      <div className="w-full min-h-screen bg-[#141414] text-white">
+        <Suspense fallback={PageFallback}>
+          <Routes location={backgroundLocation}>
+            <Route path="/" element={<Navigate to="/privacy" replace />} />
+            <Route path="/legal/privacy" element={<PrivacyPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/legal/terms" element={<TermsPage />} />
+            <Route path="/cookies" element={<CookiePolicyPage />} />
+            <Route path="/dmca" element={<DMCAPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/disclaimer" element={<DisclaimerPage />} />
+            <Route path="*" element={<Navigate to="/privacy" replace />} />
+          </Routes>
+        </Suspense>
+      </div>
+    );
+  }
+
   if (!user) {
     return <LoginPage />;
   }

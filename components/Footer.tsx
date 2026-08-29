@@ -25,13 +25,13 @@ const Footer: React.FC = () => {
     { name: t('nav.newTitle', { defaultValue: 'New & Popular' }), path: '/latest' },
     { name: t('nav.listTitle', { defaultValue: 'My List' }), path: '/browse/my-list' },
     { name: t('nav.settingsTitle', { defaultValue: 'Settings' }), path: '/settings/overview' },
-    { name: t('footer.privacyPolicy', { defaultValue: 'Privacy Policy' }), path: '/privacy' },
-    { name: t('footer.termsOfService', { defaultValue: 'Terms of Service' }), path: '/terms' },
-    { name: t('footer.dmca', { defaultValue: 'DMCA' }), path: '/dmca' },
-    { name: t('footer.disclaimer', { defaultValue: 'Disclaimer' }), path: '/disclaimer' },
-    { name: t('footer.cookiePolicy', { defaultValue: 'Cookie Policy' }), path: '/cookies' },
+    { name: t('footer.privacyPolicy', { defaultValue: 'Privacy Policy' }), path: 'https://help.pstream.watch/privacy', external: true },
+    { name: t('footer.termsOfService', { defaultValue: 'Terms of Service' }), path: 'https://help.pstream.watch/terms', external: true },
+    { name: t('footer.dmca', { defaultValue: 'DMCA' }), path: 'https://help.pstream.watch/dmca', external: true },
+    { name: t('footer.disclaimer', { defaultValue: 'Disclaimer' }), path: 'https://help.pstream.watch/disclaimer', external: true },
+    { name: t('footer.cookiePolicy', { defaultValue: 'Cookie Policy' }), path: 'https://help.pstream.watch/cookies', external: true },
     { name: t('footer.cookiePreferences', { defaultValue: 'Cookie Preferences' }), action: () => setShowPrivacyModal(true) },
-    { name: t('footer.contactUs', { defaultValue: 'Contact Us' }), path: '/contact' }
+    { name: t('footer.contactUs', { defaultValue: 'Contact Us' }), path: 'https://help.pstream.watch/contact', external: true }
   ];
 
   return (
@@ -53,14 +53,25 @@ const Footer: React.FC = () => {
           <nav aria-label={t('footer.navigation', { defaultValue: 'Footer Navigation' })} className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-8 mb-8">
             {navLinks.map((link) => (
               link.path ? (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className="hover:underline hover:text-white transition-colors duration-200 text-xs md:text-sm"
-                  aria-label={link.name}
-                >
-                  {link.name}
-                </Link>
+                link.external ? (
+                  <a
+                    key={link.name}
+                    href={link.path}
+                    className="hover:underline hover:text-white transition-colors duration-200 text-xs md:text-sm"
+                    aria-label={link.name}
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className="hover:underline hover:text-white transition-colors duration-200 text-xs md:text-sm"
+                    aria-label={link.name}
+                  >
+                    {link.name}
+                  </Link>
+                )
               ) : (
                 <button
                   key={link.name}
