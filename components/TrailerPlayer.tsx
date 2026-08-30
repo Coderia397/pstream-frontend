@@ -138,7 +138,7 @@ export const TrailerPlayer: React.FC<TrailerPlayerProps> = ({
     // play/pause sync (it was calling playVideo()/interrupting playback on
     // every mute toggle). Sound is handled by the dedicated mute effect above
     // and, for YouTube, by handleStateChange once PLAYING is confirmed.
-    }, [activeVideoId, movie, variant, videoId, isLoaded]);
+    }, [activeVideoId, movie, variant, videoId, isLoaded, isVisible]);
 
     const startTime = React.useMemo(() => {
         // If a specific seek time is provided (e.g. from hero timestamp), use it directly
