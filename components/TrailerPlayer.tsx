@@ -67,6 +67,13 @@ export const TrailerPlayer: React.FC<TrailerPlayerProps> = ({
     }), [zoomFactor]);
 
     const [isLoaded, setIsLoaded] = React.useState(false);
+    const [isVisible, setIsVisible] = React.useState(!document.hidden);
+
+    useEffect(() => {
+        const handleVisibilityChange = () => setIsVisible(!document.hidden);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
 
     useEffect(() => {
         return () => {
